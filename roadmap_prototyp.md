@@ -8,7 +8,7 @@ Die Konzeptphase ist vollständig abgeschlossen. Das bedeutet, wir wissen exakt,
 - **Gesichert (GitHub):** 46 Dokumente (App-Struktur, Datenkatalog, Nutzerkonzept, Doktrin, Blindspot-Bericht).
 - **Entschieden:** KI-Scan läuft nur selbst gehostet (Start ohne KI), Kellerserver-Strategie, Offline-First-Ansatz, Android-API-Level 35.
 - **Design:** Drei Kern-Mockups (Startbildschirm, Tierakte, Notfallpass) existieren.
-- **Werkzeuge (verbunden):** GitHub (für Code), Neon EU (als Test-Datenbank).
+- **Werkzeuge (verbunden):** GitHub (für Code), Neon (als Test-Datenbank; aktuell US-Region, EU-Umzug vor echten Daten verpflichtend).
 
 ## 2. Definition: Was ist der "erste überprüfbare Prototyp"?
 
@@ -30,10 +30,10 @@ Ein Prototyp ist nicht die fertige App. Er ist die kleinste Version, an der wir 
 - **Screen-Flow komplettieren:** Die fehlenden Bildschirme logisch verknüpft und beschrieben (siehe `technische_spezifikation_screen_flow.md`).
 - **Offline-Strategie festlegen:** Local-First-Strategie mit Last-Writer-Wins-Konfliktlösung definiert (siehe `technische_spezifikation_offline_strategie.md`).
 
-### Schritt 3: Projekt-Setup & Infrastruktur
-- **Code-Basis initialisieren:** Ein "React Native / Expo"-Projekt anlegen (zwingend mit API-Level 35 für Android 15).
-- **GitHub-Anbindung:** Den Code-Rahmen in dein vorhandenes privates Repository pushen.
-- **Datenbank-Anbindung:** Die Neon-Test-Datenbank anbinden (für die ersten Tests völlig ausreichend, der Kellerserver wird hierfür noch nicht zwingend gebraucht).
+### Schritt 3: Projekt-Setup & Infrastruktur — ✅ ABGESCHLOSSEN am 08.07.2026
+- **Code-Basis initialisiert:** Expo-Projekt (SDK 57, React Native 0.86, TypeScript) mit targetSdk 35 / minSdk 29 angelegt — liegt im Repository unter `app/`. Enthalten: lokale SQLite-Datenbank (Offline-First mit Sync-Flag), Tierarten-Konfiguration (14 Arten), Farbsystem mit reserviertem Signalrot, Navigation (4 Bereiche + Notfallpass-Stack) und Grundgerüste aller MVP-Screens. TypeScript-Prüfung fehlerfrei bestanden.
+- **GitHub-Anbindung:** Der Code-Rahmen ist als Unterordner `app/` ins private Repository gepusht (Single Source of Truth: Konzepte und Code in einem Repo).
+- **Datenbank-Anbindung:** Neon-Test-Datenbank angebunden, Schema (7 Tabellen) eingespielt und verifiziert. **Ehrlicher Hinweis:** Die Testdatenbank liegt vorübergehend in us-east-1 (USA), da die Anbindung keine Regionswahl erlaubte — vom Projektinhaber am 08.07.2026 freigegeben, weil nur synthetische Testdaten gespeichert werden. Verbindliche Auflage: EU-Umzug (Frankfurt) vor jeglichen echten Daten (dokumentiert in `infrastruktur_und_kellerserver_konzept.md`, Abschnitt 5).
 
 ### Schritt 4: Die eigentliche Entwicklung (Iterativ)
 *Hier entsteht der Code, Schritt für Schritt:*
@@ -55,4 +55,4 @@ Ein Prototyp ist nicht die fertige App. Er ist die kleinste Version, an der wir 
 - **Server:** Der Kellerserver (150–300 €) wird erst relevant, wenn wir nach dem Prototyp mit den KI-OCR-Tests beginnen.
 - **Arbeitskosten (Agent-Credits):** Die Entwicklung (Schritt 2 bis 4) ist der ressourcenintensivste Teil. Empfehlung: Diese Schritte einzeln und klar umrissen beauftragen, um Kosten zu kontrollieren.
 
-**Zusammenfassung:** Alles Konzeptionelle ist fertig und Schritt 1 ist seit dem 08.07.2026 abgeschlossen (Arbeitstitel "simplyPet", MVP-Umfang inkl. Foto-Ablage bestätigt, zwei Testgeräte benannt). Der nächste logische Schritt bei Reaktivierung ist **Schritt 2 (Technische Spezifikation)**.
+**Zusammenfassung:** Alles Konzeptionelle ist fertig; die Schritte 1 bis 3 sind seit dem 08.07.2026 abgeschlossen (Arbeitstitel "simplyPet", technische Spezifikation, Projektbasis mit Datenbank-Anbindung unter `app/`). Der nächste logische Schritt bei Reaktivierung ist **Schritt 4 (Die eigentliche Entwicklung)** — empfohlen in 3–4 klar umrissene Teilaufträge zerlegt (z. B. 4.1 Fundament + Kern-Screens, 4.2 Funktionen/Einträge, 4.3 Notfallpass + QR, 4.4 interne Prüfung + APK).

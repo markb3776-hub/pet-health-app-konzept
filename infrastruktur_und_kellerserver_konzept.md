@@ -62,3 +62,12 @@ Der Kellerserver darf unter keinen Umständen zur Gefahr für das Heimnetzwerk o
 1. **Keine Portfreigaben:** Am heimischen Router werden keine Ports (z.B. 80, 443, 22) für den Server geöffnet.
 2. **Zugriff nur via VPN:** Die Verbindung zum Server erfolgt ausschließlich über das Tailscale-VPN.
 3. **Strikte Datentrennung:** Sobald die App in den Beta-Test mit echten fremden Nutzern geht, zieht das Backend auf einen Mietserver (ca. 20–30 €/Monat) in ein zertifiziertes deutsches Rechenzentrum um. Der Kellerserver verarbeitet **niemals** echte Nutzerdaten, da ein Heimbetrieb die DSGVO-Anforderungen (technische und organisatorische Maßnahmen wie Zugangskontrolle und Brandschutz) nicht rechtssicher erfüllen kann.
+
+
+## 5. Dokumentierter Kompromiss: Prototyp-Testdatenbank in den USA (Stand 08.07.2026)
+
+Für den Prototyp (Roadmap Schritt 3) wurde eine kostenlose Neon-Testdatenbank angebunden (Projekt `simplypet-test`, ID `royal-pond-21225992`). Diese liegt in der Region **us-east-1 (USA)**, weil die automatisierte Anbindung keine Regionswahl erlaubte und der manuelle Konsolen-Login zum Einrichtungszeitpunkt nicht möglich war (Projektinhaber im Urlaub, Passwort nicht verfügbar). Der Projektinhaber hat diesen Kompromiss am 08.07.2026 ausdrücklich freigegeben.
+
+Der Kompromiss ist vertretbar, weil die Datenbank **ausschließlich synthetische Testdaten** enthält (erfundene Tiere, keine personenbezogenen Daten) und damit der Kern der Doktrin – keine echten Nutzerdaten bei US-Anbietern – nicht verletzt wird.
+
+> **Verbindliche Auflage:** Vor der Eingabe jeglicher echter Daten (auch eigener Tiere des Projektinhabers) muss die Datenbank auf EU-Infrastruktur umziehen: entweder ein Neon-Projekt in Frankfurt (eu-central-1) oder direkt der Kellerserver/Mietserver gemäß Abschnitt 2. Der Umzug besteht aus dem Schema-Import (`app/server/migrations/001_initial_schema.sql`) und der Anpassung der Verbindungs-URL – Aufwand unter 15 Minuten.
