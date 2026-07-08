@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tierakte – Praxis-Ansicht (Testfall)</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 24px auto; padding: 0 16px; color: #1a2b3c; }
+  h1 { font-size: 1.3rem; } h2 { font-size: 1.05rem; margin-bottom: 4px; }
+  .block { border: 1px solid #d7dee6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; position: relative; }
+  .copy-btn { position: absolute; top: 10px; right: 10px; padding: 6px 12px; border: 1px solid #2a6db0; background: #fff; color: #2a6db0; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+  .copy-btn.ok { background: #2a9d5c; color: #fff; border-color: #2a9d5c; }
+  .meta { color: #5a6b7c; font-size: 0.85rem; }
+  #code-entry { border: 2px dashed #2a6db0; }
+  input { font-size: 1rem; padding: 6px; }
+  #paste-check { width: 100%; min-height: 60px; margin-top: 8px; }
+  .badge { display: inline-block; background: #eef4fa; border-radius: 4px; padding: 2px 8px; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<h1>Notfall-Akte: „Balou" (Testfall Praxis-Ansicht)</h1>
+<p class="meta">Freigabe gültig bis 14:45 Uhr · Nur-Lese-Zugriff · Kurzcode: <strong>7F3K</strong></p>
+
+<div class="block" id="code-entry">
+  <h2>Simulation: Kurzcode-Abruf am PC</h2>
+  <p class="meta">Code eingeben (simuliert den Abruf tierakte.app/PRX am Praxis-PC):</p>
+  <input type="text" id="code-input" placeholder="z. B. 7F3K" maxlength="4">
+  <button class="copy-btn" style="position:static" onclick="checkCode()">Öffnen</button>
+  <p id="code-result" class="meta"></p>
+</div>
+
+<div class="block">
+  <h2>Chipnummer <span class="badge">Stammdatum</span></h2>
+  <p id="chip">276098100123456</p>
+  <button class="copy-btn" data-target="chip">Kopieren</button>
+</div>
+
+<div class="block">
+  <h2>Allergien &amp; Unverträglichkeiten</h2>
+  <p id="allergy">Allergie: Hühnerprotein (bestätigt 03/2025, Ausschlussdiät Dr. Weber); Unverträglichkeit: Carprofen (Erbrechen, 11/2024)</p>
+  <button class="copy-btn" data-target="allergy">Kopieren</button>
+</div>
+
+<div class="block">
+  <h2>Dauermedikation</h2>
+  <p id="meds">Vetoryl 30 mg – 1× täglich morgens (seit 06/2024, Cushing); Bravecto – zuletzt 04/2026</p>
+  <button class="copy-btn" data-target="meds">Kopieren</button>
+</div>
+
+<div class="block">
+  <h2>Alles für die Aufnahme kopieren</h2>
+  <p class="meta" id="all" data-full="PATIENT: Balou, Labrador Retriever, m/kastriert, geb. 12.05.2019, 32,4 kg (Stand 04/2026), Chip 276098100123456 | ALLERGIEN: Hühnerprotein (best. 03/2025); Unverträgl.: Carprofen | DAUERMEDIKATION: Vetoryl 30mg 1x tgl. (Cushing, seit 06/2024) | LETZTE IMPFUNG: SHPPi+LT 09/2025 (Praxis Dr. Weber)">Kompakter Übergabe-Block (Signalement + Allergien + Medikation + Impfstatus)</p>
+  <button class="copy-btn" data-target="all" data-attr="data-full">Gesamt kopieren</button>
+</div>
+
+<div class="block">
+  <h2>Kontrollfeld (simuliert Eingabefeld der Praxissoftware)</h2>
+  <textarea id="paste-check" placeholder="Hier mit Strg+V einfügen zur Verifikation..."></textarea>
+</div>
+
+<script>
+document.querySelectorAll('.copy-btn[data-target]').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const el = document.getElementById(btn.dataset.target);
+    const text = btn.dataset.attr ? el.getAttribute(btn.dataset.attr) : el.textContent.trim();
+    try {
+      await navigator.clipboard.writeText(text);
+      btn.textContent = 'Kopiert ✓'; btn.classList.add('ok');
+      console.log('CLIPBOARD_OK:' + text.substring(0, 40));
+    } catch (e) {
+      // Fallback für ältere Browser / nicht-sichere Kontexte
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand('copy'); document.body.removeChild(ta);
+      btn.textContent = ok ? 'Kopiert ✓ (Fallback)' : 'Fehler';
+      btn.classList.toggle('ok', ok);
+      console.log(ok ? 'CLIPBOARD_FALLBACK_OK:' + text.substring(0, 40) : 'CLIPBOARD_FAIL');
+    }
+    setTimeout(() => { btn.textContent = btn.dataset.attr ? 'Gesamt kopieren' : 'Kopieren'; btn.classList.remove('ok'); }, 2500);
+  });
+});
+function checkCode() {
+  const v = document.getElementById('code-input').value.trim().toUpperCase();
+  const r = document.getElementById('code-result');
+  if (v === '7F3K') { r.textContent = 'Code gültig – Akte geladen (Simulation erfolgreich).'; console.log('CODE_OK'); }
+  else { r.textContent = 'Ungültiger oder abgelaufener Code.'; console.log('CODE_FAIL'); }
+}
+</script>
+</body>
+</html>
