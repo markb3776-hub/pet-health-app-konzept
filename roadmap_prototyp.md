@@ -22,7 +22,7 @@ Ein Prototyp ist nicht die fertige App. Er ist die kleinste Version, an der wir 
 ### Schritt 1: Deine Entscheidungen (Vorarbeiten)
 - **Arbeitstitel festlegen:** Die App braucht intern einen Namen (z. B. "PetHealth MVP"). Eine Markenprüfung ist dafür noch nicht nötig.
 - **MVP-Umfang bestätigen:** Bestätigung, dass der oben definierte, reduzierte Prototyp-Umfang für den ersten Test reicht.
-- **Zielgerät definieren:** Auf welchem Android-Gerät wirst du testen? (Wichtig für die Layout-Tests).
+- **Zielgeräte definieren:** Auf welchen Android-Geräten wird getestet? **Festgelegt (08.07.2026): Es stehen zwei Android-Telefone als Testgeräte zur Verfügung.** Das ist ein echter Vorteil: Zwei Geräte (idealerweise verschiedener Hersteller) decken Layout-Unterschiede, abweichende Android-Oberflächen und vor allem das kritische Push-Erinnerungs-Verhalten unter herstellerspezifischen Akku-Sparmodi ab (Blindspot C.14). Später dienen beide Geräte zudem als Testaufbau für die Familien-Freigabe. Hinweis: Im Prototyp-Stadium hält jedes Gerät seine eigenen lokalen Daten (noch keine Synchronisation); die Installation erfolgt per APK-Direktinstallation auf beiden Geräten, ohne Play Store und ohne Kosten.
 
 ### Schritt 2: Technische Spezifikation (Das "Bauplan"-Detail)
 *Diese Arbeit übernimmt die Entwicklung (Agent/Programmierer) auf Basis der Konzepte:*
@@ -45,7 +45,7 @@ Ein Prototyp ist nicht die fertige App. Er ist die kleinste Version, an der wir 
 
 ### Schritt 5: Auslieferung & Überprüfung
 - Die App wird als Testversion (APK oder via Expo) an dich übergeben.
-- Du testest sie auf deinem Handy auf Herz und Nieren (Funktion, Bedienbarkeit, Doktrin-Treue).
+- Du testest sie auf **beiden Android-Geräten** auf Herz und Nieren (Funktion, Bedienbarkeit, Doktrin-Treue) — insbesondere: Erinnerungen über mehrere Tage auf beiden Geräten (Akku-Sparmodus-Test), Layout bei größter Schriftgröße auf beiden Bildschirmgrößen, Zwei-Tap-Notfallpass.
 
 ## 4. Kostenschätzung & Ausblick
 
