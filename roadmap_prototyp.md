@@ -24,11 +24,11 @@ Ein Prototyp ist nicht die fertige App. Er ist die kleinste Version, an der wir 
 - **MVP-Umfang bestätigt — mit einer Erweiterung:** Der Scan-/Einlese-Knopf ist im Prototyp bereits enthalten und löst die echte Berechtigungs-Kette aus (Android-Kamera-Freigabe, Nutzer-Einwilligung). Das Foto wird real in der Dokumenten-Ablage des Tieres gespeichert; nur die automatische KI-Auswertung fehlt noch, und die App sagt das ehrlich ("Foto gespeichert. Automatisches Auslesen kommt in einer späteren Version."). Kein toter Knopf, kein falsches Versprechen — und der komplette Weg (Knopf → Freigabe → Foto → Ablage) ist bereits gebaut und getestet, wenn später der selbst gehostete KI-Scan ergänzt wird.
 - **Zielgeräte definieren:** Auf welchen Android-Geräten wird getestet? **Festgelegt (08.07.2026): Es stehen zwei Android-Telefone als Testgeräte zur Verfügung.** Das ist ein echter Vorteil: Zwei Geräte (idealerweise verschiedener Hersteller) decken Layout-Unterschiede, abweichende Android-Oberflächen und vor allem das kritische Push-Erinnerungs-Verhalten unter herstellerspezifischen Akku-Sparmodi ab (Blindspot C.14). Später dienen beide Geräte zudem als Testaufbau für die Familien-Freigabe. Hinweis: Im Prototyp-Stadium hält jedes Gerät seine eigenen lokalen Daten (noch keine Synchronisation); die Installation erfolgt per APK-Direktinstallation auf beiden Geräten, ohne Play Store und ohne Kosten.
 
-### Schritt 2: Technische Spezifikation (Das "Bauplan"-Detail)
+### Schritt 2: Technische Spezifikation (Das "Bauplan"-Detail) — ✅ ABGESCHLOSSEN am 08.07.2026
 *Diese Arbeit übernimmt die Entwicklung (Agent/Programmierer) auf Basis der Konzepte:*
-- **Datenmodellierung:** Die Konzepte in echte Datenbank-Tabellen übersetzen.
-- **Screen-Flow komplettieren:** Wir haben 3 Mockups, die App braucht aber ca. 10 Bildschirme (z. B. "Neues Tier anlegen", "Eintrag erfassen"). Diese fehlenden Bildschirme müssen logisch verknüpft werden.
-- **Offline-Strategie festlegen:** Wie genau speichert die App Daten, wenn das Internet weg ist? (Beantwortung von Blindspot C.15).
+- **Datenmodellierung:** Die Konzepte in echte Datenbank-Tabellen übersetzt (siehe `technische_spezifikation_datenmodell.md`).
+- **Screen-Flow komplettieren:** Die fehlenden Bildschirme logisch verknüpft und beschrieben (siehe `technische_spezifikation_screen_flow.md`).
+- **Offline-Strategie festlegen:** Local-First-Strategie mit Last-Writer-Wins-Konfliktlösung definiert (siehe `technische_spezifikation_offline_strategie.md`).
 
 ### Schritt 3: Projekt-Setup & Infrastruktur
 - **Code-Basis initialisieren:** Ein "React Native / Expo"-Projekt anlegen (zwingend mit API-Level 35 für Android 15).
