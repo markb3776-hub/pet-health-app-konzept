@@ -13,15 +13,15 @@ Die Konzeptphase ist vollständig abgeschlossen. Das bedeutet, wir wissen exakt,
 ## 2. Definition: Was ist der "erste überprüfbare Prototyp"?
 
 Ein Prototyp ist nicht die fertige App. Er ist die kleinste Version, an der wir die Kernversprechen der Doktrin praktisch auf dem Handy testen können.
-- **Was er KANN:** Starten (auch offline), ein Tier manuell anlegen, die Tierakte anzeigen, manuelle Einträge (Gewicht, Notiz) speichern, den Notfallpass mit QR-Code anzeigen.
-- **Was er NOCH NICHT kann:** KI-Dokumentenscan, Familien-Synchronisation, UPD-Medikamentenabgleich, Versicherungs-Weiterleitung. Diese komplexen Themen werden isoliert hinzugefügt, sobald das Fundament stabil steht.
+- **Was er KANN:** Starten (auch offline), ein Tier manuell anlegen, die Tierakte anzeigen, manuelle Einträge (Gewicht, Notiz) speichern, den Notfallpass mit QR-Code anzeigen, **Dokumente fotografieren und in der Akte ablegen (mit echter Kamera-Berechtigungs-Abfrage — bestätigte Erweiterung vom 08.07.2026)**.
+- **Was er NOCH NICHT kann:** KI-Auswertung der fotografierten Dokumente (der Foto-Weg selbst ist drin, nur das automatische Auslesen fehlt), Familien-Synchronisation, UPD-Medikamentenabgleich, Versicherungs-Weiterleitung. Diese komplexen Themen werden isoliert hinzugefügt, sobald das Fundament stabil steht.
 - **Wie er getestet wird:** Du bekommst eine APK-Datei, die du direkt auf deinem Android-Handy installierst (oder nutzt die "Expo Go"-App). Es braucht dafür noch keinen Google Play Store.
 
 ## 3. Die 5 Schritte bis zum Prototyp
 
-### Schritt 1: Deine Entscheidungen (Vorarbeiten)
-- **Arbeitstitel festlegen:** Die App braucht intern einen Namen (z. B. "PetHealth MVP"). Eine Markenprüfung ist dafür noch nicht nötig.
-- **MVP-Umfang bestätigen:** Bestätigung, dass der oben definierte, reduzierte Prototyp-Umfang für den ersten Test reicht.
+### Schritt 1: Deine Entscheidungen (Vorarbeiten) — ✅ ABGESCHLOSSEN am 08.07.2026
+- **Arbeitstitel festgelegt: "simplyPet"** (vom Projektinhaber bestätigt). Rein interner Name für Code, GitHub und Test-Symbol; der endgültige App-Name folgt später nach Namensfindung mit Markenprüfung (offener Blindspot 19).
+- **MVP-Umfang bestätigt — mit einer Erweiterung:** Der Scan-/Einlese-Knopf ist im Prototyp bereits enthalten und löst die echte Berechtigungs-Kette aus (Android-Kamera-Freigabe, Nutzer-Einwilligung). Das Foto wird real in der Dokumenten-Ablage des Tieres gespeichert; nur die automatische KI-Auswertung fehlt noch, und die App sagt das ehrlich ("Foto gespeichert. Automatisches Auslesen kommt in einer späteren Version."). Kein toter Knopf, kein falsches Versprechen — und der komplette Weg (Knopf → Freigabe → Foto → Ablage) ist bereits gebaut und getestet, wenn später der selbst gehostete KI-Scan ergänzt wird.
 - **Zielgeräte definieren:** Auf welchen Android-Geräten wird getestet? **Festgelegt (08.07.2026): Es stehen zwei Android-Telefone als Testgeräte zur Verfügung.** Das ist ein echter Vorteil: Zwei Geräte (idealerweise verschiedener Hersteller) decken Layout-Unterschiede, abweichende Android-Oberflächen und vor allem das kritische Push-Erinnerungs-Verhalten unter herstellerspezifischen Akku-Sparmodi ab (Blindspot C.14). Später dienen beide Geräte zudem als Testaufbau für die Familien-Freigabe. Hinweis: Im Prototyp-Stadium hält jedes Gerät seine eigenen lokalen Daten (noch keine Synchronisation); die Installation erfolgt per APK-Direktinstallation auf beiden Geräten, ohne Play Store und ohne Kosten.
 
 ### Schritt 2: Technische Spezifikation (Das "Bauplan"-Detail)
@@ -55,4 +55,4 @@ Ein Prototyp ist nicht die fertige App. Er ist die kleinste Version, an der wir 
 - **Server:** Der Kellerserver (150–300 €) wird erst relevant, wenn wir nach dem Prototyp mit den KI-OCR-Tests beginnen.
 - **Arbeitskosten (Agent-Credits):** Die Entwicklung (Schritt 2 bis 4) ist der ressourcenintensivste Teil. Empfehlung: Diese Schritte einzeln und klar umrissen beauftragen, um Kosten zu kontrollieren.
 
-**Zusammenfassung:** Alles Konzeptionelle ist fertig. Der nächste logische Schritt (wenn das Projekt reaktiviert wird) ist **Schritt 1 (Deine Entscheidungen)** und anschließend der Start der technischen Spezifikation.
+**Zusammenfassung:** Alles Konzeptionelle ist fertig und Schritt 1 ist seit dem 08.07.2026 abgeschlossen (Arbeitstitel "simplyPet", MVP-Umfang inkl. Foto-Ablage bestätigt, zwei Testgeräte benannt). Der nächste logische Schritt bei Reaktivierung ist **Schritt 2 (Technische Spezifikation)**.
