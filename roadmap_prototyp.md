@@ -42,10 +42,12 @@ Ein Prototyp ist nicht die fertige App. Er ist die kleinste Version, an der wir 
 3. **Die Funktionen:** Manuelle Einträge ermöglichen.
 4. **Der Notfallpass:** Generierung und Anzeige des QR-Codes (die Machbarkeit ist bereits getestet).
 5. **Interne Prüfung:** Ein automatisierter Test gegen die "Testpflichtigen Punkte" aus dem Strukturkonzept (Zwei-Tap-Regel, Offline-Start, große Schrift).
+6. **Mehrarten-Stabilitätstest (verbindlich, festgelegt am 09.07.2026):** Jede interne Prüfung läuft mit einem realistischen Testhaushalt aus **mindestens drei unterschiedlichen Tierarten mit unterschiedlichen Modul-Konfigurationen** (z. B. Hund mit Impf-Modul, Hamster ohne Impf-Modul, Aquarium mit Wasserwerten statt Gesundheitsreiter). Geprüft wird: korrekte dynamische Modul-Zuschaltung pro Art, keine Datenvermischung zwischen Akten, eindeutige Tier-Zuordnung in Terminliste und Erinnerungen (Name + Tierart + Kennfarbe), Startbildschirm-Kacheln und Notfallpass pro Tier korrekt, sowie Stabilität (kein Absturz, keine Layout-Brüche) beim schnellen Wechsel zwischen den Akten. Hintergrund: 13 % der Tierhalter-Haushalte halten mehrere Arten parallel – das ist Kernszenario, kein Randfall (siehe Mehrtier-Konzept).
 
 ### Schritt 5: Auslieferung & Überprüfung
 - Die App wird als Testversion (APK oder via Expo) an dich übergeben.
 - Du testest sie auf **beiden Android-Geräten** auf Herz und Nieren (Funktion, Bedienbarkeit, Doktrin-Treue) — insbesondere: Erinnerungen über mehrere Tage auf beiden Geräten (Akku-Sparmodus-Test), Layout bei größter Schriftgröße auf beiden Bildschirmgrößen, Zwei-Tap-Notfallpass.
+- **Mehrarten-Praxistest:** Du legst auf mindestens einem Gerät drei Tiere unterschiedlicher Arten an (z. B. Hund, Katze, Hamster) und nutzt die App eine Zeit lang so, wie ein echter Mehrtier-Haushalt es täte – Einträge bei allen Tieren, Erinnerungen parallel, Wechsel zwischen den Akten. Die App muss dabei stabil laufen und jede Information eindeutig dem richtigen Tier zuordnen.
 
 ## 4. Kostenschätzung & Ausblick
 
