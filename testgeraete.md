@@ -20,9 +20,9 @@
 - **One UI / Samsung-Akku-Management:** Samsung drosselt Hintergrund-Apps aggressiv ("Schlafende Apps", adaptiver Akku). Genau das Zielszenario für den mehrtägigen Erinnerungs-Test (Prüfprotokoll 3.4).
 - **Kompakter 6,1-Zoll-Bildschirm:** Ideale Prüfgröße für die Querformat-Doktrin (Screen-Flow 1.1) und größte Systemschrift (Prüfprotokoll 4.3, 4b.7) – die Geräteklasse, bei der Nutzer drehen, weil es eng wird.
 
-## Testgerät 2: (ausstehend)
+## Testgerät 2: (ausstehend – wartet auf Zustimmung des Gerätebesitzers)
 
-Daten folgen per Telefoninfo-Screenshot des Projektinhabers. Erwartet laut Roadmap: zweites Android-Gerät, idealerweise abweichende Bildschirmgröße/Hersteller für maximale Testabdeckung.
+Das zweite Gerät gehört einer anderen Person; der Projektinhaber holt zuerst deren Zustimmung ein, bevor Gerätedaten erfasst werden (09.07.2026) – im Einklang mit der Projektdoktrin: keine Gerätedaten ohne Einwilligung. Die Daten werden erst für Teilauftrag 4.4 (APK-Bau/Gerätetest) benötigt. **Fallback ohne Zweitgerät:** Test nur auf Gerät 1, abweichende Bildschirmgrößen werden per Emulator abgedeckt – kein Blocker.
 
 ---
 
