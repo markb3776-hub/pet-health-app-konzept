@@ -86,6 +86,18 @@ Vergangene Ereignisse müssen sich nachtragen lassen und korrekt in die Chronolo
 | 4c.9 | Vorfall erfassen (z. B. "von fremder Katze gebissen", rückdatiert) | Eigener Eintragstyp mit Was/Verursacher/Körperstelle/Foto, korrekt in Timeline einsortiert | 🔴 | |
 | 4c.10 | Pflege-Aufgabe mit Saisonfenster anlegen (z. B. "Ohren eincremen", 2× täglich, April–September) | Erinnerung erscheint mit Hinweistext ("Bei Sonnenschein"); außerhalb der Saison keine Fälligkeit | 🔴 | |
 
+## 4d. Prüfblock Tageswechsel – „Heute fällig“ bleibt aktuell (Festlegung vom 09.07.2026)
+
+Die App fragt für „Heute fällig“ ausschließlich die Telefon-Uhr ab — es werden nie Daten verändert, nur die Einsortierung (Überfällig/Heute/Demnächst) folgt dem tatsächlichen Kalendertag. Diese Prüfung stellt sicher, dass die Anzeige nie auf einem veralteten „Gestern“-Stand hängen bleibt.
+
+| Nr. | Prüfpunkt | Erwartetes Verhalten | Status | Notiz |
+| :--- | :--- | :--- | :--- | :--- |
+| 4d.1 | Termin für morgen anlegen, App offen über Mitternacht laufen lassen (oder Geräte-Uhr testweise vorstellen) | Spätestens nach 1 Minute springt die Anzeige um: Der Termin erscheint unter „Heute“ | 🔴 | |
+| 4d.2 | Termin für heute offen lassen, Tageswechsel abwarten | Der Termin wandert automatisch zu „Überfällig“ (rot), ohne App-Neustart | 🔴 | |
+| 4d.3 | App abends in den Hintergrund legen, morgens zurückholen | Startbildschirm und Termine zeigen sofort den neuen Tag — kein veralteter Stand | 🔴 | |
+| 4d.4 | Geräte-Uhrzeit/Zeitzone bei laufender App manuell ändern, danach zurücksetzen | Anzeige folgt der Systemuhr; alle gespeicherten Einträge und Fälligkeitsdaten bleiben UNVERÄNDERT | 🔴 | |
+| 4d.5 | Nach jedem der Punkte 4d.1–4d.4: Tierakte stichprobenartig öffnen | Ereignis-Daten (Gewicht, Impfung usw.) zeigen weiterhin das ursprüngliche Datum TT.MM.JJJJ — nichts wurde „mitverschoben“ | 🔴 | |
+
 ## 5. Beobachtungsjournal
 
 Für alles, was in keine Checkliste passt (Bauchgefühl zählt – Bedienung, Verständlichkeit, Vertrauen):
