@@ -83,6 +83,8 @@ Vergangene Ereignisse müssen sich nachtragen lassen und korrekt in die Chronolo
 | 4c.6 | Weiter zurückliegendes Datum wählen (z. B. 3 Monate, alte Impfung übertragen) | Kalender blättert frei zurück, keine künstliche Sperre | 🔴 | |
 | 4c.7 | Datumsanzeige quer durch die App prüfen | Überall einheitlich TT.MM.JJJJ (z. B. 23.07.2026) | 🔴 | |
 | 4c.8 | Medikament mit 2× täglicher Dosierung anlegen | Uhrzeitfelder erscheinen nur hier; bei Gewicht/Symptom keine Uhrzeit-Abfrage | 🔴 | |
+| 4c.9 | Vorfall erfassen (z. B. "von fremder Katze gebissen", rückdatiert) | Eigener Eintragstyp mit Was/Verursacher/Körperstelle/Foto, korrekt in Timeline einsortiert | 🔴 | |
+| 4c.10 | Pflege-Aufgabe mit Saisonfenster anlegen (z. B. "Ohren eincremen", 2× täglich, April–September) | Erinnerung erscheint mit Hinweistext ("Bei Sonnenschein"); außerhalb der Saison keine Fälligkeit | 🔴 | |
 
 ## 5. Beobachtungsjournal
 

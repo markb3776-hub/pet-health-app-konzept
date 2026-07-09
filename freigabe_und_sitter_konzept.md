@@ -30,7 +30,7 @@ Ein Sitter braucht keine Diagnosehistorie, sondern Handlungswissen. Der Sitter-Z
 
 Der Versand läuft über den Standard-Teilen-Dialog von Android (WhatsApp, E-Mail, Ausdruck). Bewusst **kein Online-Link** für den Sitter-Fall: Ein Papier am Kühlschrank oder ein PDF im Chat funktioniert im Alltag am zuverlässigsten, auch ohne Internet, und veraltet nicht durch Server-Abschaltungen.
 
-**Datenmodell-Ergänzung (bei Umsetzung):** Zwei neue Felder pro Tier – `feeding_instructions` (Fütterung) und `care_notes` (Hinweise für Betreuer) – sowie ein Auswahl-Dialog, welche Tiere und welche Notfall-Angaben in den Zettel aufgenommen werden.
+**Datenmodell-Ergänzung (präzisiert am 09.07.2026):** Statt eines groben Freitextfelds ist die Fütterung als **strukturierter Block `feeding_info`** in der Pets-Tabelle festgelegt (fünf Angaben: Futter, Zeiten, Menge, Vorlieben, Tabus — Details in der Datenmodell-Spezifikation, Abschnitt 2.2) plus `care_notes` (Hinweise für Betreuer). Beides speist den Sitter-Zettel automatisch. Die Datenfelder werden bereits im Prototyp angelegt; Eingabemaske und Zettel-Generator folgen nach der Prototyp-Abnahme, inklusive Auswahl-Dialog, welche Tiere und welche Notfall-Angaben in den Zettel aufgenommen werden. Wiederkehrende Pflege-Aufgaben mit Uhrzeiten (z. B. "Ohren eincremen bei Sonnenschein, 2× täglich") erscheinen ebenfalls automatisch auf dem Zettel — Quelle ist der Medikamenten-/Pflege-Eintrag (Typ 'Pflege') des Tieres.
 
 ## 3. Die Kostenfrage im Notfall (Frage des Projektinhabers, 09.07.2026)
 
