@@ -127,6 +127,12 @@ async function migrate(database: SQLite.SQLiteDatabase): Promise<void> {
   await addColumnIfMissing(database, 'reminders', 'source_id', 'TEXT'); // FK auf vaccinations/medications
   await addColumnIfMissing(database, 'reminders', 'repeat_rule', 'TEXT'); // 'taeglich' | null (Prototyp)
   await addColumnIfMissing(database, 'reminders', 'done_at', 'TEXT'); // fuer Erledigt-Liste + Rueckgaengig
+
+  // Migration 003 (Teilauftrag 4.3, Notfallpass): Signalement + Stammtierarzt.
+  // Quelle: notfallpass_design_spezifikation.md Abschnitt 1 (Passkarte + Fussbereich).
+  await addColumnIfMissing(database, 'pets', 'coat_color', 'TEXT'); // Fellfarbe/Zeichnung
+  await addColumnIfMissing(database, 'pets', 'vet_practice_name', 'TEXT'); // Stammtierarzt-Praxis
+  await addColumnIfMissing(database, 'pets', 'vet_practice_phone', 'TEXT');
 }
 
 async function addColumnIfMissing(

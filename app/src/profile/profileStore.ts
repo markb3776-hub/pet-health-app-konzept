@@ -8,6 +8,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const KEY_OWNER_NAME = 'simplypet.owner_name';
+const KEY_OWNER_PHONE = 'simplypet.owner_phone';
 const KEY_ONBOARDING_DONE = 'simplypet.onboarding_done';
 
 export async function getOwnerName(): Promise<string | null> {
@@ -20,6 +21,23 @@ export async function getOwnerName(): Promise<string | null> {
 
 export async function setOwnerName(name: string): Promise<void> {
   await AsyncStorage.setItem(KEY_OWNER_NAME, name.trim());
+}
+
+/**
+ * Halter-Telefon (4.3): erscheint im Fussbereich des Notfallpasses,
+ * damit Praxis oder Finder den Halter direkt erreichen koennen.
+ * Optional – der Pass zeigt ehrlich an, wenn es fehlt.
+ */
+export async function getOwnerPhone(): Promise<string | null> {
+  try {
+    return await AsyncStorage.getItem(KEY_OWNER_PHONE);
+  } catch {
+    return null;
+  }
+}
+
+export async function setOwnerPhone(phone: string): Promise<void> {
+  await AsyncStorage.setItem(KEY_OWNER_PHONE, phone.trim());
 }
 
 export async function isOnboardingDone(): Promise<boolean> {

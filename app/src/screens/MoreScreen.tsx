@@ -22,7 +22,7 @@ import {
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
-import { getOwnerName, setOwnerName } from '../profile/profileStore';
+import { getOwnerName, setOwnerName, getOwnerPhone, setOwnerPhone } from '../profile/profileStore';
 import EmergencyFab from '../components/EmergencyFab';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
@@ -50,17 +50,22 @@ const MENU: { key: string; label: string; hint: string; plannedIn: string | null
 export default function MoreScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [editing, setEditing] = useState(false);
   const [savedName, setSavedName] = useState<string | null>(null);
+  const [savedPhone, setSavedPhone] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
       let active = true;
       (async () => {
         const owner = await getOwnerName();
+        const ownerPhone = await getOwnerPhone();
         if (active) {
           setSavedName(owner);
           setName(owner ?? '');
+          setSavedPhone(ownerPhone);
+          setPhone(ownerPhone ?? '');
         }
       })();
       return () => {
@@ -69,16 +74,21 @@ export default function MoreScreen() {
     }, [])
   );
 
-  async function saveName() {
+  async function saveProfile() {
     const trimmed = name.trim();
     if (!trimmed) {
       Alert.alert('Name fehlt', 'Bitte gib deinen Namen ein – er erscheint auf dem Notfall-Pass.');
       return;
     }
+    // Telefon ist optional (kontoloser Prototyp) – aber wenn angegeben,
+    // dann als sinnvolle Nummer (Hinweis, kein Blocker bei Leereingabe).
+    const trimmedPhone = phone.trim();
     await setOwnerName(trimmed);
+    await setOwnerPhone(trimmedPhone);
     setSavedName(trimmed);
+    setSavedPhone(trimmedPhone || null);
     setEditing(false);
-    Alert.alert('Gespeichert', 'Dein Name wurde aktualisiert.');
+    Alert.alert('Gespeichert', 'Deine Kontaktdaten wurden aktualisiert.');
   }
 
   return (
@@ -88,7 +98,7 @@ export default function MoreScreen() {
 
         {/* Halter-Profil (kontolos: nur der Name) */}
         <View style={styles.profileCard}>
-          <Text style={styles.profileLabel}>Halter (erscheint auf dem Notfall-Pass)</Text>
+          <Text style={styles.profileLabel}>Halter-Kontakt (erscheint auf dem Notfall-Pass)</Text>
           {editing ? (
             <>
               <TextInput
@@ -100,29 +110,46 @@ export default function MoreScreen() {
                 autoCapitalize="words"
                 accessibilityLabel="Name des Halters"
               />
+              <TextInput
+                style={styles.input}
+                value={phone}
+                onChangeText={setPhone}
+                placeholder="Telefonnummer (für den Notfall, optional)"
+                placeholderTextColor={colors.textSecondary}
+                keyboardType="phone-pad"
+                accessibilityLabel="Telefonnummer des Halters"
+              />
               <View style={styles.profileButtons}>
                 <Pressable
                   style={styles.secondaryButton}
                   onPress={() => {
                     setName(savedName ?? '');
+                    setPhone(savedPhone ?? '');
                     setEditing(false);
                   }}
                   accessibilityLabel="Abbrechen"
                 >
                   <Text style={styles.secondaryButtonText}>Abbrechen</Text>
                 </Pressable>
-                <Pressable style={styles.primaryButton} onPress={saveName} accessibilityLabel="Name speichern">
+                <Pressable style={styles.primaryButton} onPress={saveProfile} accessibilityLabel="Kontaktdaten speichern">
                   <Text style={styles.primaryButtonText}>Speichern</Text>
                 </Pressable>
               </View>
             </>
           ) : (
             <View style={styles.profileRow}>
-              <Text style={styles.profileName}>{savedName ?? 'Noch kein Name hinterlegt'}</Text>
+              <View style={styles.profileTextWrap}>
+                <Text style={styles.profileName}>{savedName ?? 'Noch kein Name hinterlegt'}</Text>
+                <Text style={savedPhone ? styles.profilePhone : styles.profilePhoneMissing}>
+                  {savedPhone
+                    ? `Tel. ${savedPhone}`
+                    : 'Keine Telefonnummer – im Notfall kann dich die Praxis nicht erreichen.'}
+                </Text>
+              </View>
               <Pressable
                 style={styles.editLink}
                 onPress={() => setEditing(true)}
-                accessibilityLabel="Namen bearbeiten"
+                accessibilityLabel="Kontaktdaten bearbeiten"
               >
                 <Text style={styles.editLinkText}>✎ Bearbeiten</Text>
               </Pressable>
@@ -189,7 +216,16 @@ const styles = StyleSheet.create({
     marginBottom: spacing.s,
   },
   profileRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  profileName: { fontSize: typography.body, fontWeight: '600', color: colors.textPrimary, flex: 1 },
+  profileTextWrap: { flex: 1 },
+  profileName: { fontSize: typography.body, fontWeight: '600', color: colors.textPrimary },
+  profilePhone: { fontSize: typography.bodySmall, color: colors.textSecondary, marginTop: 2 },
+  profilePhoneMissing: {
+    fontSize: typography.bodySmall,
+    color: colors.textSecondary,
+    fontStyle: 'italic',
+    marginTop: 2,
+    lineHeight: 20,
+  },
   editLink: { minHeight: minTouchTarget, justifyContent: 'center', paddingLeft: spacing.m },
   editLinkText: { fontSize: typography.bodySmall, color: colors.primary, fontWeight: '600' },
   input: {

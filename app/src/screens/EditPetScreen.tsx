@@ -57,6 +57,9 @@ interface PetRow {
   special_features: string | null;
   specialist_vet_name: string | null;
   specialist_vet_phone: string | null;
+  coat_color: string | null;
+  vet_practice_name: string | null;
+  vet_practice_phone: string | null;
 }
 
 interface EditPetDraft {
@@ -72,6 +75,9 @@ interface EditPetDraft {
   specialFeatures: string;
   vetName: string;
   vetPhone: string;
+  coatColor: string;
+  practiceName: string;
+  practicePhone: string;
 }
 
 const GENDER_OPTIONS = ['Männlich', 'Weiblich', 'Unbekannt'];
@@ -91,6 +97,9 @@ function petToDraft(p: PetRow): EditPetDraft {
     specialFeatures: p.special_features ?? '',
     vetName: p.specialist_vet_name ?? '',
     vetPhone: p.specialist_vet_phone ?? '',
+    coatColor: p.coat_color ?? '',
+    practiceName: p.vet_practice_name ?? '',
+    practicePhone: p.vet_practice_phone ?? '',
   };
 }
 
@@ -217,6 +226,7 @@ export default function EditPetScreen() {
            castration_status = ?, castration_date = ?, chip_number = ?,
            color_theme = ?, photo_uri = ?, special_features = ?,
            specialist_vet_name = ?, specialist_vet_phone = ?,
+           coat_color = ?, vet_practice_name = ?, vet_practice_phone = ?,
            updated_at = ?, is_synced = 0
          WHERE id = ?`,
         [
@@ -234,6 +244,9 @@ export default function EditPetScreen() {
           form.specialFeatures.trim() || null,
           form.vetName.trim() || null,
           form.vetPhone.trim() || null,
+          form.coatColor.trim() || null,
+          form.practiceName.trim() || null,
+          form.practicePhone.trim() || null,
           ts,
           petId,
         ]
@@ -337,6 +350,17 @@ export default function EditPetScreen() {
                   accessibilityLabel="Chip-Nummer"
                 />
                 {chipHint ? <Text style={styles.warnText}>{chipHint}</Text> : null}
+
+                <FieldLabel>Fellfarbe / Zeichnung (optional)</FieldLabel>
+                <TextInput
+                  style={styles.input}
+                  value={form.coatColor}
+                  onChangeText={(t) => update('coatColor', t)}
+                  placeholder="z. B. schwarz-weiß, getigert, dreifarbig"
+                  placeholderTextColor={colors.textSecondary}
+                  accessibilityLabel="Fellfarbe oder Zeichnung"
+                />
+                <Hint>Erscheint auf dem Notfall-Pass – hilft, dein Tier eindeutig zu erkennen.</Hint>
               </>
             ) : null}
           </View>
@@ -372,6 +396,29 @@ export default function EditPetScreen() {
               accessibilityLabel="Tierarzt-Telefonnummer"
             />
             <Hint>Die Nummer erscheint auch auf dem Notfall-Pass – im Ernstfall zählt jeder Griff.</Hint>
+
+            <FieldLabel>Stamm-{speciesCfg?.terminology.vet ?? 'Tierarzt'} (optional)</FieldLabel>
+            <TextInput
+              style={styles.input}
+              value={form.practiceName}
+              onChangeText={(t) => update('practiceName', t)}
+              placeholder="Praxis, die dein Tier regelmäßig betreut"
+              placeholderTextColor={colors.textSecondary}
+              accessibilityLabel="Stammtierarzt-Praxis"
+            />
+            <TextInput
+              style={[styles.input, { marginTop: spacing.s }]}
+              value={form.practicePhone}
+              onChangeText={(t) => update('practicePhone', t)}
+              placeholder="Telefonnummer"
+              placeholderTextColor={colors.textSecondary}
+              keyboardType="phone-pad"
+              accessibilityLabel="Stammtierarzt-Telefonnummer"
+            />
+            <Hint>
+              Der Stamm-{speciesCfg?.terminology.vet ?? 'Tierarzt'} steht im Fußbereich des
+              Notfall-Passes – zusätzlich zum Spezialisten oben.
+            </Hint>
 
             <FieldLabel>Foto</FieldLabel>
             {form.photoUri ? (
