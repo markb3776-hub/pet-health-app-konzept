@@ -47,7 +47,7 @@ Ein Prototyp ist nicht die fertige App. Er ist die kleinste Version, an der wir 
 ### Schritt 5: Auslieferung & Überprüfung
 - Die App wird als Testversion (APK oder via Expo) an dich übergeben.
 - Du testest sie auf **beiden Android-Geräten** auf Herz und Nieren (Funktion, Bedienbarkeit, Doktrin-Treue) — insbesondere: Erinnerungen über mehrere Tage auf beiden Geräten (Akku-Sparmodus-Test), Layout bei größter Schriftgröße auf beiden Bildschirmgrößen, Zwei-Tap-Notfallpass.
-- **Mehrarten-Praxistest:** Du legst auf mindestens einem Gerät drei Tiere unterschiedlicher Arten an (z. B. Hund, Katze, Hamster) und nutzt die App eine Zeit lang so, wie ein echter Mehrtier-Haushalt es täte – Einträge bei allen Tieren, Erinnerungen parallel, Wechsel zwischen den Akten. Die App muss dabei stabil laufen und jede Information eindeutig dem richtigen Tier zuordnen.
+- **Mehrarten-Praxistest:** Du legst auf mindestens einem Gerät drei Tiere unterschiedlicher Arten an (z. B. Hund, Katze, Hamster) und nutzt die App eine Zeit lang so, wie ein echter Mehrtier-Haushalt es täte – Einträge bei allen Tieren, Erinnerungen parallel, Wechsel zwischen den Akten. Die App muss dabei stabil laufen und jede Information eindeutig dem richtigen Tier zuordnen. **Deine persönliche Checkliste dafür (inkl. Tierwechsel-Verhalten): `pruefprotokoll_prototyp_nutzertest.md`.**
 
 ## 4. Kostenschätzung & Ausblick
 
