@@ -15,6 +15,20 @@ Die App nutzt eine feste Bottom-Navigation (Tab-Bar) mit vier Bereichen, die von
 
 Der Notfallpass-Knopf ist auf *jedem* Hauptbildschirm als schwebender Button (FAB) oder in der Tab-Bar verankert (Zwei-Tap-Regel).
 
+### 1.1. Volle Querformat-Unterstützung (verbindliche Entscheidung des Projektinhabers, 09.07.2026)
+
+Die App unterstützt **beide Ausrichtungen (Hoch- und Querformat) auf allen Screens, über alle Ebenen hinweg**. Begründung des Projektinhabers: Die App wird draußen in der Realität genutzt, nicht im Labor – Nutzer drehen ihr Gerät ständig, gerade bei kleinen Bildschirmen, um Inhalte größer zu sehen (z. B. Eingabefelder, den Notfallpass beim Vorzeigen, Fotos von Dokumenten). Eine Hochformat-Sperre wäre eine künstliche Laborbedingung.
+
+Daraus folgen verbindliche Bauregeln:
+
+1. **Konfiguration:** `orientation: "default"` statt `"portrait"` – die App folgt der Gerätedrehung (respektiert aber die systemweite Rotationssperre des Nutzers, wenn er sie in Android aktiviert hat).
+2. **Responsive statt fixe Layouts:** Kein Screen darf feste Bildschirmbreiten annehmen. Listen, Formulare, Kacheln und die Tab-Bar müssen sich flüssig an beide Ausrichtungen anpassen; im Querformat werden breite Layouts sinnvoll genutzt (z. B. Tier-Kacheln mehrspaltig, Formular-Felder nebeneinander statt untereinander, Passkarte und Datenblöcke im Notfallpass nebeneinander).
+3. **Kein Zustandsverlust beim Drehen:** Die Rotation mitten in einer Handlung darf niemals Daten verwerfen – ein halb ausgefüllter Eintrag, ein geöffnetes Overlay, eine laufende Kamera-Aufnahme und die Scroll-Position bleiben beim Drehen vollständig erhalten. Dies ist ein häufiger Absturz- und Datenverlust-Punkt schlechter Apps und daher ausdrücklich testpflichtig.
+4. **Zwei-Tap-Regel gilt in beiden Ausrichtungen:** Der Notfallpass-Zugriff und alle Kernfunktionen müssen im Querformat genauso erreichbar sein wie im Hochformat.
+5. **Eingabefelder und künftige Unterschrift:** Großflächige Eingaben (Freitext, später das Unterschriftsfeld der Komfort-Option beim Sitter-Zettel) profitieren am stärksten: Beim Drehen ins Querformat vergrößert sich die Eingabefläche bildschirmfüllend.
+
+**Ehrliche Aufwands-Kennzeichnung:** Diese Entscheidung verdoppelt die Layout-Testfläche (jeder Screen in zwei Ausrichtungen, zusätzlich kombiniert mit größter Schriftgröße). Der Mehraufwand in Schritt 4 und bei jeder internen Prüfung ist bewusst akzeptiert – Stabilität in der Realität geht vor Entwicklungsgeschwindigkeit.
+
 ## 2. Die Bildschirme (Screen-Flow)
 
 ### 2.1. Onboarding & Leerer Zustand (Neu-Installation)

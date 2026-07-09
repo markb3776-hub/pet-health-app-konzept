@@ -54,6 +54,21 @@ Der Wechsel zwischen den Akten ist der kritischste Moment im Mehrtier-Alltag. Ge
 | 4.6 | Ein-Tier-Vergleich (Gerät 2) | Verhalten mit einem Tier genauso stabil wie mit dreien | 🔴 | |
 | 4.7 | Mehrtägiger Alltagstest | App mindestens eine Woche wie ein echter Halter nutzen; alles Ungewöhnliche hier notieren | 🔴 | |
 
+## 4b. Prüfblock Querformat & Drehen (Festlegung vom 09.07.2026)
+
+Die App muss in beiden Ausrichtungen einwandfrei funktionieren – über alle Ebenen hinweg. Beim Testen das Gerät bewusst häufig drehen, auch mitten in Handlungen.
+
+| Nr. | Prüfpunkt | Erwartetes Verhalten | Status | Notiz |
+| :--- | :--- | :--- | :--- | :--- |
+| 4b.1 | Jeden Hauptbereich (Zuhause, Termine, Erfassen, Mehr) einmal im Querformat ansehen | Layout passt sich sinnvoll an, nichts abgeschnitten, nichts überlappt, Tab-Bar bedienbar | 🔴 | |
+| 4b.2 | Notfallpass im Querformat vorzeigen | Pass gut lesbar, größere Darstellung wird genutzt, QR-Code/Foto korrekt | 🔴 | |
+| 4b.3 | Drehen mitten in der Eingabe: Eintrag halb ausfüllen, Gerät drehen, weiterschreiben | Kein Datenverlust, Cursor und Text bleiben erhalten, kein Absturz | 🔴 | |
+| 4b.4 | Drehen im geöffneten Erfassen-Overlay | Overlay bleibt offen und bedienbar, keine Fehldarstellung | 🔴 | |
+| 4b.5 | Drehen während Kamera-Aufnahme (Dokument fotografieren) | Kamera läuft weiter, Foto landet korrekt beim richtigen Tier | 🔴 | |
+| 4b.6 | Schnelles mehrfaches Drehen hintereinander (Stresstest) | Kein Einfrieren, kein Absturz, keine "zerrissenen" Layouts | 🔴 | |
+| 4b.7 | Querformat kombiniert mit größter Systemschrift | Auch in dieser Kombination kein Layout-Bruch | 🔴 | |
+| 4b.8 | Systemweite Rotationssperre in Android aktivieren | App respektiert die Sperre und bleibt im Hochformat | 🔴 | |
+
 ## 5. Beobachtungsjournal
 
 Für alles, was in keine Checkliste passt (Bauchgefühl zählt – Bedienung, Verständlichkeit, Vertrauen):
