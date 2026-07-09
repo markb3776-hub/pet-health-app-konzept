@@ -58,6 +58,12 @@ Die Monetarisierung folgt dem **Barbell-Prinzip** (Gratis + Premium-Nische) und 
 - **Kostenlose Basis (Free Tier):** Die Grundakte für ein Tier, manuelles Eintragen, lokale Speicherung, PDF-Export und der Notfall-Pass bleiben dauerhaft kostenlos. Keine Bezahlschranke auf die eigenen Daten.
 - **Premium (Einmalkauf oder faires Jahres-Abo):** Kostenpflichtig sind Komfort- und Server-Features wie der KI-Dokumentenscan (verursacht API-Kosten), die Familien-Synchronisation über die Cloud und die Verwaltung von mehr als einem Tier.
 
+### 6.1. Festlegung: Keine befristete Testphase (entschieden am 09.07.2026)
+
+Auf die Frage, ob Nutzer die App zunächst befristet testen sollten (z. B. drei Monate gratis, danach kostenpflichtig), gilt folgende verbindliche Festlegung: **Es gibt keine zeitlich befristete Testphase und keinen Kaufzwang.** Eine ablaufende Probezeit wäre exakt die Trial-Falle, gegen die sich die App positioniert – sie erzeugt Misstrauen, Druck und schlechte Bewertungen (Beschwerdegrund Nr. 1 in Gesundheits-Apps, siehe Abschnitt 5). Stattdessen nutzt der Nutzer den Free-Tier dauerhaft und uneingeschränkt, ohne Ablaufdatum. Geld gibt er erst aus, wenn er einen konkreten Mehrwert berührt (zweites Tier, später KI-Scan oder Familien-Sync) – Premium wird erst in diesem Moment überhaupt erwähnt (siehe Vertrauens- und Erlebnis-Konzept).
+
+Die Zahl von **drei Monaten** hat dennoch eine wichtige Rolle – allerdings als **interner Beobachtungszeitraum, nicht als Frist für den Nutzer**: Impf- und Entwurmungszyklen, Erinnerungsketten und die entscheidende Frage "kommt der Nutzer wieder?" zeigen sich erst über 8–12 Wochen echter Nutzung. Als Retention-Metrik gilt daher: Ein Nutzer, der nach drei Monaten noch aktiv ist (mindestens ein Eintrag oder eine bestätigte Erinnerung im dritten Monat), zählt als gebunden – und ist der natürliche Premium-Kandidat, ohne dass die App ihn drängt.
+
 ---
 
 ## Quellenverweise
