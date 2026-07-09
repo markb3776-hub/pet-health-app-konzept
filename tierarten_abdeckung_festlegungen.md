@@ -18,6 +18,8 @@ Der Vorfall-Typ (Biss/Kratzer/Sturz/Giftverdacht) war in der Erstfassung Hund/Ka
 
 Der Vorfall-Typ ist bei allen Arten aktiv — kein artspezifisches Abschalten nötig, nur die Auswahllisten sind neutral gehalten und die Detailmaske zeigt artgerechte Beispiele als Platzhaltertext.
 
+**Wichtige Korrektur des Projektinhabers (09.07.2026) — Freitext-first:** Keine noch so vollständige Liste deckt die Realität ab ("man kann nicht blöd genug denken"). Die Kategorien oben sind Komfort-Abkürzungen, keine Pflicht. Das Freitextfeld "Was ist passiert?" ist das Herzstück jedes Vorfall-Eintrags — immer sichtbar, nie blockiert, ohne Zeichenlimit. "Sonstiges" + Freitext ist ein vollwertiger Eintrag. Verbindliche Details: Datenmodell-Spezifikation, Abschnitt 2.3.
+
 ## 2. Pflege-Typ — Prüfergebnis: funktioniert artübergreifend, Beispielkatalog erweitert
 
 Die Struktur (Mehrfach-Zeiten, Erinnerung, Timeline, Sitter-Zettel) passt für alle Arten unverändert. Der Beispielkatalog wird artübergreifend dokumentiert, damit die Eingabemaske sinnvolle Vorschläge pro Art anbieten kann:
