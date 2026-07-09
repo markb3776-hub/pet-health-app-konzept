@@ -59,3 +59,12 @@ Gemäß Barbell-Prinzip und dem Grundsatz "keine Paywall auf eigene Daten": Die 
 [4] EMA: Union Product Database (Verordnung (EU) 2019/6), öffentlicher Zugang via Veterinary Medicines Website und API: https://www.ema.europa.eu/en/veterinary-regulatory-overview/veterinary-medicinal-products-regulation/union-product-database sowie https://medicines.health.europa.eu/veterinary
 
 [5] Beispiel einer standardisierten Fachinformation mit Pflichtfeldern Zieltierart (3.1), Gegenanzeigen (3.3), Warnhinweise (3.4): https://vetisearch.de/spcs/show/3745
+
+
+## 6. Vorgemerkt (nach Prototyp): Verwandtschaftsgrad zwischen Haushalts-Tieren
+
+**Idee des Projektinhabers (09.07.2026), geprüft und angenommen.** In Mehrtier-Haushalten (Kernszenario, siehe Abschnitt 2) sind Tiere häufig miteinander verwandt – etwa Wurfgeschwister bei Katzen oder Mutter und Nachkomme. Diese Information hat einen echten gesundheitlichen Nutzen: Erbliche Veranlagungen (z. B. HCM bei Katzen, HD bei Hunden) betreffen oft Wurfgeschwister und Nachkommen gemeinsam; wird bei einem Tier etwas diagnostiziert, ist der Verwandtschaftshinweis für den Tierarzt relevante Zusatzinformation.
+
+**Bewusst schlanker Umfang:** Ein optionales Feld "Verwandt mit …" in den Tier-Stammdaten mit drei Beziehungstypen (Elterntier, Nachkomme, Wurfgeschwister), ausschließlich zwischen Tieren des eigenen Haushalts. Angezeigt wird die Beziehung in der Tierakte und im Notfallpass unter "Besonderheiten". **Ausdrücklich ausgeschlossen** (Entscheidung des Projektinhabers vom 09.07.2026): keine Stammbaum-Verwaltung, keine Zucht-Funktionen – das ist Züchter-Territorium mit eigener Spezialsoftware und würde die App verwässern.
+
+**Technische Einordnung:** Das Datenmodell bildet dies später mit einer kleinen Zusatztabelle ab (`pet_relations`: pet_id, related_pet_id, relation_type), ohne Umbau bestehender Tabellen. Kein Bestandteil des Prototyps (Roadmap Schritte 3–5); Einplanung sinnvoll als kleiner Baustein nach der Prototyp-Abnahme.

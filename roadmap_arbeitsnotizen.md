@@ -68,3 +68,6 @@ Offene Punkte relevant für Prototyp vs. Launch:
 - Google Play erst bei Store-Beta: 25 $ einmalig
 - Agent-Credits für Entwicklung: der eigentliche Kostenfaktor — gestufte Aufträge empfehlen
 - Kellerserver: erst für OCR-Phase (150-300 € Stufe 1)
+
+## Vorgemerkte Features nach Prototyp-Abnahme
+- Verwandtschaftsgrad zwischen Haushalts-Tieren (09.07.2026, Idee Projektinhaber): optionales Feld "Verwandt mit …" (Elterntier/Nachkomme/Wurfgeschwister), Anzeige in Tierakte + Notfallpass. AUSDRÜCKLICH KEIN Stammbaum, keine Zucht-Funktionen. Details: mehrtier_konzept.md Abschnitt 6.
