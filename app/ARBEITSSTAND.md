@@ -1,32 +1,4 @@
-# Arbeitsstand simplyPet – Roadmap Schritt 4, Teilauftrag 4.1 (09.07.2026)
-
-## ABSCHLUSS Teilauftrag 4.1 (09.07.2026) — Fundament + Kern-Screens
-**Kontoloser Prototyp (Freigabe 09.07.2026):** Onboarding erfasst NUR den Halter-Namen (für den Notfall-Pass). KEIN E-Mail, KEIN Passwort, KEIN Login.
-
-**Neues Fundament:**
-- `src/time/timeModule.ts` – EINE Zeitquelle: UTC intern, Anzeige TT.MM.JJJJ, `useTodayKey` mit Neuberechnung bei App-Start/Foreground (kein stiller Datums-Drift), `isBackdated` („Nachgetragen am …“), `compareDateKeysDesc` (Sortierung Neuestes-zuerst).
-- `src/drafts/draftStore.ts` – Null-Datenverlust-Regel: fortlaufende Entwurfs-Sicherung (≤ 2 s + Unmount), `offerDraftResume` („Fortsetzen oder verwerfen?“), `useUnsavedChangesGuard` (Nachfrage bei Zurück-Geste).
-- `src/profile/profileStore.ts` – kontoloses Halter-Profil (AsyncStorage).
-- `src/components/DateField.tsx` – Kalender-Picker only (kein Freitext), Chips Heute/Gestern/Vorgestern, Zukunft gesperrt (außer `allowFuture`). Neu installiert: @react-native-community/datetimepicker.
-
-**Navigation & Kern-Screens:**
-- `AppNavigator.tsx` – „Erfassen“ ist KEIN Screen mehr, sondern öffnet das `CaptureSheet`-Overlay (Tab-Knopf bleibt, wechselt aber nie den Bildschirm); Onboarding-Gate vor erster Nutzung. `CaptureScreen.tsx` entfernt.
-- Zwei-Tap-Regel überall: Zuhause fester Notfall-Knopf, Termine + Mehr `EmergencyFab`.
-- `OnboardingScreen` – Begrüßung („Deine Daten gehören dir.“) → Name → Start (dort Anleitungskarte „Erstes Tier anlegen“).
-- `HomeScreen` – 3 Zonen (Status-Karten Heute-fällig/Überfällig, Tier-Kacheln + Plus-Kachel, Notfall-Knopf), Leerzustand-Anleitungskarte, Querformat mehrspaltig.
-- `AddPetScreen` – Tierart zuerst, dynamische Felder je Art, Foto (Kamera/Galerie), voller Draft-Schutz, atomares Speichern mit Bestätigung.
-- `PetFileScreen` – Passkarte + dynamische Reiter je Art (Aquarium: „Wasserwerte“ statt Gesundheit), Sortierung Ereignis-Datum desc, „Nachgetragen am …“; Querformat: Passkarte und Inhalt nebeneinander.
-- `AppointmentsScreen` – Gruppen Überfällig/Heute/Demnächst mit Tier-Farbe (zentrales Zeit-Modul).
-- `EmergencyPassScreen` – Tier-Umschaltung bei Mehrtier-Haushalt, Halter-Name, 100 % offline.
-- `MoreScreen` – Halter-Name bearbeitbar; nicht gebaute Unterseiten EHRLICH gekennzeichnet („Kommt in 4.x“), keine toten Knöpfe.
-
-**Interne Prüfung (bestanden):** tsc 0 Fehler, expo-doctor 20/20, `expo export` Android-Bundle baubar, Zeit-Modul-Logiktests grün. Protokoll: `../pruefprotokoll_teilauftrag_4_1.md`.
-
-**Nächste Teilaufträge:** 4.2 Einträge (Gewicht, Symptom Freitext-first, Impfung, Dokument-Foto mit Berechtigungs-Kette, Erinnerungs-Erzeugung + Ein-Tap-Checkbox, Stammdaten-Bearbeiten, Tiere verwalten/Archiv) · 4.3 Notfallpass + QR · 4.4 Störfall-Matrix + Mehrarten-Test + APK.
-
----
-
-# Historie: Roadmap Schritt 3 (08.07.2026)
+# Arbeitsstand simplyPet – Roadmap Schritt 3 (08.07.2026)
 
 ## Wichtige Fakten (nicht verlieren)
 
@@ -72,3 +44,19 @@
 ## ABSCHLUSS Schritt 3 (08.07.2026, Commit d292d02)
 Alle Punkte erledigt: Screens, App.tsx, Schema in Neon eingespielt (7 Tabellen verifiziert), tsc fehlerfrei, expo-doctor 20/20, README+.env.example, Infrastruktur-Doku Abschnitt 5 (US-Kompromiss), Code als app/ ins Konzept-Repo gepusht, Roadmap aktualisiert. Kein Secret im Repo (geprüft).
 Nächster Schritt: Roadmap Schritt 4 in Teilaufträgen (4.1 Fundament+Kern-Screens, 4.2 Einträge, 4.3 Notfallpass+QR, 4.4 Prüfung+APK).
+
+## ABSCHLUSS Teilauftrag 4.1 (09.07.2026, Commit 1ee6ed7)
+Fundament + Kern-Screens: zentrales Zeit-Modul (src/time/timeModule.ts), Draft-Autosave (src/drafts/draftStore.ts), kontoloses Onboarding (src/profile/profileStore.ts, OnboardingScreen), DateField (Kalender-Picker only, Zukunftssperre), Erfassen als Overlay (CaptureSheet statt Tab), Notfall-FAB (Zwei-Tap-Regel), Home 3 Zonen, AddPet dynamisch je Tierart, Tierakte mit Passkarte + dynamischen Reitern, Querformat überall. Prüfung: pruefprotokoll_teilauftrag_4_1.md.
+
+## ABSCHLUSS Teilauftrag 4.2 (09.07.2026)
+Funktionen & Einträge:
+- DB-Migration additiv (addColumnIfMissing): medications.times_per_day/dose_times/hint_text, health_records.medication_id, reminders.season_start/season_end/hint_text/source_type/source_id/repeat_rule/done_at
+- Gemeinsame Bausteine: src/components/FormParts.tsx (PetPicker, FieldLabel, Hint, ChoiceChips, SaveButton), src/forms/useEntryForm.ts (Tiere laden, Draft-Wiring, atomares Speichern mit Bestätigung)
+- 6 Eintragsformulare unter src/screens/entries/: Weight (Plausibilitäts-Hinweis je Art, Aquarium-Hinweis), Observation (Freitext-first, Aquarium: Wasserwert-Modus), Incident (Freitext „Was ist passiert?" vollwertig, artneutrale Kategorien, JSON in notes, Wundfoto, Tierarzt-Flag), Vaccination (auto-Erinnerung aus valid_until, atomare Transaktion), Medication (Typen, Mehrfach-Dosierung mit Uhrzeiten als JSON, tägliche Erinnerung repeat_rule='taeglich', Saisonfenster inkl. Jahreswechsel), DocumentCapture (ehrliche Erklärung VOR System-Dialog, Kamera/Galerie)
+- AppointmentsScreen: Ein-Tap-Checkbox (täglich: Gabe → health_records 'Medikamentengabe' + due_date=morgen, atomar), Erledigt-Liste 30 Tage mit Rückgängig, Saisonfenster-Filter (isInSeason, Wrap-around getestet), archivierte Tiere ausgefiltert
+- EditPetScreen: alle Stammdaten (Kastration, Chip mit 15-Ziffern-Hinweis nicht-blockierend, Spezialisten-Tierarzt, Foto, Farbe), Tierart nicht änderbar (ehrlicher Hinweis), Draft edit_pet_<id>
+- ManagePetsScreen: Archiv (archivieren/zurückholen, kein Löschen im Prototyp – ehrlich), erreichbar über Mehr → Tiere verwalten
+- PetFileScreen: Edit-Stift verdrahtet, „Gabe protokollieren"-Knopf, Vorfall-JSON-Darstellung, Foto in Verlaufskarten, Dokument-Vollbild-Modal, Labels alt+neu (Altdaten-sicher)
+- HomeScreen: Status-Queries mit archived=0 + Saisonfenster (identisch zum Termine-Tab, 60-Kombinationen-Test)
+Prüfung: pruefprotokoll_teilauftrag_4_2.md (tsc 0 Fehler, expo-doctor 20/20, expo export OK, 18 SQL-Statements gegen Schema verifiziert, Saisonlogik-Tests bestanden).
+Nächster Schritt: 4.3 Notfallpass + QR-Code (Machbarkeit bereits getestet), danach 4.4 interne Prüfung + APK (inkl. Tageswechsel-Testfall und Mehrarten-Stabilitätstest).

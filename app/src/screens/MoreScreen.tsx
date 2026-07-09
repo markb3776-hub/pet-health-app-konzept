@@ -19,23 +19,19 @@ import {
   Alert,
   StyleSheet,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation/AppNavigator';
 import { getOwnerName, setOwnerName } from '../profile/profileStore';
 import EmergencyFab from '../components/EmergencyFab';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
-const MENU: { key: string; label: string; hint: string; plannedIn: string }[] = [
+const MENU: { key: string; label: string; hint: string; plannedIn: string | null }[] = [
   {
     key: 'tiere',
     label: 'Tiere verwalten',
     hint: 'Tiere bearbeiten oder ins Archiv verschieben.',
-    plannedIn: '4.2 „Funktionen & Einträge"',
-  },
-  {
-    key: 'erinnerungen',
-    label: 'Erinnerungen',
-    hint: 'Wann und wie die App dich erinnern darf.',
-    plannedIn: '4.2 „Funktionen & Einträge"',
+    plannedIn: null, // seit 4.2 verdrahtet
   },
   {
     key: 'datenschutz',
@@ -52,6 +48,7 @@ const MENU: { key: string; label: string; hint: string; plannedIn: string }[] = 
 ];
 
 export default function MoreScreen() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [name, setName] = useState('');
   const [editing, setEditing] = useState(false);
   const [savedName, setSavedName] = useState<string | null>(null);
@@ -138,17 +135,24 @@ export default function MoreScreen() {
             key={item.key}
             style={styles.item}
             accessibilityLabel={item.label}
-            onPress={() =>
+            onPress={() => {
+              if (item.key === 'tiere') {
+                navigation.navigate('TiereVerwalten');
+                return;
+              }
+              // Ehrliche Kennzeichnung: noch nicht gebaute Unterseiten (Doktrin).
               Alert.alert(
                 'Kommt im nächsten Schritt',
                 `„${item.label}" wird im Entwicklungsschritt ${item.plannedIn} gebaut.`,
                 [{ text: 'Verstanden' }]
-              )
-            }
+              );
+            }}
           >
             <Text style={styles.itemLabel}>{item.label}</Text>
             <Text style={styles.itemHint}>{item.hint}</Text>
-            <Text style={styles.itemPlanned}>Kommt in {item.plannedIn}</Text>
+            {item.plannedIn ? (
+              <Text style={styles.itemPlanned}>Kommt in {item.plannedIn}</Text>
+            ) : null}
           </Pressable>
         ))}
 

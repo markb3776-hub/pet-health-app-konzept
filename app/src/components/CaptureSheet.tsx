@@ -4,10 +4,10 @@
  * Korrektur aus Zwischenanalyse (09.07.2026): Erfassen ist KEIN eigener
  * Tab-Bildschirm, sondern ein Overlay ueber dem aktuellen Bildschirm.
  *
- * Optionen: Dokument fotografieren / Gewicht / Beobachtung (Symptom-Notiz)
- * / Impfung. Die Detail-Formulare folgen in Teilauftrag 4.2 – die Knoepfe
- * sind ehrlich beschriftet (Doktrin: kein toter Knopf, kein falsches
- * Versprechen).
+ * Optionen (Teilauftrag 4.2, alle verdrahtet): Dokument fotografieren /
+ * Gewicht / Beobachtung (Symptom-Notiz-Wasserwert) / Vorfall (Freitext-first)
+ * / Impfung / Medikament-Pflege. Jede Option oeffnet ihr Eintrags-Formular
+ * (Doktrin: kein toter Knopf).
  *
  * Querformat: Das Sheet begrenzt seine Hoehe und scrollt; im Querformat
  * werden die Optionen zweispaltig angezeigt. Ein geoeffnetes Overlay
@@ -23,10 +23,9 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
-import { Alert } from 'react-native';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
-export type CaptureAction = 'foto' | 'gewicht' | 'notiz' | 'impfung';
+export type CaptureAction = 'foto' | 'gewicht' | 'notiz' | 'vorfall' | 'impfung' | 'medikament';
 
 const CAPTURE_OPTIONS: { key: CaptureAction; label: string; hint: string }[] = [
   {
@@ -42,20 +41,30 @@ const CAPTURE_OPTIONS: { key: CaptureAction; label: string; hint: string }[] = [
   {
     key: 'notiz',
     label: 'Beobachtung notieren',
-    hint: 'Symptome oder Auffälligkeiten – hilfreich für den nächsten Tierarztbesuch.',
+    hint: 'Symptome, Auffälligkeiten oder Wasserwerte – hilfreich für den nächsten Tierarztbesuch.',
+  },
+  {
+    key: 'vorfall',
+    label: 'Vorfall festhalten',
+    hint: 'Biss, Sturz, Giftverdacht oder etwas ganz anderes – beschreibe es einfach in deinen Worten.',
   },
   {
     key: 'impfung',
     label: 'Impfung eintragen',
     hint: 'Impfstoff, Datum und Gültigkeit festhalten – die Erinnerung entsteht automatisch.',
   },
+  {
+    key: 'medikament',
+    label: 'Medikament oder Pflege anlegen',
+    hint: 'Dauermedikation, Pflege-Aufgaben, Vorerkrankungen und Allergien – mit Erinnerung, wenn du magst.',
+  },
 ];
 
 interface CaptureSheetProps {
   visible: boolean;
   onClose: () => void;
-  /** Wird aufgerufen, wenn der Nutzer eine Aktion waehlt. */
-  onAction?: (action: CaptureAction) => void;
+  /** Wird aufgerufen, wenn der Nutzer eine Aktion waehlt (seit 4.2 Pflicht). */
+  onAction: (action: CaptureAction) => void;
 }
 
 export default function CaptureSheet({ visible, onClose, onAction }: CaptureSheetProps) {
@@ -63,17 +72,7 @@ export default function CaptureSheet({ visible, onClose, onAction }: CaptureShee
   const isLandscape = width > height;
 
   function handlePress(action: CaptureAction) {
-    if (onAction) {
-      onAction(action);
-      return;
-    }
-    // Ehrliche Kennzeichnung: Die Eintrags-Formulare entstehen in
-    // Teilauftrag 4.2 – kein stiller toter Knopf.
-    Alert.alert(
-      'Kommt im nächsten Schritt',
-      'Dieses Eintrags-Formular wird im nächsten Entwicklungsschritt (4.2 „Funktionen & Einträge“) gebaut. Der Weg hierher steht schon – dein Tipp geht nicht verloren.',
-      [{ text: 'Verstanden' }]
-    );
+    onAction(action);
   }
 
   return (

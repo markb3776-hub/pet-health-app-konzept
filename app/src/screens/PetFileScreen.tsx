@@ -7,8 +7,9 @@
  *  - Gesundheit: Impfungen & Medikamente (nur wenn Module aktiv)
  *  - Verlauf: chronologisches Tagebuch (Gewicht, Symptome, Notizen)
  *  - Dokumente: Galerie der Fotos/Scans
- * Bearbeiten-Stift fuer Stammdaten (Formular folgt in 4.2 – ehrlich
- * gekennzeichnet, kein toter Knopf).
+ * Bearbeiten-Stift oeffnet das Stammdaten-Formular (seit 4.2 verdrahtet).
+ * Medikamente: "Gabe protokollieren"-Knopf traegt die heutige Gabe in den
+ * Verlauf ein. Dokumente oeffnen sich per Tap im Vollbild.
  *
  * Datums-Regeln (Screen-Flow 1.2): Sortierung absteigend nach
  * EREIGNIS-Datum (Neuestes oben); nachgetragene Eintraege zeigen dezent
@@ -24,13 +25,16 @@ import {
   Pressable,
   Image,
   Alert,
+  Modal,
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
-import { useFocusEffect, useRoute } from '@react-navigation/native';
-import { getDb } from '../db/database';
+import { useFocusEffect, useRoute, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation/AppNavigator';
+import { getDb, uuid } from '../db/database';
 import { getSpeciesConfig } from '../config/species';
-import { formatDate, isBackdated, compareDateKeysDesc } from '../time/timeModule';
+import { formatDate, isBackdated, compareDateKeysDesc, todayKey, nowUtcIso } from '../time/timeModule';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
 interface PetRow {
@@ -53,6 +57,7 @@ interface HealthRecordRow {
   value: number | null;
   unit: string | null;
   notes: string | null;
+  photo_uri: string | null;
   created_at: string;
 }
 
@@ -69,7 +74,10 @@ interface VaccinationRow {
 interface MedicationRow {
   id: string;
   name: string;
+  type: string;
   dosage: string | null;
+  times_per_day: number | null;
+  dose_times: string | null;
   is_active: number;
 }
 
@@ -84,13 +92,47 @@ interface DocumentRow {
 type TabKey = 'gesundheit' | 'verlauf' | 'dokumente';
 
 const RECORD_TYPE_LABELS: Record<string, string> = {
+  // Neue Schreibweise (4.2-Formulare) + alte Kleinschreibung (Altdaten-sicher).
+  Gewicht: 'Gewicht',
   gewicht: 'Gewicht',
+  Symptom: 'Beobachtung',
   symptom: 'Beobachtung',
+  Notiz: 'Notiz',
   notiz: 'Notiz',
+  Wasserwert: 'Wasserwert',
+  Vorfall: 'Vorfall',
+  Medikamentengabe: 'Medikament gegeben',
 };
+
+/** Vorfall-Eintraege speichern strukturierte Angaben als JSON im notes-Feld. */
+function parseIncidentNotes(notes: string | null): { text: string; detail: string | null } {
+  if (!notes) return { text: '', detail: null };
+  try {
+    const j = JSON.parse(notes) as {
+      text?: string;
+      art?: string | null;
+      verursacher?: string | null;
+      verursacher_detail?: string | null;
+      koerperstelle?: string | null;
+      tierarzt_aufgesucht?: boolean | null;
+    };
+    const parts: string[] = [];
+    if (j.art) parts.push(j.art);
+    if (j.verursacher && j.verursacher !== 'Entfällt') {
+      parts.push(`Verursacher: ${j.verursacher_detail ?? j.verursacher}`);
+    }
+    if (j.koerperstelle) parts.push(`Stelle: ${j.koerperstelle}`);
+    if (j.tierarzt_aufgesucht === true) parts.push('Tierarzt aufgesucht');
+    if (j.tierarzt_aufgesucht === false) parts.push('Kein Tierarzt nötig');
+    return { text: j.text ?? '', detail: parts.length > 0 ? parts.join(' · ') : null };
+  } catch {
+    return { text: notes, detail: null };
+  }
+}
 
 export default function PetFileScreen() {
   const route = useRoute();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const petId = (route.params as { petId: string }).petId;
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
@@ -101,6 +143,8 @@ export default function PetFileScreen() {
   const [medications, setMedications] = useState<MedicationRow[]>([]);
   const [documents, setDocuments] = useState<DocumentRow[]>([]);
   const [tab, setTab] = useState<TabKey>('gesundheit');
+  const [fullscreenDoc, setFullscreenDoc] = useState<DocumentRow | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -114,7 +158,7 @@ export default function PetFileScreen() {
           [petId]
         );
         const recs = await db.getAllAsync<HealthRecordRow>(
-          `SELECT id, record_type, date, value, unit, notes, created_at
+          `SELECT id, record_type, date, value, unit, notes, photo_uri, created_at
            FROM health_records WHERE pet_id = ? AND deleted_at IS NULL`,
           [petId]
         );
@@ -124,7 +168,7 @@ export default function PetFileScreen() {
           [petId]
         );
         const meds = await db.getAllAsync<MedicationRow>(
-          `SELECT id, name, dosage, is_active
+          `SELECT id, name, type, dosage, times_per_day, dose_times, is_active
            FROM medications WHERE pet_id = ? AND deleted_at IS NULL AND is_active = 1`,
           [petId]
         );
@@ -155,8 +199,25 @@ export default function PetFileScreen() {
       return () => {
         active = false;
       };
-    }, [petId])
+    }, [petId, reloadToken])
   );
+
+  /** "Gabe protokollieren": traegt die heutige Gabe in den Verlauf ein (Timeline). */
+  async function logDose(med: MedicationRow) {
+    try {
+      const db = await getDb();
+      const ts = nowUtcIso();
+      await db.runAsync(
+        `INSERT INTO health_records (id, pet_id, record_type, date, notes, medication_id, created_at, updated_at, is_synced)
+         VALUES (?, ?, 'Medikamentengabe', ?, ?, ?, ?, ?, 0)`,
+        [uuid(), petId, todayKey(), `${med.name}${med.dosage ? ` (${med.dosage})` : ''}`, med.id, ts, ts]
+      );
+      setReloadToken((t) => t + 1);
+      Alert.alert('Gabe festgehalten', `${med.name} ist für heute im Verlauf protokolliert.`);
+    } catch {
+      Alert.alert('Nicht möglich', 'Die Gabe konnte nicht protokolliert werden. Bitte versuche es erneut.');
+    }
+  }
 
   if (!pet) {
     return (
@@ -181,12 +242,7 @@ export default function PetFileScreen() {
   const activeTab = tabs.some((t) => t.key === tab) ? tab : tabs[0]?.key ?? 'dokumente';
 
   function onEditPress() {
-    // Ehrliche Kennzeichnung statt totem Knopf (Doktrin).
-    Alert.alert(
-      'Kommt im nächsten Schritt',
-      'Das Bearbeiten der Stammdaten wird im nächsten Entwicklungsschritt (4.2) gebaut. Deine Daten sind sicher gespeichert.',
-      [{ text: 'Verstanden' }]
-    );
+    navigation.navigate('StammdatenBearbeiten', { petId });
   }
 
   const passCard = (
@@ -270,16 +326,40 @@ export default function PetFileScreen() {
               )}
             </>
           ) : null}
-          <Text style={styles.subTitle}>Aktuelle Medikamente</Text>
+          <Text style={styles.subTitle}>Aktuelle Medikamente & Pflege</Text>
           {medications.length === 0 ? (
-            <Text style={styles.emptyHint}>Keine aktiven Medikamente.</Text>
+            <Text style={styles.emptyHint}>
+              Keine aktiven Einträge. Über „Erfassen → Medikament oder Pflege“ legst du den ersten an.
+            </Text>
           ) : (
-            medications.map((m) => (
-              <View key={m.id} style={styles.entryCard}>
-                <Text style={styles.entryTitle}>{m.name}</Text>
-                {m.dosage ? <Text style={styles.entryMeta}>{m.dosage}</Text> : null}
-              </View>
-            ))
+            medications.map((m) => {
+              const times: string[] = m.dose_times ? (JSON.parse(m.dose_times) as string[]) : [];
+              const isGivable = m.type === 'Medikament' || m.type === 'Pflege';
+              return (
+                <View key={m.id} style={styles.entryCard}>
+                  <Text style={styles.entryTitle}>
+                    {m.name}
+                    {m.type !== 'Medikament' ? ` (${m.type})` : ''}
+                  </Text>
+                  {m.dosage || times.length > 0 ? (
+                    <Text style={styles.entryMeta}>
+                      {[m.dosage, times.length > 0 ? `Uhrzeiten: ${times.join(', ')}` : null]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </Text>
+                  ) : null}
+                  {isGivable ? (
+                    <Pressable
+                      style={styles.doseButton}
+                      onPress={() => logDose(m)}
+                      accessibilityLabel={`Gabe von ${m.name} protokollieren`}
+                    >
+                      <Text style={styles.doseButtonText}>✓ Heute gegeben – protokollieren</Text>
+                    </Pressable>
+                  ) : null}
+                </View>
+              );
+            })
           )}
         </View>
       ) : null}
@@ -292,19 +372,31 @@ export default function PetFileScreen() {
               fest – Neuestes steht dann immer oben.
             </Text>
           ) : (
-            records.map((r) => (
-              <View key={r.id} style={styles.entryCard}>
-                <Text style={styles.entryTitle}>
-                  {RECORD_TYPE_LABELS[r.record_type] ?? r.record_type}
-                  {r.value != null ? `: ${r.value} ${r.unit ?? ''}`.trimEnd() : ''}
-                </Text>
-                {r.notes ? <Text style={styles.entryNotes}>{r.notes}</Text> : null}
-                <Text style={styles.entryMeta}>{formatDate(r.date)}</Text>
-                {isBackdated(r.date.slice(0, 10), r.created_at) ? (
-                  <Text style={styles.backdatedNote}>Nachgetragen am {formatDate(r.created_at)}</Text>
-                ) : null}
-              </View>
-            ))
+            records.map((r) => {
+              const isIncident = r.record_type === 'Vorfall';
+              const incident = isIncident ? parseIncidentNotes(r.notes) : null;
+              return (
+                <View key={r.id} style={styles.entryCard}>
+                  <Text style={styles.entryTitle}>
+                    {RECORD_TYPE_LABELS[r.record_type] ?? r.record_type}
+                    {r.value != null ? `: ${String(r.value).replace('.', ',')} ${r.unit ?? ''}`.trimEnd() : ''}
+                  </Text>
+                  {isIncident && incident ? (
+                    <>
+                      {incident.text ? <Text style={styles.entryNotes}>{incident.text}</Text> : null}
+                      {incident.detail ? <Text style={styles.entryMeta}>{incident.detail}</Text> : null}
+                    </>
+                  ) : r.notes ? (
+                    <Text style={styles.entryNotes}>{r.notes}</Text>
+                  ) : null}
+                  {r.photo_uri ? <Image source={{ uri: r.photo_uri }} style={styles.entryPhoto} /> : null}
+                  <Text style={styles.entryMeta}>{formatDate(r.date)}</Text>
+                  {isBackdated(r.date.slice(0, 10), r.created_at) ? (
+                    <Text style={styles.backdatedNote}>Nachgetragen am {formatDate(r.created_at)}</Text>
+                  ) : null}
+                </View>
+              );
+            })
           )}
         </View>
       ) : null}
@@ -319,13 +411,18 @@ export default function PetFileScreen() {
           ) : (
             <View style={styles.docGrid}>
               {documents.map((d) => (
-                <View key={d.id} style={styles.docCard}>
+                <Pressable
+                  key={d.id}
+                  style={styles.docCard}
+                  onPress={() => setFullscreenDoc(d)}
+                  accessibilityLabel={`Dokument ${d.title ?? d.doc_type} im Vollbild öffnen`}
+                >
                   <Image source={{ uri: d.file_uri }} style={styles.docThumb} />
                   <Text style={styles.docTitle} numberOfLines={1}>
                     {d.title ?? d.doc_type}
                   </Text>
                   <Text style={styles.entryMeta}>{formatDate(d.upload_date)}</Text>
-                </View>
+                </Pressable>
               ))}
             </View>
           )}
@@ -348,6 +445,33 @@ export default function PetFileScreen() {
           {tabContent}
         </>
       )}
+
+      {/* Dokument im Vollbild: Tap irgendwo schliesst. */}
+      <Modal
+        visible={fullscreenDoc !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setFullscreenDoc(null)}
+      >
+        <Pressable
+          style={styles.fullscreenBackdrop}
+          onPress={() => setFullscreenDoc(null)}
+          accessibilityLabel="Vollbild schließen"
+        >
+          {fullscreenDoc ? (
+            <>
+              <Image
+                source={{ uri: fullscreenDoc.file_uri }}
+                style={styles.fullscreenImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.fullscreenCaption}>
+                {fullscreenDoc.title ?? fullscreenDoc.doc_type} · {formatDate(fullscreenDoc.upload_date)} – zum Schließen tippen
+              </Text>
+            </>
+          ) : null}
+        </Pressable>
+      </Modal>
     </ScrollView>
   );
 }
@@ -400,6 +524,38 @@ const styles = StyleSheet.create({
   passRows: { marginTop: spacing.m, gap: spacing.s },
   passRow: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.m },
   passRowLabel: { fontSize: typography.bodySmall, color: colors.textSecondary },
+  doseButton: {
+    marginTop: spacing.s,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: 10,
+    minHeight: minTouchTarget - 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.m,
+  },
+  doseButtonText: { fontSize: typography.bodySmall, color: colors.primary, fontWeight: '600' },
+  entryPhoto: {
+    width: '100%',
+    height: 160,
+    borderRadius: 10,
+    marginTop: spacing.s,
+    backgroundColor: colors.border,
+  },
+  fullscreenBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.92)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.m,
+  },
+  fullscreenImage: { width: '100%', height: '85%' },
+  fullscreenCaption: {
+    color: '#FFFFFF',
+    fontSize: typography.bodySmall,
+    marginTop: spacing.m,
+    textAlign: 'center',
+  },
   passRowValue: {
     fontSize: typography.bodySmall,
     color: colors.textPrimary,

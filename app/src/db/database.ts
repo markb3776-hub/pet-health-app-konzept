@@ -113,6 +113,32 @@ async function migrate(database: SQLite.SQLiteDatabase): Promise<void> {
       is_synced INTEGER NOT NULL DEFAULT 0
     );
   `);
+
+  // Migration 002 (Teilauftrag 4.2): additive Spalten gemaess Datenmodell-Spez.
+  // SQLite kennt kein "ADD COLUMN IF NOT EXISTS" – deshalb Spalten-Check via PRAGMA.
+  await addColumnIfMissing(database, 'medications', 'times_per_day', 'INTEGER NOT NULL DEFAULT 1');
+  await addColumnIfMissing(database, 'medications', 'dose_times', 'TEXT'); // JSON: ["07:00","19:00"]
+  await addColumnIfMissing(database, 'medications', 'hint_text', 'TEXT'); // z. B. "Bei Sonnenschein"
+  await addColumnIfMissing(database, 'health_records', 'medication_id', 'TEXT'); // Gabe -> Dauermedikation
+  await addColumnIfMissing(database, 'reminders', 'season_start', 'INTEGER'); // Monat 1-12
+  await addColumnIfMissing(database, 'reminders', 'season_end', 'INTEGER');
+  await addColumnIfMissing(database, 'reminders', 'hint_text', 'TEXT');
+  await addColumnIfMissing(database, 'reminders', 'source_type', 'TEXT'); // 'impfung' | 'medikament' | 'manuell'
+  await addColumnIfMissing(database, 'reminders', 'source_id', 'TEXT'); // FK auf vaccinations/medications
+  await addColumnIfMissing(database, 'reminders', 'repeat_rule', 'TEXT'); // 'taeglich' | null (Prototyp)
+  await addColumnIfMissing(database, 'reminders', 'done_at', 'TEXT'); // fuer Erledigt-Liste + Rueckgaengig
+}
+
+async function addColumnIfMissing(
+  database: SQLite.SQLiteDatabase,
+  table: string,
+  column: string,
+  definition: string
+): Promise<void> {
+  const cols = await database.getAllAsync<{ name: string }>(`PRAGMA table_info(${table})`);
+  if (!cols.some((c) => c.name === column)) {
+    await database.execAsync(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
 }
 
 /** Einfache UUID v4 (ohne Zusatzabhaengigkeit) */

@@ -66,17 +66,32 @@ export default function HomeScreen() {
           'SELECT id, name, species, color_theme, photo_uri FROM pets WHERE archived = 0 AND deleted_at IS NULL ORDER BY created_at'
         );
         // "Heute fällig" ueber das zentrale Zeit-Modul (todayKey), nie mit eigenem Datum.
+        // Saisonfenster (season_start/end): Erinnerungen ausserhalb ihrer Monate zaehlen
+        // nicht mit – gleiche Logik wie im Termine-Tab (inkl. Jahreswechsel-Fenster).
+        const currentMonth = parseInt(todayKey.slice(5, 7), 10);
+        const seasonFilter = `(
+          r.season_start IS NULL OR r.season_end IS NULL OR (
+            CASE WHEN r.season_start <= r.season_end
+              THEN ? BETWEEN r.season_start AND r.season_end
+              ELSE (? >= r.season_start OR ? <= r.season_end)
+            END
+          )
+        )`;
         const due = await db.getAllAsync<ReminderRow>(
           `SELECT r.id, r.pet_id, r.title, r.due_date, p.name AS pet_name
            FROM reminders r JOIN pets p ON p.id = r.pet_id
-           WHERE r.status = 'Offen' AND r.deleted_at IS NULL AND substr(r.due_date, 1, 10) = ?
+           WHERE r.status = 'Offen' AND r.deleted_at IS NULL
+             AND p.archived = 0 AND p.deleted_at IS NULL
+             AND substr(r.due_date, 1, 10) = ? AND ${seasonFilter}
            ORDER BY r.due_date`,
-          [todayKey]
+          [todayKey, currentMonth, currentMonth, currentMonth]
         );
         const over = await db.getFirstAsync<{ n: number }>(
-          `SELECT COUNT(*) AS n FROM reminders r
-           WHERE r.status = 'Offen' AND r.deleted_at IS NULL AND substr(r.due_date, 1, 10) < ?`,
-          [todayKey]
+          `SELECT COUNT(*) AS n FROM reminders r JOIN pets p ON p.id = r.pet_id
+           WHERE r.status = 'Offen' AND r.deleted_at IS NULL
+             AND p.archived = 0 AND p.deleted_at IS NULL
+             AND substr(r.due_date, 1, 10) < ? AND ${seasonFilter}`,
+          [todayKey, currentMonth, currentMonth, currentMonth]
         );
         const owner = await getOwnerName();
         if (active) {

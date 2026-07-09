@@ -14,7 +14,8 @@
  * danach dauerhaft die Hauptnavigation.
  */
 import React, { useCallback, useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -28,6 +29,15 @@ import PetFileScreen from '../screens/PetFileScreen';
 import AddPetScreen from '../screens/AddPetScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import CaptureSheet from '../components/CaptureSheet';
+import type { CaptureAction } from '../components/CaptureSheet';
+import WeightEntryScreen from '../screens/entries/WeightEntryScreen';
+import ObservationEntryScreen from '../screens/entries/ObservationEntryScreen';
+import IncidentEntryScreen from '../screens/entries/IncidentEntryScreen';
+import VaccinationEntryScreen from '../screens/entries/VaccinationEntryScreen';
+import MedicationEntryScreen from '../screens/entries/MedicationEntryScreen';
+import DocumentCaptureScreen from '../screens/entries/DocumentCaptureScreen';
+import EditPetScreen from '../screens/EditPetScreen';
+import ManagePetsScreen from '../screens/ManagePetsScreen';
 import { isOnboardingDone } from '../profile/profileStore';
 import { colors, typography } from '../theme/theme';
 
@@ -36,6 +46,24 @@ export type RootStackParamList = {
   Notfallpass: { petId?: string } | undefined;
   Tierakte: { petId: string };
   TierAnlegen: { firstPet?: boolean } | undefined;
+  GewichtEintragen: { petId?: string } | undefined;
+  BeobachtungEintragen: { petId?: string } | undefined;
+  VorfallEintragen: { petId?: string } | undefined;
+  ImpfungEintragen: { petId?: string } | undefined;
+  MedikamentEintragen: { petId?: string } | undefined;
+  DokumentAblegen: { petId?: string } | undefined;
+  StammdatenBearbeiten: { petId: string };
+  TiereVerwalten: undefined;
+};
+
+/** Zuordnung Erfassen-Overlay-Option -> Ziel-Formular (Screen-Flow 2.4). */
+const CAPTURE_ROUTE: Record<CaptureAction, keyof RootStackParamList> = {
+  foto: 'DokumentAblegen',
+  gewicht: 'GewichtEintragen',
+  notiz: 'BeobachtungEintragen',
+  vorfall: 'VorfallEintragen',
+  impfung: 'ImpfungEintragen',
+  medikament: 'MedikamentEintragen',
 };
 
 const Tab = createBottomTabNavigator();
@@ -48,6 +76,16 @@ function CapturePlaceholder() {
 
 function Tabs() {
   const [captureOpen, setCaptureOpen] = useState(false);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  // Overlay-Option gewaehlt: Sheet schliessen, Formular oeffnen.
+  const handleCaptureAction = useCallback(
+    (action: CaptureAction) => {
+      setCaptureOpen(false);
+      navigation.navigate(CAPTURE_ROUTE[action] as any);
+    },
+    [navigation]
+  );
 
   // Der Erfassen-"Tab" ist ein reiner Ausloeser fuer das Overlay –
   // er wechselt NIE den Bildschirm (Screen-Flow 2.4).
@@ -98,7 +136,11 @@ function Tabs() {
           options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>≡</Text> }}
         />
       </Tab.Navigator>
-      <CaptureSheet visible={captureOpen} onClose={() => setCaptureOpen(false)} />
+      <CaptureSheet
+        visible={captureOpen}
+        onClose={() => setCaptureOpen(false)}
+        onAction={handleCaptureAction}
+      />
     </View>
   );
 }
@@ -146,6 +188,46 @@ export default function AppNavigator() {
             name="TierAnlegen"
             component={AddPetScreen}
             options={{ title: 'Tier hinzufügen' }}
+          />
+          <Stack.Screen
+            name="GewichtEintragen"
+            component={WeightEntryScreen}
+            options={{ title: 'Gewicht festhalten' }}
+          />
+          <Stack.Screen
+            name="BeobachtungEintragen"
+            component={ObservationEntryScreen}
+            options={{ title: 'Beobachtung notieren' }}
+          />
+          <Stack.Screen
+            name="VorfallEintragen"
+            component={IncidentEntryScreen}
+            options={{ title: 'Vorfall festhalten' }}
+          />
+          <Stack.Screen
+            name="ImpfungEintragen"
+            component={VaccinationEntryScreen}
+            options={{ title: 'Impfung eintragen' }}
+          />
+          <Stack.Screen
+            name="MedikamentEintragen"
+            component={MedicationEntryScreen}
+            options={{ title: 'Medikament & Pflege' }}
+          />
+          <Stack.Screen
+            name="DokumentAblegen"
+            component={DocumentCaptureScreen}
+            options={{ title: 'Dokument ablegen' }}
+          />
+          <Stack.Screen
+            name="StammdatenBearbeiten"
+            component={EditPetScreen}
+            options={{ title: 'Stammdaten bearbeiten' }}
+          />
+          <Stack.Screen
+            name="TiereVerwalten"
+            component={ManagePetsScreen}
+            options={{ title: 'Tiere verwalten' }}
           />
         </Stack.Navigator>
       ) : (
