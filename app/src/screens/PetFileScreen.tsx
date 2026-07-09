@@ -1,46 +1,106 @@
 /**
- * simplyPet: Tierakte (Grundgeruest)
- * Quelle: technische_spezifikation_screen_flow.md
+ * simplyPet: Tierakte
+ * Quelle: technische_spezifikation_screen_flow.md (2.3)
  *
- * Module werden abhaengig von der Tierart eingeblendet (species.ts).
- * Detail-Reiter (Verlauf, Impfungen, Dokumente) folgen in Schritt 4.
+ * Kopfbereich: Passkarte (Foto, Signalement, Chipnummer, besondere Merkmale).
+ * Darunter dynamische Reiter je Tierart:
+ *  - Gesundheit: Impfungen & Medikamente (nur wenn Module aktiv)
+ *  - Verlauf: chronologisches Tagebuch (Gewicht, Symptome, Notizen)
+ *  - Dokumente: Galerie der Fotos/Scans
+ * Bearbeiten-Stift fuer Stammdaten (Formular folgt in 4.2 – ehrlich
+ * gekennzeichnet, kein toter Knopf).
+ *
+ * Datums-Regeln (Screen-Flow 1.2): Sortierung absteigend nach
+ * EREIGNIS-Datum (Neuestes oben); nachgetragene Eintraege zeigen dezent
+ * "Nachgetragen am …". Anzeige TT.MM.JJJJ ueber das zentrale Zeit-Modul.
+ *
+ * Querformat (Screen-Flow 1.1): Passkarte und Inhalt nebeneinander.
  */
 import React, { useCallback, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  Pressable,
+  Image,
+  Alert,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { getDb } from '../db/database';
 import { getSpeciesConfig } from '../config/species';
-import { colors, typography, spacing } from '../theme/theme';
+import { formatDate, isBackdated, compareDateKeysDesc } from '../time/timeModule';
+import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
 interface PetRow {
   id: string;
   name: string;
   species: string;
   breed: string | null;
+  gender: string | null;
   birth_date: string | null;
+  chip_number: string | null;
+  special_features: string | null;
+  color_theme: string | null;
+  photo_uri: string | null;
 }
 
-const MODULE_LABELS: Record<string, string> = {
-  vaccinations: 'Impfungen & Prophylaxe',
-  weight: 'Gewichtsverlauf',
-  teeth: 'Zahn-Check',
-  vitamin_c: 'Vitamin-C-Versorgung',
-  diabetes_watch: 'Diabetes-Vorsorge',
-  annual_check: 'Jährlicher Routine-Check',
-  cites_docs: 'Herkunfts- und CITES-Nachweise',
-  hibernation: 'Winterstarre-Zyklus',
-  equine_pass: 'Equidenpass',
-  water_values: 'Wasserwerte-Tagebuch',
-  stock_list: 'Besatz-Liste',
-  maintenance: 'Wartungs-Erinnerungen',
-  documents: 'Dokumenten-Safe',
-  diary: 'Symptom-Tagebuch',
+interface HealthRecordRow {
+  id: string;
+  record_type: string;
+  date: string;
+  value: number | null;
+  unit: string | null;
+  notes: string | null;
+  created_at: string;
+}
+
+interface VaccinationRow {
+  id: string;
+  type: string;
+  disease: string | null;
+  product_name: string | null;
+  date_given: string;
+  valid_until: string | null;
+  created_at: string;
+}
+
+interface MedicationRow {
+  id: string;
+  name: string;
+  dosage: string | null;
+  is_active: number;
+}
+
+interface DocumentRow {
+  id: string;
+  title: string | null;
+  doc_type: string;
+  file_uri: string;
+  upload_date: string;
+}
+
+type TabKey = 'gesundheit' | 'verlauf' | 'dokumente';
+
+const RECORD_TYPE_LABELS: Record<string, string> = {
+  gewicht: 'Gewicht',
+  symptom: 'Beobachtung',
+  notiz: 'Notiz',
 };
 
 export default function PetFileScreen() {
   const route = useRoute();
   const petId = (route.params as { petId: string }).petId;
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+
   const [pet, setPet] = useState<PetRow | null>(null);
+  const [records, setRecords] = useState<HealthRecordRow[]>([]);
+  const [vaccinations, setVaccinations] = useState<VaccinationRow[]>([]);
+  const [medications, setMedications] = useState<MedicationRow[]>([]);
+  const [documents, setDocuments] = useState<DocumentRow[]>([]);
+  const [tab, setTab] = useState<TabKey>('gesundheit');
 
   useFocusEffect(
     useCallback(() => {
@@ -48,10 +108,49 @@ export default function PetFileScreen() {
       (async () => {
         const db = await getDb();
         const row = await db.getFirstAsync<PetRow>(
-          'SELECT id, name, species, breed, birth_date FROM pets WHERE id = ?',
+          `SELECT id, name, species, breed, gender, birth_date, chip_number,
+                  special_features, color_theme, photo_uri
+           FROM pets WHERE id = ?`,
           [petId]
         );
-        if (active) setPet(row ?? null);
+        const recs = await db.getAllAsync<HealthRecordRow>(
+          `SELECT id, record_type, date, value, unit, notes, created_at
+           FROM health_records WHERE pet_id = ? AND deleted_at IS NULL`,
+          [petId]
+        );
+        const vaccs = await db.getAllAsync<VaccinationRow>(
+          `SELECT id, type, disease, product_name, date_given, valid_until, created_at
+           FROM vaccinations WHERE pet_id = ? AND deleted_at IS NULL`,
+          [petId]
+        );
+        const meds = await db.getAllAsync<MedicationRow>(
+          `SELECT id, name, dosage, is_active
+           FROM medications WHERE pet_id = ? AND deleted_at IS NULL AND is_active = 1`,
+          [petId]
+        );
+        const docs = await db.getAllAsync<DocumentRow>(
+          `SELECT id, title, doc_type, file_uri, upload_date
+           FROM documents WHERE pet_id = ? AND deleted_at IS NULL`,
+          [petId]
+        );
+        if (active) {
+          setPet(row ?? null);
+          // Sortierung: Neuestes zuerst nach EREIGNIS-Datum (Screen-Flow 1.2 Regel 4).
+          setRecords(
+            [...recs].sort((a, b) => compareDateKeysDesc(a.date.slice(0, 10), b.date.slice(0, 10)))
+          );
+          setVaccinations(
+            [...vaccs].sort((a, b) =>
+              compareDateKeysDesc(a.date_given.slice(0, 10), b.date_given.slice(0, 10))
+            )
+          );
+          setMedications(meds);
+          setDocuments(
+            [...docs].sort((a, b) =>
+              compareDateKeysDesc(a.upload_date.slice(0, 10), b.upload_date.slice(0, 10))
+            )
+          );
+        }
       })();
       return () => {
         active = false;
@@ -68,25 +167,197 @@ export default function PetFileScreen() {
   }
 
   const cfg = getSpeciesConfig(pet.species);
+  const modules = cfg?.modules ?? [];
+  const hasHealthTab = modules.includes('vaccinations') || modules.includes('weight');
+  const hasDiaryTab = modules.includes('diary') || modules.includes('water_values');
+  const hasDocsTab = modules.includes('documents');
+
+  // Dynamische Reiter je Tierart (z. B. Aquarium ohne Gesundheits-Reiter).
+  const tabs: { key: TabKey; label: string }[] = [];
+  if (hasHealthTab) tabs.push({ key: 'gesundheit', label: 'Gesundheit' });
+  if (hasDiaryTab)
+    tabs.push({ key: 'verlauf', label: cfg?.key === 'aquarium' ? 'Wasserwerte' : 'Verlauf' });
+  if (hasDocsTab) tabs.push({ key: 'dokumente', label: 'Dokumente' });
+  const activeTab = tabs.some((t) => t.key === tab) ? tab : tabs[0]?.key ?? 'dokumente';
+
+  function onEditPress() {
+    // Ehrliche Kennzeichnung statt totem Knopf (Doktrin).
+    Alert.alert(
+      'Kommt im nächsten Schritt',
+      'Das Bearbeiten der Stammdaten wird im nächsten Entwicklungsschritt (4.2) gebaut. Deine Daten sind sicher gespeichert.',
+      [{ text: 'Verstanden' }]
+    );
+  }
+
+  const passCard = (
+    <View style={[styles.passCard, { borderTopColor: pet.color_theme ?? colors.primary }]}>
+      <View style={styles.passHeader}>
+        {pet.photo_uri ? (
+          <Image source={{ uri: pet.photo_uri }} style={styles.passPhoto} />
+        ) : (
+          <View style={[styles.passPhoto, styles.passPhotoPlaceholder]}>
+            <Text style={styles.passPhotoInitial}>{pet.name.charAt(0).toUpperCase()}</Text>
+          </View>
+        )}
+        <View style={styles.passHeaderText}>
+          <Text style={styles.petName}>{pet.name}</Text>
+          <Text style={styles.petMeta}>
+            {cfg?.label ?? pet.species}
+            {pet.breed ? ` · ${pet.breed}` : ''}
+            {pet.gender ? ` · ${pet.gender}` : ''}
+          </Text>
+        </View>
+        <Pressable
+          style={styles.editButton}
+          onPress={onEditPress}
+          accessibilityLabel="Stammdaten bearbeiten"
+        >
+          <Text style={styles.editButtonText}>✎</Text>
+        </Pressable>
+      </View>
+      <View style={styles.passRows}>
+        <PassRow label="Geboren" value={pet.birth_date ? formatDate(pet.birth_date) : 'Nicht angegeben'} />
+        <PassRow label="Chip-Nummer" value={pet.chip_number ?? 'Nicht angegeben'} />
+        <PassRow label="Merkmale" value={pet.special_features ?? 'Keine besonderen Merkmale'} />
+      </View>
+    </View>
+  );
+
+  const tabContent = (
+    <View style={styles.tabContentWrap}>
+      <View style={styles.tabBar}>
+        {tabs.map((t) => (
+          <Pressable
+            key={t.key}
+            style={[styles.tabButton, activeTab === t.key && styles.tabButtonActive]}
+            onPress={() => setTab(t.key)}
+            accessibilityLabel={`Reiter ${t.label}`}
+          >
+            <Text style={[styles.tabText, activeTab === t.key && styles.tabTextActive]}>
+              {t.label}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {activeTab === 'gesundheit' ? (
+        <View>
+          {modules.includes('vaccinations') ? (
+            <>
+              <Text style={styles.subTitle}>Impfungen</Text>
+              {vaccinations.length === 0 ? (
+                <Text style={styles.emptyHint}>
+                  Noch keine Impfungen eingetragen. Über „Erfassen" kannst du die erste festhalten.
+                </Text>
+              ) : (
+                vaccinations.map((v) => (
+                  <View key={v.id} style={styles.entryCard}>
+                    <Text style={styles.entryTitle}>
+                      {v.disease ?? v.type}
+                      {v.product_name ? ` (${v.product_name})` : ''}
+                    </Text>
+                    <Text style={styles.entryMeta}>
+                      Geimpft am {formatDate(v.date_given)}
+                      {v.valid_until ? ` · gültig bis ${formatDate(v.valid_until)}` : ''}
+                    </Text>
+                    {isBackdated(v.date_given.slice(0, 10), v.created_at) ? (
+                      <Text style={styles.backdatedNote}>
+                        Nachgetragen am {formatDate(v.created_at)}
+                      </Text>
+                    ) : null}
+                  </View>
+                ))
+              )}
+            </>
+          ) : null}
+          <Text style={styles.subTitle}>Aktuelle Medikamente</Text>
+          {medications.length === 0 ? (
+            <Text style={styles.emptyHint}>Keine aktiven Medikamente.</Text>
+          ) : (
+            medications.map((m) => (
+              <View key={m.id} style={styles.entryCard}>
+                <Text style={styles.entryTitle}>{m.name}</Text>
+                {m.dosage ? <Text style={styles.entryMeta}>{m.dosage}</Text> : null}
+              </View>
+            ))
+          )}
+        </View>
+      ) : null}
+
+      {activeTab === 'verlauf' ? (
+        <View>
+          {records.length === 0 ? (
+            <Text style={styles.emptyHint}>
+              Noch keine Einträge im Verlauf. Über „Erfassen" hältst du Gewicht und Beobachtungen
+              fest – Neuestes steht dann immer oben.
+            </Text>
+          ) : (
+            records.map((r) => (
+              <View key={r.id} style={styles.entryCard}>
+                <Text style={styles.entryTitle}>
+                  {RECORD_TYPE_LABELS[r.record_type] ?? r.record_type}
+                  {r.value != null ? `: ${r.value} ${r.unit ?? ''}`.trimEnd() : ''}
+                </Text>
+                {r.notes ? <Text style={styles.entryNotes}>{r.notes}</Text> : null}
+                <Text style={styles.entryMeta}>{formatDate(r.date)}</Text>
+                {isBackdated(r.date.slice(0, 10), r.created_at) ? (
+                  <Text style={styles.backdatedNote}>Nachgetragen am {formatDate(r.created_at)}</Text>
+                ) : null}
+              </View>
+            ))
+          )}
+        </View>
+      ) : null}
+
+      {activeTab === 'dokumente' ? (
+        <View>
+          {documents.length === 0 ? (
+            <Text style={styles.emptyHint}>
+              Noch keine Dokumente abgelegt. Über „Erfassen → Dokument fotografieren" legst du das
+              erste Foto sicher in dieser Akte ab.
+            </Text>
+          ) : (
+            <View style={styles.docGrid}>
+              {documents.map((d) => (
+                <View key={d.id} style={styles.docCard}>
+                  <Image source={{ uri: d.file_uri }} style={styles.docThumb} />
+                  <Text style={styles.docTitle} numberOfLines={1}>
+                    {d.title ?? d.doc_type}
+                  </Text>
+                  <Text style={styles.entryMeta}>{formatDate(d.upload_date)}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+      ) : null}
+    </View>
+  );
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scroll}>
-      <Text style={styles.petName}>{pet.name}</Text>
-      <Text style={styles.petMeta}>
-        {cfg?.label ?? pet.species}
-        {pet.breed ? ` · ${pet.breed}` : ''}
-      </Text>
-
-      <Text style={styles.sectionTitle}>Bereiche dieser Akte</Text>
-      {(cfg?.modules ?? []).map((m) => (
-        <View key={m} style={styles.moduleCard}>
-          <Text style={styles.moduleLabel}>{MODULE_LABELS[m] ?? m}</Text>
+      {isLandscape ? (
+        // Querformat: Passkarte links, Reiter-Inhalt rechts (Screen-Flow 1.1 Regel 2)
+        <View style={styles.landscapeRow}>
+          <View style={styles.landscapeLeft}>{passCard}</View>
+          <View style={styles.landscapeRight}>{tabContent}</View>
         </View>
-      ))}
-      <Text style={styles.footnote}>
-        Die Inhalte dieser Bereiche werden im nächsten Entwicklungsschritt gefüllt.
-      </Text>
+      ) : (
+        <>
+          {passCard}
+          {tabContent}
+        </>
+      )}
     </ScrollView>
+  );
+}
+
+function PassRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.passRow}>
+      <Text style={styles.passRowLabel}>{label}</Text>
+      <Text style={styles.passRowValue}>{value}</Text>
+    </View>
   );
 }
 
@@ -98,27 +369,98 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  scroll: { padding: spacing.m },
+  scroll: { padding: spacing.m, paddingBottom: spacing.xl },
+  landscapeRow: { flexDirection: 'row', gap: spacing.l, alignItems: 'flex-start' },
+  landscapeLeft: { flex: 2 },
+  landscapeRight: { flex: 3 },
+  passCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    borderTopWidth: 6,
+    padding: spacing.m,
+    marginBottom: spacing.l,
+  },
+  passHeader: { flexDirection: 'row', alignItems: 'center', gap: spacing.m },
+  passPhoto: { width: 72, height: 72, borderRadius: 36, backgroundColor: colors.border },
+  passPhotoPlaceholder: { alignItems: 'center', justifyContent: 'center' },
+  passPhotoInitial: { fontSize: typography.headline, fontWeight: '700', color: colors.textSecondary },
+  passHeaderText: { flex: 1 },
   petName: { fontSize: typography.headline, fontWeight: '700', color: colors.textPrimary },
-  petMeta: { fontSize: typography.body, color: colors.textSecondary, marginBottom: spacing.l },
-  sectionTitle: {
+  petMeta: { fontSize: typography.bodySmall, color: colors.textSecondary },
+  editButton: {
+    minWidth: minTouchTarget,
+    minHeight: minTouchTarget,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  editButtonText: { fontSize: typography.title, color: colors.textPrimary },
+  passRows: { marginTop: spacing.m, gap: spacing.s },
+  passRow: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.m },
+  passRowLabel: { fontSize: typography.bodySmall, color: colors.textSecondary },
+  passRowValue: {
+    fontSize: typography.bodySmall,
+    color: colors.textPrimary,
+    flexShrink: 1,
+    textAlign: 'right',
+  },
+  tabContentWrap: {},
+  tabBar: {
+    flexDirection: 'row',
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: spacing.xs,
+    marginBottom: spacing.m,
+    gap: spacing.xs,
+  },
+  tabButton: {
+    flex: 1,
+    minHeight: minTouchTarget - 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  tabButtonActive: { backgroundColor: colors.primary },
+  tabText: { fontSize: typography.bodySmall, color: colors.textPrimary },
+  tabTextActive: { color: '#FFFFFF', fontWeight: '700' },
+  subTitle: {
     fontSize: typography.title,
     fontWeight: '600',
     color: colors.textPrimary,
-    marginBottom: spacing.m,
+    marginTop: spacing.m,
+    marginBottom: spacing.s,
   },
-  moduleCard: {
+  entryCard: {
     backgroundColor: colors.surface,
     borderRadius: 12,
     padding: spacing.m,
     marginBottom: spacing.s,
   },
-  moduleLabel: { fontSize: typography.body, color: colors.textPrimary },
-  empty: { fontSize: typography.body, color: colors.textSecondary },
-  footnote: {
+  entryTitle: { fontSize: typography.body, fontWeight: '600', color: colors.textPrimary },
+  entryNotes: {
+    fontSize: typography.body,
+    color: colors.textPrimary,
+    marginTop: spacing.xs,
+    lineHeight: 24,
+  },
+  entryMeta: { fontSize: typography.bodySmall, color: colors.textSecondary, marginTop: spacing.xs },
+  backdatedNote: {
+    fontSize: typography.bodySmall - 2,
+    color: colors.textSecondary,
+    fontStyle: 'italic',
+    marginTop: spacing.xs,
+  },
+  emptyHint: {
     fontSize: typography.bodySmall,
     color: colors.textSecondary,
-    marginTop: spacing.m,
     lineHeight: 22,
+    marginBottom: spacing.s,
   },
+  docGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.m },
+  docCard: { width: 120 },
+  docThumb: { width: 120, height: 120, borderRadius: 12, backgroundColor: colors.border },
+  docTitle: { fontSize: typography.bodySmall, color: colors.textPrimary, marginTop: spacing.xs },
+  empty: { fontSize: typography.body, color: colors.textSecondary },
 });
