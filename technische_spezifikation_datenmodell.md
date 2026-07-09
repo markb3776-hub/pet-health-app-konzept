@@ -53,10 +53,13 @@ Für Symptome, Gewichts-Einträge und allgemeine Notizen.
 | `id` | UUID | Primärschlüssel |
 | `pet_id` | UUID | Fremdschlüssel (Pets) |
 | `record_type` | VARCHAR | Art ('Gewicht', 'Symptom', 'Notiz', 'Wasserwert') |
-| `date` | TIMESTAMP | Zeitpunkt des Eintrags |
+| `date` | TIMESTAMP | **Ereignis-Datum** (vom Nutzer wählbar, rückdatierbar — siehe Nachtrag-Semantik unten) |
 | `value` | NUMERIC | Zahlenwert (z.B. Gewicht in kg, pH-Wert) |
 | `notes` | TEXT | Freitext-Beschreibung |
 | `photo_uri` | VARCHAR | Optionales Foto zum Eintrag |
+| `created_at` | TIMESTAMP | Erfassungs-Zeitpunkt (automatisch, nicht änderbar) |
+
+**Nachtrag-Semantik (Festlegung des Projektinhabers, 09.07.2026):** Jeder Ereignis-Eintrag unterscheidet zwischen dem **Ereignis-Datum** (`date` bzw. `date_given` — wann es tatsächlich passiert ist, vom Nutzer per Kalender-Picker wählbar und rückdatierbar, Zukunft gesperrt) und dem **Erfassungs-Zeitpunkt** (`created_at` — automatisch). Alle chronologischen Ansichten sortieren absteigend nach dem Ereignis-Datum (Neuestes zuerst); ein nachgetragenes Ereignis sortiert sich damit automatisch an die sachlich richtige Stelle der Timeline. Weichen beide Daten ab, zeigt die Detail-Ansicht "Nachgetragen am …". Details zur Eingabe (Kalender-Picker, Schnellwahl-Chips, Anzeigeformat TT.MM.JJJJ): Screen-Flow-Spezifikation, Abschnitt 1.2.
 
 ### 2.4. Vaccinations (Impfungen & Prophylaxe)
 
@@ -79,8 +82,12 @@ Für Symptome, Gewichts-Einträge und allgemeine Notizen.
 | `type` | VARCHAR | 'Medikament', 'Vorerkrankung', 'Allergie' |
 | `name` | VARCHAR | Name (Präparat oder Krankheit) |
 | `dosage` | VARCHAR | Dosierung (z.B. '1/2 Tablette abends') |
+| `times_per_day` | INTEGER | Gaben pro Tag (1 = Standard; >1 blendet Uhrzeitfelder ein) |
+| `dose_times` | JSONB | Geplante Gabe-Uhrzeiten bei Mehrfach-Dosierung (z.B. ["07:00", "19:00"]) — auch Quelle für den Sitter-Zettel |
 | `active_since` | DATE | Seit wann aktiv/bekannt |
 | `is_active` | BOOLEAN | Aktuell noch relevant? |
+
+Einzelne verabreichte Gaben (inkl. nachgetragener — z.B. "Medikament C vor 3 Tagen gegeben") werden als Health_Records-Eintrag mit `record_type` = 'Medikamentengabe' und Verweis auf die Medikamenten-`id` protokolliert; bei Mehrfach-Dosierung mit Uhrzeit im `date`-Timestamp, sonst genügt das Datum. So erscheint jede Gabe korrekt einsortiert in der Timeline, ohne die Stammdaten der Dauermedikation zu verändern.
 
 ### 2.6. Documents (Dokumenten-Safe)
 

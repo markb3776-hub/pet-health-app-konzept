@@ -69,6 +69,21 @@ Die App muss in beiden Ausrichtungen einwandfrei funktionieren – über alle Eb
 | 4b.7 | Querformat kombiniert mit größter Systemschrift | Auch in dieser Kombination kein Layout-Bruch | 🔴 | |
 | 4b.8 | Systemweite Rotationssperre in Android aktivieren | App respektiert die Sperre und bleibt im Hochformat | 🔴 | |
 
+## 4c. Prüfblock Datum & Nachtragen (Festlegung vom 09.07.2026)
+
+Vergangene Ereignisse müssen sich nachtragen lassen und korrekt in die Chronologie einsortieren. Datumseingabe immer über den Kalender, Anzeige immer TT.MM.JJJJ.
+
+| Nr. | Prüfpunkt | Erwartetes Verhalten | Status | Notiz |
+| :--- | :--- | :--- | :--- | :--- |
+| 4c.1 | Medikamentengabe von vor 3 Tagen nachtragen (Chip "Vorgestern" bzw. Kalender) | Eintrag sortiert sich an die richtige Stelle der Timeline, nicht nach oben | 🔴 | |
+| 4c.2 | Timeline-Sortierung prüfen (Verlauf + Medikamente) | Neuester Eintrag steht immer oben, absteigend nach Ereignis-Datum | 🔴 | |
+| 4c.3 | Detail-Ansicht eines nachgetragenen Eintrags öffnen | Dezenter Vermerk "Nachgetragen am …" sichtbar | 🔴 | |
+| 4c.4 | Versuchen, ein Zukunftsdatum zu wählen (z. B. nächste Woche) | Bei Ereignis-Einträgen gesperrt; nur bei Terminen erlaubt | 🔴 | |
+| 4c.5 | Schnellwahl-Chips "Heute / Gestern / Vorgestern" prüfen | Jeder Chip setzt exakt das richtige Datum | 🔴 | |
+| 4c.6 | Weiter zurückliegendes Datum wählen (z. B. 3 Monate, alte Impfung übertragen) | Kalender blättert frei zurück, keine künstliche Sperre | 🔴 | |
+| 4c.7 | Datumsanzeige quer durch die App prüfen | Überall einheitlich TT.MM.JJJJ (z. B. 23.07.2026) | 🔴 | |
+| 4c.8 | Medikament mit 2× täglicher Dosierung anlegen | Uhrzeitfelder erscheinen nur hier; bei Gewicht/Symptom keine Uhrzeit-Abfrage | 🔴 | |
+
 ## 5. Beobachtungsjournal
 
 Für alles, was in keine Checkliste passt (Bauchgefühl zählt – Bedienung, Verständlichkeit, Vertrauen):
