@@ -23,20 +23,30 @@ export const colors = {
 
 /**
  * Kuratierte Tierfarben-Palette (frei waehlbar pro Tier).
- * Bewusst OHNE das reservierte Signalrot. Farben unterscheiden sich
- * auch in der Helligkeit (Graustufen-Test ist Release-Kriterium).
+ * Bewusst OHNE das reservierte Signalrot.
+ *
+ * KORRIGIERT in Teilauftrag 4.4 (interne Pruefung, 09.07.2026):
+ * Die urspruengliche Palette fiel im Graustufen-Test (Violett/Braun
+ * quasi-identische Helligkeit) und im Deuteranopie-Test (Blau/Violett
+ * verschmolzen). Die neue Palette besteht alle vier Release-Kriterien
+ * aus dem Strukturkonzept Abschnitt 7:
+ * 1. Graustufen: paarweiser Luminanz-Abstand > 0.015
+ * 2. Rot-Gruen-Schwaeche: Distanz nach Deuteranopie-Simulation > 25
+ * 3. Weisser Text auf Kennfarbe: WCAG-Kontrast >= 3:1
+ * 4. Abstand zum Signalrot #C62828 > 60 (nie verwechselbar)
+ * Nachweis: pruefprotokoll_teilauftrag_4_4.md im Konzept-Repo.
  */
 export const petColorPalette: { key: string; hex: string; label: string }[] = [
-  { key: 'blau', hex: '#3D6B9E', label: 'Blau' },
-  { key: 'gruen', hex: '#4E7C4E', label: 'Grün' },
+  { key: 'blau', hex: '#2F6495', label: 'Blau' },
+  { key: 'gruen', hex: '#365233', label: 'Grün' },
   { key: 'gold', hex: '#B98A2F', label: 'Gold' },
-  { key: 'violett', hex: '#6D5B93', label: 'Violett' },
-  { key: 'petrol', hex: '#2E7D7B', label: 'Petrol' },
-  { key: 'braun', hex: '#8A5A3B', label: 'Braun' },
+  { key: 'violett', hex: '#61517A', label: 'Violett' },
+  { key: 'petrol', hex: '#225A5A', label: 'Petrol' },
+  { key: 'braun', hex: '#A7795E', label: 'Braun' },
   { key: 'rosa', hex: '#B06A8C', label: 'Altrosa' },
   { key: 'grau', hex: '#5F6B6D', label: 'Steingrau' },
   { key: 'oliv', hex: '#7A7C39', label: 'Oliv' },
-  { key: 'nachtblau', hex: '#2F3D5C', label: 'Nachtblau' },
+  { key: 'nachtblau', hex: '#242D4E', label: 'Nachtblau' },
 ];
 
 export const typography = {

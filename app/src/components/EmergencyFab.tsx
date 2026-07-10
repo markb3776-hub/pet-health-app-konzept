@@ -15,12 +15,12 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { colors, typography, spacing } from '../theme/theme';
 
-export default function EmergencyFab() {
+export default function EmergencyFab({ petId }: { petId?: string }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
     <Pressable
       style={styles.fab}
-      onPress={() => navigation.navigate('Notfallpass')}
+      onPress={() => navigation.navigate('Notfallpass', petId ? { petId } : undefined)}
       accessibilityLabel="Notfall-Pass öffnen"
       accessibilityRole="button"
     >

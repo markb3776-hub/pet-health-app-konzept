@@ -33,6 +33,7 @@ import { useFocusEffect, useRoute, useNavigation } from '@react-navigation/nativ
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { getDb, uuid } from '../db/database';
+import EmergencyFab from '../components/EmergencyFab';
 import { getSpeciesConfig } from '../config/species';
 import { formatDate, isBackdated, compareDateKeysDesc, todayKey, nowUtcIso } from '../time/timeModule';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
@@ -432,6 +433,7 @@ export default function PetFileScreen() {
   );
 
   return (
+    <View style={styles.container}>
     <ScrollView style={styles.container} contentContainerStyle={styles.scroll}>
       {isLandscape ? (
         // Querformat: Passkarte links, Reiter-Inhalt rechts (Screen-Flow 1.1 Regel 2)
@@ -473,6 +475,11 @@ export default function PetFileScreen() {
         </Pressable>
       </Modal>
     </ScrollView>
+    {/* Zwei-Tap-Regel, Strukturkonzept: "Dieser Knopf ist auf jedem Bildschirm
+        der App vorhanden." Aus der Tierakte oeffnet er direkt den Notfall-Pass
+        DIESES Tieres (petId-Kontext) – sogar nur ein Tap. */}
+    <EmergencyFab petId={petId} />
+    </View>
   );
 }
 
