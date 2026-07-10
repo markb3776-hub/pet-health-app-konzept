@@ -20,6 +20,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Text, Pressable, View, ActivityIndicator, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import HomeScreen from '../screens/HomeScreen';
 import AppointmentsScreen from '../screens/AppointmentsScreen';
@@ -77,6 +78,11 @@ function CapturePlaceholder() {
 function Tabs() {
   const [captureOpen, setCaptureOpen] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026, Galaxy S24/Android 16):
+  // Die System-Navigationsleiste ueberlappte die Tab-Bar. Die Tab-Bar
+  // reserviert jetzt die vom System gemeldete Leisten-Hoehe (insets.bottom) —
+  // herstellerunabhaengig (3-Tasten-Leiste wie Gestensteuerung).
+  const insets = useSafeAreaInsets();
 
   // Overlay-Option gewaehlt: Sheet schliessen, Formular oeffnen.
   const handleCaptureAction = useCallback(
@@ -109,7 +115,7 @@ function Tabs() {
           tabBarActiveTintColor: colors.primary,
           tabBarInactiveTintColor: colors.textSecondary,
           tabBarLabelStyle: { fontSize: typography.bodySmall - 2 },
-          tabBarStyle: { height: 64, paddingBottom: 8 },
+          tabBarStyle: { height: 64 + insets.bottom, paddingBottom: 8 + insets.bottom },
         }}
       >
         <Tab.Screen

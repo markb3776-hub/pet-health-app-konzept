@@ -26,6 +26,7 @@ import {
   Platform,
   useWindowDimensions,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { getDb } from '../db/database';
@@ -104,6 +105,8 @@ function petToDraft(p: PetRow): EditPetDraft {
 }
 
 export default function EditPetScreen() {
+  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): Systemleiste unten freihalten.
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const route = useRoute();
   const petId = (route.params as { petId: string }).petId;
@@ -287,7 +290,7 @@ export default function EditPetScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+      <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]} keyboardShouldPersistTaps="handled">
         <Text style={styles.speciesNote}>
           Tierart: {speciesCfg?.label ?? species} – die Tierart bestimmt den Aufbau der Akte und
           lässt sich deshalb nicht ändern. Stimmt sie nicht, lege das Tier bitte neu an.

@@ -17,6 +17,7 @@
  */
 import React, { useCallback, useState } from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { getDb, uuid } from '../db/database';
 import {
@@ -53,6 +54,9 @@ export function isInSeason(month: number, start: number | null, end: number | nu
 }
 
 export default function AppointmentsScreen() {
+  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): kein Navigations-Header,
+  // daher eigenen Abstand zur Statusleiste reservieren.
+  const insets = useSafeAreaInsets();
   const todayKey = useTodayKey();
   const currentMonth = parseInt(todayKey.slice(5, 7), 10);
   const [open, setOpen] = useState<ReminderRow[]>([]);
@@ -158,7 +162,7 @@ export default function AppointmentsScreen() {
   const upcoming = open.filter((r) => r.due_date.slice(0, 10) > todayKey);
 
   return (
-    <View style={styles.flex}>
+    <View style={[styles.flex, { paddingTop: insets.top }]}>
       <ScrollView style={styles.container} contentContainerStyle={styles.scroll}>
         <Text style={styles.headline}>Termine</Text>
         {open.length === 0 && done.length === 0 ? (

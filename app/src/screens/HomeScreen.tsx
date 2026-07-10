@@ -21,6 +21,7 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -51,6 +52,9 @@ export default function HomeScreen() {
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
   const todayKey = useTodayKey();
+  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): Home hat keinen
+  // Navigations-Header, daher eigenen Abstand zur Statusleiste reservieren.
+  const insets = useSafeAreaInsets();
 
   const [pets, setPets] = useState<PetRow[]>([]);
   const [dueToday, setDueToday] = useState<ReminderRow[]>([]);
@@ -110,7 +114,7 @@ export default function HomeScreen() {
   const hasPets = pets.length > 0;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text style={styles.greeting}>
           {ownerName ? `Hallo ${ownerName}!` : 'Hallo!'}

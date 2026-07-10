@@ -19,6 +19,7 @@ import {
   Alert,
   StyleSheet,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -48,6 +49,9 @@ const MENU: { key: string; label: string; hint: string; plannedIn: string | null
 ];
 
 export default function MoreScreen() {
+  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): kein Navigations-Header,
+  // daher eigenen Abstand zur Statusleiste reservieren.
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -92,7 +96,7 @@ export default function MoreScreen() {
   }
 
   return (
-    <View style={styles.flex}>
+    <View style={[styles.flex, { paddingTop: insets.top }]}>
       <ScrollView style={styles.container} contentContainerStyle={styles.scroll}>
         <Text style={styles.headline}>Mehr</Text>
 

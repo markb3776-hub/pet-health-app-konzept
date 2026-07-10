@@ -23,6 +23,7 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
 export type CaptureAction = 'foto' | 'gewicht' | 'notiz' | 'vorfall' | 'impfung' | 'medikament';
@@ -70,6 +71,9 @@ interface CaptureSheetProps {
 export default function CaptureSheet({ visible, onClose, onAction }: CaptureSheetProps) {
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
+  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): Das Sheet liegt am unteren
+  // Rand – der Schliessen-Knopf braucht Abstand zur System-Navigationsleiste.
+  const insets = useSafeAreaInsets();
 
   function handlePress(action: CaptureAction) {
     onAction(action);
@@ -79,7 +83,7 @@ export default function CaptureSheet({ visible, onClose, onAction }: CaptureShee
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       {/* Abdunkelung: Tap ausserhalb schliesst das Sheet */}
       <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel="Erfassen schließen" />
-      <View style={[styles.sheet, { maxHeight: height * 0.8 }]}>
+      <View style={[styles.sheet, { maxHeight: height * 0.8, paddingBottom: spacing.l + insets.bottom }]}>
         <View style={styles.grabber} />
         <Text style={styles.headline}>Was möchtest du festhalten?</Text>
         <ScrollView keyboardShouldPersistTaps="handled">

@@ -10,6 +10,7 @@
  */
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -17,9 +18,12 @@ import { colors, typography, spacing } from '../theme/theme';
 
 export default function EmergencyFab({ petId }: { petId?: string }) {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): FAB lag hinter der
+  // System-Navigationsleiste. bottom beruecksichtigt jetzt insets.bottom.
+  const insets = useSafeAreaInsets();
   return (
     <Pressable
-      style={styles.fab}
+      style={[styles.fab, { bottom: spacing.m + insets.bottom }]}
       onPress={() => navigation.navigate('Notfallpass', petId ? { petId } : undefined)}
       accessibilityLabel="Notfall-Pass öffnen"
       accessibilityRole="button"

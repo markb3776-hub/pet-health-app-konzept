@@ -31,6 +31,7 @@ import {
   Platform,
   useWindowDimensions,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
@@ -71,6 +72,8 @@ const EMPTY_DRAFT: AddPetDraft = {
 const GENDER_OPTIONS = ['Männlich', 'Weiblich', 'Unbekannt'];
 
 export default function AddPetScreen() {
+  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): Systemleiste unten freihalten.
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute();
   const isFirstPet = (route.params as { firstPet?: boolean } | undefined)?.firstPet === true;
@@ -211,7 +214,7 @@ export default function AddPetScreen() {
     >
       <ScrollView
         style={styles.container}
-        contentContainerStyle={styles.scroll}
+        contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]}
         keyboardShouldPersistTaps="handled"
       >
         {isFirstPet ? (

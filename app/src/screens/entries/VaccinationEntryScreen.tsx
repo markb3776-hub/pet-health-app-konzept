@@ -23,6 +23,7 @@ import {
   Platform,
   useWindowDimensions,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
 import { getDb, uuid } from '../../db/database';
 import { getSpeciesConfig } from '../../config/species';
@@ -44,6 +45,8 @@ interface VaccinationDraft {
 }
 
 export default function VaccinationEntryScreen() {
+  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): Systemleiste unten freihalten.
+  const insets = useSafeAreaInsets();
   const route = useRoute();
   const presetPetId = (route.params as { petId?: string } | undefined)?.petId ?? null;
   const { width, height } = useWindowDimensions();
@@ -146,7 +149,7 @@ export default function VaccinationEntryScreen() {
 
   return (
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+      <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]} keyboardShouldPersistTaps="handled">
         <PetPicker pets={eligiblePets} selectedId={effectivePetId} onSelect={(id) => update('petId', id)} />
 
         <FieldLabel>Was wurde gemacht?</FieldLabel>

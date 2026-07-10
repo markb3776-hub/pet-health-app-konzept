@@ -12,6 +12,7 @@
  */
 import React, { useCallback, useState } from 'react';
 import { View, Text, Pressable, Image, ScrollView, StyleSheet, Alert } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -30,6 +31,8 @@ interface PetRow {
 }
 
 export default function ManagePetsScreen() {
+  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): Systemleiste unten freihalten.
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [active, setActive] = useState<PetRow[]>([]);
   const [archived, setArchived] = useState<PetRow[]>([]);
@@ -136,7 +139,7 @@ export default function ManagePetsScreen() {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.scroll}>
+    <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]}>
       <Text style={styles.sectionTitle}>Deine Tiere</Text>
       {loaded && active.length === 0 ? (
         <Text style={styles.emptyText}>Kein aktives Tier. Lege auf der Startseite eines an – oder hole eines aus dem Archiv zurück.</Text>

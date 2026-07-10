@@ -29,6 +29,7 @@ import {
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useRoute, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
@@ -132,6 +133,8 @@ function parseIncidentNotes(notes: string | null): { text: string; detail: strin
 }
 
 export default function PetFileScreen() {
+  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): Systemleiste unten freihalten.
+  const insets = useSafeAreaInsets();
   const route = useRoute();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const petId = (route.params as { petId: string }).petId;
@@ -434,7 +437,7 @@ export default function PetFileScreen() {
 
   return (
     <View style={styles.container}>
-    <ScrollView style={styles.container} contentContainerStyle={styles.scroll}>
+    <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]}>
       {isLandscape ? (
         // Querformat: Passkarte links, Reiter-Inhalt rechts (Screen-Flow 1.1 Regel 2)
         <View style={styles.landscapeRow}>
