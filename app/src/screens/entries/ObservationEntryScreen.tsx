@@ -106,7 +106,7 @@ export default function ObservationEntryScreen() {
       : form.notes.trim().length > 0);
 
   async function pickPhoto(fromCamera: boolean) {
-    const { takePhoto, pickFromGallery } = require('../utils/imagePicker');
+    const { takePhoto, pickFromGallery } = require('../../utils/imagePicker');
     const result = fromCamera ? await takePhoto() : await pickFromGallery();
     if (!result.cancelled) update('photoUri', result.uri);
   }

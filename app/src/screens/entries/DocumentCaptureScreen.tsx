@@ -90,7 +90,7 @@ export default function DocumentCaptureScreen() {
   async function capturePhoto() {
     setAsking(true);
     try {
-      const { takePhoto } = require('../utils/imagePicker');
+      const { takePhoto } = require('../../utils/imagePicker');
       const result = await takePhoto();
       if (!result.cancelled) update('photoUri', result.uri);
     } finally {
@@ -99,7 +99,7 @@ export default function DocumentCaptureScreen() {
   }
 
   async function pickFromGallery() {
-    const { pickFromGallery: pick } = require('../utils/imagePicker');
+    const { pickFromGallery: pick } = require('../../utils/imagePicker');
     const result = await pick();
     if (!result.cancelled) update('photoUri', result.uri);
   }

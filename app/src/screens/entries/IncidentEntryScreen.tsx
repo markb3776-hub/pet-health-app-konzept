@@ -137,7 +137,7 @@ export default function IncidentEntryScreen() {
   const canSave = effectivePetId !== null && form.freeText.trim().length > 0 && !saving && !saved;
 
   async function pickPhoto(fromCamera: boolean) {
-    const { takePhoto, pickFromGallery } = require('../utils/imagePicker');
+    const { takePhoto, pickFromGallery } = require('../../utils/imagePicker');
     const result = fromCamera ? await takePhoto() : await pickFromGallery();
     if (!result.cancelled) update('photoUri', result.uri);
   }
