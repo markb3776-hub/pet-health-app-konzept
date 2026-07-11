@@ -17,7 +17,36 @@
 
 ---
 
-## Geplant für v0.1.2 (wartet auf GO)
+## v0.1.2 – GEBAUT (11.07.2026)
+
+> APK erfolgreich gebaut (134 MB). Alle unten gelisteten Punkte sind implementiert.
+
+---
+
+## Geplant für v0.1.3 (nächster Durchlauf)
+
+### Neue Punkte aus Tester-Feedback
+
+| Nr. | Feature | Beschreibung | Entscheidung |
+|:---|:---|:---|:---|
+| 34 | Notfall-Tab (ISO) | Floating-Button entfernen, Notfall als 5. Tab mit ISO-Erste-Hilfe-Zeichen (weißes Kreuz auf grünem Grund) | E-58 |
+| 35 | Überfällig-Karte antippbar | Karte auf HomeScreen navigiert bei Tap direkt zum Termine-Tab | E-59 |
+| 36 | Tier-Kacheln kompakter | Weniger Padding, mehr Tiere auf einen Blick sichtbar | E-60 |
+| 37 | App-Shortcut | Lang drücken auf App-Icon → "Notfallpass" Schnellzugriff | E-61 |
+| 38 | QR-Änderungshinweis | Nach Änderung Notfall-relevanter Daten: "Pass veraltet. Neu drucken?" | E-64 |
+| 39 | QR-Druckdatum | PDF-Ausdruck zeigt "Stand: [Datum]" unten | E-65 |
+| 40 | Notfallpass-Tipp | Hinweis: "Drucke den Pass aus und bringe ihn dort an, wo dein Tier im Notfall gefunden wird" | Neutral für alle 14 Tierarten |
+
+### Für nach Prototyp (Backlog)
+
+| Nr. | Feature | Beschreibung | Entscheidung |
+|:---|:---|:---|:---|
+| B-01 | Sperrbildschirm-Notification | Optionale permanente Notification für Notfallpass-Zugriff (Opt-in) | E-62 |
+| B-02 | Homescreen-Widget | 1×1 Kachel mit grünem Kreuz → öffnet Notfallpass | Kommt nach Prototyp |
+
+---
+
+## Bereits implementiert in v0.1.2
 
 ### Features & UX
 
@@ -28,7 +57,7 @@
 | 3 | Allergien & Vorerkrankungen | Ein Bereich, zwei separate Titelfelder in Stammdaten | ✅ Bestätigt |
 | 4 | Erinnerungs-Vorlauf | X Tage vorher erinnern (min. 1 Tag) | ✅ Bestätigt |
 | 5 | Überfällig-Hinweis Impfungen | Ehrlicher Text, keine medizinische Empfehlung | ✅ Bestätigt |
-| 6 | Parasitenschutz-Typ | Eigene Kategorie oder Typ-Auswahl? | ⏳ Offen (O-03) |
+| 6 | Parasitenschutz-Typ | Eigene Kategorie mit Untertypen (Spot-On/Halsband/Tablette) | ✅ Implementiert (E-53) |
 
 ### Datensicherung & Datenhoheit
 

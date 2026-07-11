@@ -61,6 +61,14 @@
 | E-55 | Farbpalette | Orange + Gelb hinzu, Oliv + Gold entfernt, Weiß (Cremeweiß mit Rand) ergänzt | Zu viel Grün, fehlende Grundfarben |
 | E-56 | Galerie-Favoriten | Shared ImagePicker-Helper mit korrektem Android 13+ Permission-Handling | Testperson: Fotos aus Favoriten nicht aufrufbar |
 | E-57 | APK v0.1.2 | Erfolgreich gebaut (134 MB), compileSdk 36, alle 33 Punkte implementiert | Build 11.07.2026 |
+| E-58 | Notfall-Button | Floating-Button ENTFERNT. Stattdessen: Notfall als 5. Tab mit ISO-Erste-Hilfe-Zeichen (weißes Kreuz auf grünem Grund) | Verdeckt Inhalte, universell erkennbar, immer erreichbar |
+| E-59 | Überfällig-Karte | Karte auf HomeScreen wird antippbar → navigiert direkt zum Termine-Tab | Nutzer erwartet Interaktion |
+| E-60 | Tier-Kacheln | Kompakter gestalten (weniger Padding) → mehr Tiere auf einen Blick | Ohne Floating-Button ist mehr Platz, wichtige Infos schneller sichtbar |
+| E-61 | App-Shortcut | Lang drücken auf App-Icon → "Notfallpass" als Schnellzugriff (Android-Standard) | Sofort umsetzbar, kein Setup nötig |
+| E-62 | Sperrbildschirm-Zugriff | Optionale permanente Notification für Notfallpass-Zugriff vom Sperrbildschirm (Opt-in) | Kommt nach Prototyp |
+| E-63 | QR-Code statisch | QR-Code bleibt statisch (Klartext, kein Server-Link). Doktrin-konform. | Dynamischer QR bräuchte Server → widerspricht Offline-Doktrin |
+| E-64 | QR-Änderungshinweis | Nach Änderung von Notfall-relevanten Daten: Hinweis "Dein ausgedruckter Pass ist veraltet. Neu drucken?" | Nutzer vergisst sonst veralteten Ausdruck |
+| E-65 | QR-Druckdatum | PDF-Ausdruck zeigt unten: "Stand: [Datum]" | Finder/Besitzer sieht sofort ob Pass aktuell ist |
 
 ### 10.07.2026
 
