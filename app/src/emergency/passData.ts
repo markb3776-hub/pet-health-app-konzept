@@ -37,6 +37,19 @@ export interface PassPet {
   vet_practice_phone: string | null;
   allergies: string | null;
   pre_conditions: string | null;
+  // E-80: Pferde-spezifische Felder (nur bei species=pferd befuellt)
+  equine_pass_number: string | null;
+  equine_brand: string | null;
+  equine_markings: string | null;
+  equine_estimated_weight_kg: number | null;
+  equine_weight_date: string | null;
+  equine_colic_history: string | null;
+  equine_stable_name: string | null;
+  equine_stable_phone: string | null;
+  equine_box_number: string | null;
+  equine_farrier_name: string | null;
+  equine_farrier_phone: string | null;
+  equine_housing_type: string | null;
   updated_at: string;
 }
 
@@ -63,6 +76,29 @@ export interface PassParasiteProtection {
   active_since: string | null;
 }
 
+/** E-80: Pferde-spezifische Kotprobe (selektive Entwurmung). */
+export interface PassFecalSample {
+  date: string;
+  epg_value: number | null;
+}
+
+/** E-80: Pferde-spezifische Notfallpass-Daten. */
+export interface PassEquineData {
+  passNumber: string | null;
+  brand: string | null;
+  markings: string | null;
+  estimatedWeightKg: number | null;
+  weightDate: string | null;
+  colicHistory: string | null;
+  stableName: string | null;
+  stablePhone: string | null;
+  boxNumber: string | null;
+  farrierName: string | null;
+  farrierPhone: string | null;
+  housingType: string | null;
+  lastFecalSample: PassFecalSample | null;
+}
+
 export interface PassData {
   pet: PassPet;
   speciesLabel: string;
@@ -74,6 +110,8 @@ export interface PassData {
   vaccinations: PassVaccination[];
   parasiteProtection: PassParasiteProtection[];
   lastWeight: { value: number; unit: string; date: string } | null;
+  /** E-80: Pferde-spezifische Daten (null bei allen anderen Tierarten). */
+  equineData: PassEquineData | null;
   ownerName: string | null;
   ownerPhone: string | null;
   /** Juengstes updated_at ueber alle Datenquellen des Passes (Statuszeile). */
@@ -98,7 +136,12 @@ export async function loadPassData(petId: string): Promise<PassData | null> {
             chip_number, coat_color, photo_uri, special_features,
             specialist_vet_name, specialist_vet_phone,
             vet_practice_name, vet_practice_phone,
-            allergies, pre_conditions, updated_at
+            allergies, pre_conditions,
+            equine_pass_number, equine_brand, equine_markings,
+            equine_estimated_weight_kg, equine_weight_date,
+            equine_colic_history, equine_stable_name, equine_stable_phone,
+            equine_box_number, equine_farrier_name, equine_farrier_phone,
+            equine_housing_type, updated_at
      FROM pets WHERE id = ? AND deleted_at IS NULL`,
     [petId]
   );
@@ -179,6 +222,23 @@ export async function loadPassData(petId: string): Promise<PassData | null> {
     [petId]
   );
 
+  // E-80: Pferde-spezifisch – letzte Kotprobe (selektive Entwurmung)
+  let lastFecalSample: PassEquineData['lastFecalSample'] = null;
+  if (pet.species === 'pferd') {
+    const fecalRow = await db.getFirstAsync<{
+      date: string;
+      epg_value: number | null;
+    }>(
+      `SELECT date, epg_value FROM health_records
+       WHERE pet_id = ? AND record_type IN ('Kotprobe','kotprobe') AND deleted_at IS NULL
+       ORDER BY date DESC LIMIT 1`,
+      [petId]
+    );
+    if (fecalRow) {
+      lastFecalSample = { date: fecalRow.date, epg_value: fecalRow.epg_value };
+    }
+  }
+
   const ownerName = await getOwnerName();
   const ownerPhone = await getOwnerPhone();
 
@@ -212,6 +272,21 @@ export async function loadPassData(petId: string): Promise<PassData | null> {
     lastWeight: weightRow
       ? { value: weightRow.value, unit: weightRow.unit ?? 'kg', date: weightRow.date }
       : null,
+    equineData: pet.species === 'pferd' ? {
+      passNumber: pet.equine_pass_number,
+      brand: pet.equine_brand,
+      markings: pet.equine_markings,
+      estimatedWeightKg: pet.equine_estimated_weight_kg,
+      weightDate: pet.equine_weight_date,
+      colicHistory: pet.equine_colic_history,
+      stableName: pet.equine_stable_name,
+      stablePhone: pet.equine_stable_phone,
+      boxNumber: pet.equine_box_number,
+      farrierName: pet.equine_farrier_name,
+      farrierPhone: pet.equine_farrier_phone,
+      housingType: pet.equine_housing_type,
+      lastFecalSample,
+    } : null,
     ownerName,
     ownerPhone,
     lastUpdated,
@@ -241,6 +316,10 @@ export function buildQrPayload(d: PassData): string {
   lines.push(`Tier: ${d.pet.name} – ${d.speciesLabel}${d.pet.breed ? `, ${d.pet.breed}` : ''}`);
   if (d.pet.birth_date) lines.push(`Geboren: ${formatDate(d.pet.birth_date)}`);
   if (d.pet.chip_number) lines.push(`Chip: ${d.pet.chip_number}`);
+  // E-80: Pferde-spezifische QR-Zeilen
+  if (d.equineData?.passNumber) lines.push(`Equidenpass: ${d.equineData.passNumber}`);
+  if (d.equineData?.markings) lines.push(`Abzeichen: ${d.equineData.markings}`);
+  if (d.equineData?.brand) lines.push(`Brand: ${d.equineData.brand}`);
   lines.push(
     `Merkmale: ${d.pet.special_features?.trim() || 'Keine besonderen Merkmale erfasst'}`
   );
@@ -280,6 +359,24 @@ export function buildQrPayload(d: PassData): string {
         d.pet.specialist_vet_phone ? ` – Tel. ${d.pet.specialist_vet_phone}` : ''
       }`
     );
+  }
+  // E-80: Pferde-spezifisch – Stallkontakt, Hufschmied, Gewicht, Kolik, Kotprobe
+  if (d.equineData) {
+    const eq = d.equineData;
+    if (eq.stableName) {
+      lines.push(`Stall: ${eq.stableName}${eq.boxNumber ? ` (Box ${eq.boxNumber})` : ''}${eq.stablePhone ? ` – Tel. ${eq.stablePhone}` : ''}`);
+    }
+    if (eq.farrierName) {
+      lines.push(`Hufschmied: ${eq.farrierName}${eq.farrierPhone ? ` – Tel. ${eq.farrierPhone}` : ''}`);
+    }
+    if (eq.estimatedWeightKg) {
+      lines.push(`Geschaetztes Gewicht: ca. ${String(eq.estimatedWeightKg).replace('.', ',')} kg${eq.weightDate ? ` (${formatDate(eq.weightDate)})` : ''}`);
+    }
+    if (eq.colicHistory) lines.push(`Kolik-Vorgeschichte: ${eq.colicHistory}`);
+    if (eq.lastFecalSample) {
+      lines.push(`Letzte Kotprobe: ${formatDate(eq.lastFecalSample.date)}${eq.lastFecalSample.epg_value != null ? ` – ${eq.lastFecalSample.epg_value} EpG` : ''}`);
+    }
+    if (eq.housingType) lines.push(`Haltung: ${eq.housingType}`);
   }
   lines.push(`Stand: ${formatDate(d.lastUpdated)}`);
   return lines.join('\n');
@@ -385,12 +482,24 @@ export function buildPassHtml(d: PassData, photoDataUri: string | null): string 
         ? esc(d.pet.special_features)
         : '<span class="muted">Keine besonderen Merkmale erfasst</span>'
     }</div>
+    ${d.equineData?.passNumber ? `<div>Equidenpass-Nr.: ${esc(d.equineData.passNumber)}</div>` : ''}
+    ${d.equineData?.markings ? `<div>Abzeichen: ${esc(d.equineData.markings)}</div>` : ''}
+    ${d.equineData?.brand ? `<div>Brand: ${esc(d.equineData.brand)}</div>` : ''}
     <h2>Allergien und Unverträglichkeiten</h2>${allergies}
-    <h2>Vorerkrankungen</h2>${conditions}
+    <h2>Vorerkrankungen</h2>
+    ${d.equineData?.colicHistory ? `<div><strong>Kolik-Vorgeschichte:</strong> ${esc(d.equineData.colicHistory)}</div>` : ''}
+    ${conditions}
     <h2>Dauermedikation</h2>${meds}
     <h2>Impfstatus</h2>${vacc}
-    <h2>Parasitenschutz</h2>${parasites}
-    <h2>Letzte bekannte Werte</h2><div>Gewicht: ${weight}</div>
+    <h2>Parasitenschutz</h2>
+    ${d.equineData?.lastFecalSample ? `<div>Letzte Kotprobe: ${formatDate(d.equineData.lastFecalSample.date)}${d.equineData.lastFecalSample.epg_value != null ? ` – ${d.equineData.lastFecalSample.epg_value} EpG` : ''}</div>` : ''}
+    ${parasites}
+    <h2>Letzte bekannte Werte</h2>
+    ${d.equineData?.estimatedWeightKg
+      ? `<div>Geschätztes Gewicht: ca. ${String(d.equineData.estimatedWeightKg).replace('.', ',')} kg${d.equineData.weightDate ? ` (${formatDate(d.equineData.weightDate)})` : ''}</div>`
+      : ''}
+    <div>Gewicht: ${weight}</div>
+    ${d.equineData?.housingType ? `<h2>Haltung</h2><div>${esc(d.equineData.housingType)}${d.equineData?.boxNumber ? ` (Box ${esc(d.equineData.boxNumber)})` : ''}</div>` : ''}
     <h2>Kontakt</h2>
     <div>Halter: ${
       d.ownerName ? esc(d.ownerName) : '<span class="muted">Nicht erfasst</span>'
@@ -400,6 +509,12 @@ export function buildPassHtml(d: PassData, photoDataUri: string | null): string 
         ? esc(d.pet.vet_practice_name)
         : '<span class="muted">Nicht erfasst</span>'
     }${d.pet.vet_practice_phone ? ` – Tel. ${esc(d.pet.vet_practice_phone)}` : ''}</div>
+    ${d.equineData?.stableName
+      ? `<div>Stall: ${esc(d.equineData.stableName)}${d.equineData.boxNumber ? ` (Box ${esc(d.equineData.boxNumber)})` : ''}${d.equineData.stablePhone ? ` – Tel. ${esc(d.equineData.stablePhone)}` : ''}</div>`
+      : ''}
+    ${d.equineData?.farrierName
+      ? `<div>Hufschmied: ${esc(d.equineData.farrierName)}${d.equineData.farrierPhone ? ` – Tel. ${esc(d.equineData.farrierPhone)}` : ''}</div>`
+      : ''}
     ${
       d.needsSpecialist && d.pet.specialist_vet_name
         ? `<div>Fachkundiger ${esc(d.vetTerm)}: ${esc(d.pet.specialist_vet_name)}${

@@ -147,6 +147,24 @@ async function migrate(database: SQLite.SQLiteDatabase): Promise<void> {
   await addColumnIfMissing(database, 'reminders', 'edited_at', 'TEXT');
   // Backup-Metadaten
   await addColumnIfMissing(database, 'pets', 'last_backup_at', 'TEXT');
+
+  // Migration 005 (E-80): Pferde-spezifische Felder im Notfallpass.
+  // Equidenpass ist EU-Pflichtdokument (VO 2015/262); Stallkontakt fuer Notfall;
+  // Geschaetztes Gewicht (Massband) statt Waage; Kolik-Vorgeschichte; Hufschmied.
+  await addColumnIfMissing(database, 'pets', 'equine_pass_number', 'TEXT'); // Equidenpass-Nummer
+  await addColumnIfMissing(database, 'pets', 'equine_brand', 'TEXT'); // Brand/Brandzeichen
+  await addColumnIfMissing(database, 'pets', 'equine_markings', 'TEXT'); // Abzeichen (Blesse, Socken etc.)
+  await addColumnIfMissing(database, 'pets', 'equine_estimated_weight_kg', 'REAL'); // Geschaetztes Gewicht (Massband)
+  await addColumnIfMissing(database, 'pets', 'equine_weight_date', 'TEXT'); // Datum der Schaetzung
+  await addColumnIfMissing(database, 'pets', 'equine_colic_history', 'TEXT'); // Kolik-Vorgeschichte (Freitext)
+  await addColumnIfMissing(database, 'pets', 'equine_stable_name', 'TEXT'); // Pensionsstall/Stallname
+  await addColumnIfMissing(database, 'pets', 'equine_stable_phone', 'TEXT'); // Stall-Telefon
+  await addColumnIfMissing(database, 'pets', 'equine_box_number', 'TEXT'); // Box-/Paddock-Nummer
+  await addColumnIfMissing(database, 'pets', 'equine_farrier_name', 'TEXT'); // Hufschmied Name
+  await addColumnIfMissing(database, 'pets', 'equine_farrier_phone', 'TEXT'); // Hufschmied Telefon
+  await addColumnIfMissing(database, 'pets', 'equine_housing_type', 'TEXT'); // Box/Offenstall/Weide
+  // Kotprobe-Ergebnisse werden in health_records gespeichert (record_type = 'Kotprobe')
+  await addColumnIfMissing(database, 'health_records', 'epg_value', 'INTEGER'); // Eier pro Gramm
 }
 
 async function addColumnIfMissing(

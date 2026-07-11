@@ -47,6 +47,7 @@ import {
 } from '../emergency/passData';
 import { formatDate } from '../time/timeModule';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
+import { EquinePassBlocks } from '../emergency/EquinePassBlocks';
 
 /* ─── Hilfe-Texte fuer die (?)-Tooltips (E-77) ─── */
 const HELP_TEXTS: Record<string, string> = {
@@ -244,8 +245,14 @@ export default function EmergencyPassScreen() {
    * 4. Impfstatus (nur echte Impfungen)
    * 5. Parasitenschutz (Wurmkuren, Zecken-/Flohschutz)
    * 6. Letzte bekannte Werte
+   *
+   * E-80: Bei species=pferd wird stattdessen EquinePassBlocks gerendert.
    */
-  const medicalBlocks = (
+  const isEquine = pet.species === 'pferd';
+
+  const medicalBlocks = isEquine ? (
+    <EquinePassBlocks data={data} Section={Section} setHelpVisible={setHelpVisible} />
+  ) : (
     <>
       <Section title="Allergien und Unverträglichkeiten" helpKey="allergien" onHelp={setHelpVisible}>
         {data.allergies.length ? (
