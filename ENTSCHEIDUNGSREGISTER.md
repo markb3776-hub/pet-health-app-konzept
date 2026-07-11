@@ -75,6 +75,7 @@
 | E-69 | Kreuz/Plus + Grünspektrum = STRIKT UNTERSAGT | Notfall-Tab nutzt exaktes ISO 7010 E003: weißes Kreuz auf ISO-Grün (#237F52, RAL 6032). Alle weiteren Kombinationen von Kreuz/Plus (+) mit JEDER Farbe des gesamten Grünspektrums (Grün, Teal, Mint, Lime, Olive, Smaragd etc.) sind STRIKT UNTERSAGT. Plus-Zeichen in Schwarz, Grau, Blau etc. erlaubt. | Eindeutige, sofortige Assoziation: Grünes Kreuz = Notfall. Keine Ausnahmen, keine Verwechslung. |
 | E-70 | App-Farbe = Teal (#2E9E83) | Teal #2E9E83 ist die fixe, geblockte Primary-Farbe der App. Ersetzt das bisherige dunkle Grün #3E6B4F im Code. Alle UI-Elemente (Buttons, aktive Tabs, Akzente, Header) nutzen diese Farbe. | Einheitliche Markenfarbe, klar unterscheidbar vom ISO-Grün (#237F52) des Notfallpasses. |
 | E-71 | Teal für Buttons = OK (Nutzer-validiert) | Teal (#2E9E83) darf weiterhin für alle gefüllten Buttons (Exportieren, Speichern, QR-Code zeigen etc.) und aktive Elemente (Tabs, Chips, Checkboxen) verwendet werden. Kein Wechsel auf andere Farbe nötig. | Rückmeldung Testperson 11.07.2026: Grün wird mit "OK / Bestätigung" assoziiert. Notfall-Tab hebt sich durch Form + Position ausreichend ab. |
+| E-72 | Show-on-Lock-Screen: verschoben | v0.1.4 implementiert permanente Notification + Tipp öffnet Notfallpass. OHNE Entsperren (showWhenLocked Activity) wird auf v0.1.5 verschoben – benötigt nativen Kotlin-Code. | Pragmatischer Prototyp-Ansatz: Notification sofort nutzbar, Lock-Screen-Bypass als Verbesserung. |
 
 ### 10.07.2026
 
