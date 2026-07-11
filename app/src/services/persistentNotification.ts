@@ -1,54 +1,60 @@
 /**
- * simplyPet: Permanente Notification (E-62)
+ * simplyPet: Permanente Notification via Foreground Service (E-73)
  *
- * Opt-in Notification in der Statusleiste:
- * - Prioritaet LOW (kein Sound, keine Vibration)
- * - Beim Tippen: oeffnet Notfallpass
- * - Standardmaessig AUS, Nutzer aktiviert in Einstellungen
+ * Verhalten wie ein Lichtschalter:
+ * - AN = Notification ist da (nicht wegwischbar, bleibt nach Antippen)
+ * - AUS = Notification verschwindet sofort
  *
- * E-72: Show-on-Lock-Screen (OHNE Entsperren) auf v0.1.5 verschoben.
+ * Nutzt nativen Android Foreground Service (EmergencyForegroundService.kt)
+ * ueber das Bridge-Modul (EmergencyServiceBridge).
+ *
+ * Fallback: Wenn NativeModules nicht verfuegbar (z.B. Expo Go),
+ * wird expo-notifications mit sticky:true verwendet (begrenzt funktional).
  */
-import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import { Platform, NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const KEY_PERSISTENT_ENABLED = 'simplypet.persistent_notification';
-const NOTIFICATION_ID = 'simplypet-emergency-persistent';
-const CHANNEL_ID = 'simplypet-emergency-channel';
 
-async function ensureChannel(): Promise<void> {
-  if (Platform.OS !== 'android') return;
+const { EmergencyServiceBridge } = NativeModules;
 
-  await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
-    name: 'Notfallpass',
-    description: 'Permanenter Schnellzugriff auf den Notfallpass',
-    importance: Notifications.AndroidImportance.LOW,
-    sound: undefined,
-    vibrationPattern: [],
-    lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
-    enableVibrate: false,
-    showBadge: false,
-  });
+async function startForegroundService(): Promise<void> {
+  if (EmergencyServiceBridge) {
+    await EmergencyServiceBridge.startService();
+  } else {
+    // Fallback fuer Expo Go (begrenzt funktional)
+    const Notifications = await import('expo-notifications');
+    await Notifications.setNotificationChannelAsync('simplypet-emergency-channel', {
+      name: 'Notfallpass',
+      description: 'Permanenter Schnellzugriff auf den Notfallpass',
+      importance: Notifications.AndroidImportance.LOW,
+      sound: undefined,
+      vibrationPattern: [],
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+      enableVibrate: false,
+      showBadge: false,
+    });
+    await Notifications.scheduleNotificationAsync({
+      identifier: 'simplypet-emergency-persistent',
+      content: {
+        title: 'simplyPet Notfallpass',
+        body: 'Tippe für sofortigen Zugriff auf den Notfallpass.',
+        data: { action: 'open_emergency_pass' },
+        sticky: true,
+        priority: Notifications.AndroidNotificationPriority.LOW,
+      },
+      trigger: null,
+    });
+  }
 }
 
-async function showPersistentNotification(): Promise<void> {
-  await ensureChannel();
-
-  await Notifications.scheduleNotificationAsync({
-    identifier: NOTIFICATION_ID,
-    content: {
-      title: 'simplyPet Notfallpass',
-      body: 'Tippe für sofortigen Zugriff auf den Notfallpass.',
-      data: { action: 'open_emergency_pass' },
-      sticky: true,
-      priority: Notifications.AndroidNotificationPriority.LOW,
-    },
-    trigger: null,
-  });
-}
-
-async function dismissPersistentNotification(): Promise<void> {
-  await Notifications.dismissNotificationAsync(NOTIFICATION_ID);
+async function stopForegroundService(): Promise<void> {
+  if (EmergencyServiceBridge) {
+    await EmergencyServiceBridge.stopService();
+  } else {
+    const Notifications = await import('expo-notifications');
+    await Notifications.dismissNotificationAsync('simplypet-emergency-persistent');
+  }
 }
 
 export async function isPersistentNotificationEnabled(): Promise<boolean> {
@@ -64,20 +70,20 @@ export async function setPersistentNotificationEnabled(enabled: boolean): Promis
   await AsyncStorage.setItem(KEY_PERSISTENT_ENABLED, enabled ? '1' : '0');
 
   if (enabled) {
-    await showPersistentNotification();
+    await startForegroundService();
   } else {
-    await dismissPersistentNotification();
+    await stopForegroundService();
   }
 }
 
 /**
- * Wird beim App-Start aufgerufen: Prueft ob aktiviert und setzt ggf. die Notification.
+ * Wird beim App-Start aufgerufen: Prueft ob aktiviert und startet ggf. den Service.
  */
 export async function initPersistentNotification(): Promise<void> {
   if (Platform.OS !== 'android') return;
 
   const enabled = await isPersistentNotificationEnabled();
   if (enabled) {
-    await showPersistentNotification();
+    await startForegroundService();
   }
 }

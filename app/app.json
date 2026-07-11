@@ -19,7 +19,9 @@
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.POST_NOTIFICATIONS",
-        "android.permission.READ_MEDIA_IMAGES"
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
       ],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
@@ -58,7 +60,10 @@
       "@react-native-community/datetimepicker",
       "expo-sharing",
       "expo-document-picker",
-      "./plugins/withAndroidShortcuts"
+      "./plugins/withAndroidShortcuts",
+      "./plugins/withForegroundService",
+      "./plugins/withForegroundServiceBridge",
+      "./plugins/withRegisterServicePackage"
     ]
   }
 }
