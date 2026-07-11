@@ -1,6 +1,7 @@
 /**
- * simplyPet: Datensicherung (v0.1.2)
+ * simplyPet: Datensicherung (v0.1.4)
  * Entscheidung E-31/E-32/E-33: Automatisches lokales Backup + manueller Export/Import.
+ * E-74: Dateiname mit fortlaufender Nummer + Datum (Backup_001_2026-07-11.simplypet)
  *
  * Doktrin:
  * - Kein Internet, kein Server, kein Account.
@@ -14,15 +15,44 @@ import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
 import { Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getDb } from '../db/database';
 
 const BACKUP_VERSION = 1;
-const BACKUP_FILENAME = 'simplypet_backup.simplypet';
+const KEY_BACKUP_COUNTER = 'simplypet.backup_counter';
+
+/**
+ * Fortlaufende Backup-Nummer holen und um 1 erhoehen.
+ */
+async function getNextBackupNumber(): Promise<number> {
+  try {
+    const stored = await AsyncStorage.getItem(KEY_BACKUP_COUNTER);
+    const current = stored ? parseInt(stored, 10) : 0;
+    const next = current + 1;
+    await AsyncStorage.setItem(KEY_BACKUP_COUNTER, String(next));
+    return next;
+  } catch {
+    return 1;
+  }
+}
+
+/**
+ * Generiert den Dateinamen: Backup_001_2026-07-11.simplypet
+ */
+function generateBackupFilename(number: number): string {
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const numStr = String(number).padStart(3, '0');
+  return `Backup_${numStr}_${yyyy}-${mm}-${dd}.simplypet`;
+}
 
 export interface BackupData {
   version: number;
   created_at: string;
   app_version: string;
+  backup_number: number;
   pets: any[];
   vaccinations: any[];
   medications: any[];
@@ -39,8 +69,9 @@ export interface BackupData {
 /**
  * Erstellt ein vollstaendiges Backup aller Daten inkl. Fotos.
  * Gibt den lokalen Dateipfad zurueck.
+ * isAutoBackup: true = stilles Auto-Backup (Nummer nicht erhoehen, fester Dateiname)
  */
-export async function createBackup(): Promise<string | null> {
+export async function createBackup(isAutoBackup = false): Promise<string | null> {
   try {
     const db = await getDb();
 
@@ -76,10 +107,14 @@ export async function createBackup(): Promise<string | null> {
       }
     }
 
+    // Backup-Nummer: Nur beim manuellen Export erhoehen
+    const backupNumber = isAutoBackup ? 0 : await getNextBackupNumber();
+
     const backup: BackupData = {
       version: BACKUP_VERSION,
       created_at: new Date().toISOString(),
-      app_version: '0.1.2',
+      app_version: '0.1.4',
+      backup_number: backupNumber,
       pets: pets as any[],
       vaccinations: vaccinations as any[],
       medications: medications as any[],
@@ -94,21 +129,30 @@ export async function createBackup(): Promise<string | null> {
     const jsonStr = JSON.stringify(backup);
     const estimatedSize = jsonStr.length * 2; // UTF-16 worst case
     if (freeSpace < estimatedSize + 10 * 1024 * 1024) {
-      Alert.alert(
-        'Nicht genug Speicherplatz',
-        'Bitte schaffe etwas Platz auf deinem Gerät, bevor du ein Backup erstellst.'
-      );
+      if (!isAutoBackup) {
+        Alert.alert(
+          'Nicht genug Speicherplatz',
+          'Bitte schaffe etwas Platz auf deinem Gerät, bevor du ein Backup erstellst.'
+        );
+      }
       return null;
     }
 
-    const backupPath = `${FileSystem.documentDirectory}${BACKUP_FILENAME}`;
+    // Dateiname: Auto-Backup nutzt festen Namen, manueller Export nutzt Nummer+Datum
+    const filename = isAutoBackup
+      ? 'simplypet_auto_backup.simplypet'
+      : generateBackupFilename(backupNumber);
+
+    const backupPath = `${FileSystem.documentDirectory}${filename}`;
     await FileSystem.writeAsStringAsync(backupPath, jsonStr, {
       encoding: FileSystem.EncodingType.UTF8,
     });
 
     return backupPath;
   } catch (error) {
-    Alert.alert('Backup fehlgeschlagen', 'Es gab ein Problem beim Erstellen der Sicherung. Bitte versuche es erneut.');
+    if (!isAutoBackup) {
+      Alert.alert('Backup fehlgeschlagen', 'Es gab ein Problem beim Erstellen der Sicherung. Bitte versuche es erneut.');
+    }
     return null;
   }
 }
@@ -116,32 +160,33 @@ export async function createBackup(): Promise<string | null> {
 /**
  * Automatisches Backup: Wird nach jeder Datenaenderung aufgerufen.
  * Schreibt still im Hintergrund – kein Alert bei Erfolg.
+ * Nutzt festen Dateinamen (ueberschreibt sich selbst).
  */
 export async function autoBackup(): Promise<void> {
   try {
-    await createBackup();
+    await createBackup(true);
   } catch {
     // Stilles Scheitern – Auto-Backup darf die App nicht blockieren
   }
 }
 
 /**
- * Export: Erstellt Backup und oeffnet den Android-Teilen-Dialog.
+ * Export: Erstellt Backup mit fortlaufender Nummer und oeffnet den Android-Teilen-Dialog.
  */
 export async function exportBackup(): Promise<void> {
-  const path = await createBackup();
-  if (!path) return;
+  const backupPath = await createBackup(false);
+  if (!backupPath) return;
 
   const canShare = await Sharing.isAvailableAsync();
   if (!canShare) {
     Alert.alert(
       'Teilen nicht verfügbar',
-      `Die Sicherungsdatei liegt unter:\n${path}\n\nDu kannst sie mit einem Dateimanager manuell kopieren.`
+      `Die Sicherungsdatei liegt unter:\n${backupPath}\n\nDu kannst sie mit einem Dateimanager manuell kopieren.`
     );
     return;
   }
 
-  await Sharing.shareAsync(path, {
+  await Sharing.shareAsync(backupPath, {
     mimeType: 'application/octet-stream',
     dialogTitle: 'simplyPet-Sicherung speichern',
     UTI: 'public.data',
@@ -191,9 +236,14 @@ export async function importBackup(): Promise<boolean> {
     }
 
     return new Promise((resolve) => {
+      const dateStr = new Date(backup.created_at).toLocaleDateString('de-DE');
+      const numStr = backup.backup_number
+        ? ` (Nr. ${backup.backup_number})`
+        : '';
+
       Alert.alert(
         'Sicherung wiederherstellen',
-        `Diese Sicherung enthält ${backup.pets.length} Tier(e) vom ${new Date(backup.created_at).toLocaleDateString('de-DE')}.\n\nVorhandene Daten werden ersetzt.`,
+        `Diese Sicherung enthält ${backup.pets.length} Tier(e) vom ${dateStr}${numStr}.\n\nVorhandene Daten werden ersetzt.`,
         [
           { text: 'Abbrechen', style: 'cancel', onPress: () => resolve(false) },
           {
@@ -301,11 +351,11 @@ async function restoreBackup(backup: BackupData): Promise<void> {
 }
 
 /**
- * Gibt das Datum des letzten Backups zurueck (oder null).
+ * Gibt das Datum des letzten Auto-Backups zurueck (oder null).
  */
 export async function getLastBackupDate(): Promise<string | null> {
   try {
-    const backupPath = `${FileSystem.documentDirectory}${BACKUP_FILENAME}`;
+    const backupPath = `${FileSystem.documentDirectory}simplypet_auto_backup.simplypet`;
     const info = await FileSystem.getInfoAsync(backupPath);
     if (info.exists && !info.isDirectory) {
       return new Date(info.modificationTime! * 1000).toISOString();
