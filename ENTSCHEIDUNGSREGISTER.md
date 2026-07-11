@@ -69,6 +69,8 @@
 | E-63 | QR-Code statisch | QR-Code bleibt statisch (Klartext, kein Server-Link). Doktrin-konform. | Dynamischer QR bräuchte Server → widerspricht Offline-Doktrin |
 | E-64 | QR-Änderungshinweis | Nach Änderung von Notfall-relevanten Daten: Hinweis "Dein ausgedruckter Pass ist veraltet. Neu drucken?" | Nutzer vergisst sonst veralteten Ausdruck |
 | E-65 | QR-Druckdatum | PDF-Ausdruck zeigt unten: "Stand: [Datum]" | Finder/Besitzer sieht sofort ob Pass aktuell ist |
+| E-66 | App-Beschreibung | "Tiergesundheits-App" ENTFERNT. Neu: "simplyPet – dein unabhängiges Pocket-Tool für deine Liebsten." | Kein medizinischer Anspruch, emotional, trifft den Kern |
+| E-67 | Bug: Tierverwaltung Layout | Text wird vertikal dargestellt (Buchstabe pro Zeile). Ursache: flex-Layout der Kacheln. Fix: Text-Container flex:1 | Kritischer UI-Bug in v0.1.2 |
 
 ### 10.07.2026
 

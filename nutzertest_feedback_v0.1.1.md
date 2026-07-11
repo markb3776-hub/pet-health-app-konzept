@@ -36,6 +36,8 @@
 | 38 | QR-Änderungshinweis | Nach Änderung Notfall-relevanter Daten: "Pass veraltet. Neu drucken?" | E-64 |
 | 39 | QR-Druckdatum | PDF-Ausdruck zeigt "Stand: [Datum]" unten | E-65 |
 | 40 | Notfallpass-Tipp | Hinweis: "Drucke den Pass aus und bringe ihn dort an, wo dein Tier im Notfall gefunden wird" | Neutral für alle 14 Tierarten |
+| 41 | App-Beschreibung | "Pocket-Tool für deine Liebsten" statt "Tiergesundheits-App" (Über-Dialog + Footer) | E-66 |
+| 42 | Bug-Fix: Tierverwaltung | Text vertikal statt horizontal – flex-Layout der Kacheln reparieren | E-67 |
 
 ### Für nach Prototyp (Backlog)
 
