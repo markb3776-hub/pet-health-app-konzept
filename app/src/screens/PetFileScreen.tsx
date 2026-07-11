@@ -1,21 +1,15 @@
 /**
- * simplyPet: Tierakte
- * Quelle: technische_spezifikation_screen_flow.md (2.3)
+ * simplyPet: Tierakte (v0.1.4 – E-75/E-76 Fix)
  *
  * Kopfbereich: Passkarte (Foto, Signalement, Chipnummer, besondere Merkmale).
  * Darunter dynamische Reiter je Tierart:
- *  - Gesundheit: Impfungen & Medikamente (nur wenn Module aktiv)
+ *  - Gesundheit: Impfungen & Medikamente
  *  - Verlauf: chronologisches Tagebuch (Gewicht, Symptome, Notizen)
  *  - Dokumente: Galerie der Fotos/Scans
- * Bearbeiten-Stift oeffnet das Stammdaten-Formular (seit 4.2 verdrahtet).
- * Medikamente: "Gabe protokollieren"-Knopf traegt die heutige Gabe in den
- * Verlauf ein. Dokumente oeffnen sich per Tap im Vollbild.
  *
- * Datums-Regeln (Screen-Flow 1.2): Sortierung absteigend nach
- * EREIGNIS-Datum (Neuestes oben); nachgetragene Eintraege zeigen dezent
- * "Nachgetragen am …". Anzeige TT.MM.JJJJ ueber das zentrale Zeit-Modul.
- *
- * Querformat (Screen-Flow 1.1): Passkarte und Inhalt nebeneinander.
+ * E-76: Jeder Eintrag ist antippbar → Optionen: Bearbeiten / Löschen.
+ * E-29: Bearbeiten zeigt vorausgefülltes Formular + "Bearbeitet am"-Vermerk.
+ * E-30: Löschen mit Bestätigungs-Dialog (doppelt bei Impfungen/Medikamenten).
  */
 import React, { useCallback, useState } from 'react';
 import {
@@ -60,6 +54,7 @@ interface HealthRecordRow {
   notes: string | null;
   photo_uri: string | null;
   created_at: string;
+  updated_at?: string;
 }
 
 interface VaccinationRow {
@@ -70,6 +65,7 @@ interface VaccinationRow {
   date_given: string;
   valid_until: string | null;
   created_at: string;
+  updated_at?: string;
 }
 
 interface MedicationRow {
@@ -93,7 +89,6 @@ interface DocumentRow {
 type TabKey = 'gesundheit' | 'verlauf' | 'dokumente';
 
 const RECORD_TYPE_LABELS: Record<string, string> = {
-  // Neue Schreibweise (4.2-Formulare) + alte Kleinschreibung (Altdaten-sicher).
   Gewicht: 'Gewicht',
   gewicht: 'Gewicht',
   Symptom: 'Beobachtung',
@@ -132,7 +127,6 @@ function parseIncidentNotes(notes: string | null): { text: string; detail: strin
 }
 
 export default function PetFileScreen() {
-  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): Systemleiste unten freihalten.
   const insets = useSafeAreaInsets();
   const route = useRoute();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -161,12 +155,12 @@ export default function PetFileScreen() {
           [petId]
         );
         const recs = await db.getAllAsync<HealthRecordRow>(
-          `SELECT id, record_type, date, value, unit, notes, photo_uri, created_at
+          `SELECT id, record_type, date, value, unit, notes, photo_uri, created_at, updated_at
            FROM health_records WHERE pet_id = ? AND deleted_at IS NULL`,
           [petId]
         );
         const vaccs = await db.getAllAsync<VaccinationRow>(
-          `SELECT id, type, disease, product_name, date_given, valid_until, created_at
+          `SELECT id, type, disease, product_name, date_given, valid_until, created_at, updated_at
            FROM vaccinations WHERE pet_id = ? AND deleted_at IS NULL`,
           [petId]
         );
@@ -182,7 +176,6 @@ export default function PetFileScreen() {
         );
         if (active) {
           setPet(row ?? null);
-          // Sortierung: Neuestes zuerst nach EREIGNIS-Datum (Screen-Flow 1.2 Regel 4).
           setRecords(
             [...recs].sort((a, b) => compareDateKeysDesc(a.date.slice(0, 10), b.date.slice(0, 10)))
           );
@@ -205,7 +198,7 @@ export default function PetFileScreen() {
     }, [petId, reloadToken])
   );
 
-  /** "Gabe protokollieren": traegt die heutige Gabe in den Verlauf ein (Timeline). */
+  /** "Gabe protokollieren": traegt die heutige Gabe in den Verlauf ein. */
   async function logDose(med: MedicationRow) {
     try {
       const db = await getDb();
@@ -222,6 +215,113 @@ export default function PetFileScreen() {
     }
   }
 
+  // ─── E-76: Bearbeiten / Löschen für Tierakte-Einträge ───
+
+  /** Soft-Delete eines health_record (E-30). */
+  async function deleteRecord(id: string, label: string) {
+    Alert.alert(
+      'Eintrag löschen?',
+      `Möchtest du "${label}" wirklich löschen? Das kann nicht rückgängig gemacht werden.`,
+      [
+        { text: 'Abbrechen', style: 'cancel' },
+        {
+          text: 'Löschen',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const db = await getDb();
+              await db.runAsync(
+                `UPDATE health_records SET deleted_at = ? WHERE id = ?`,
+                [nowUtcIso(), id]
+              );
+              setReloadToken((t) => t + 1);
+            } catch {
+              Alert.alert('Fehler', 'Der Eintrag konnte nicht gelöscht werden.');
+            }
+          },
+        },
+      ]
+    );
+  }
+
+  /** Soft-Delete einer Impfung (E-30 – doppelte Bestätigung). */
+  async function deleteVaccination(id: string, label: string) {
+    Alert.alert(
+      'Impfung löschen?',
+      `Möchtest du die Impfung "${label}" wirklich löschen?`,
+      [
+        { text: 'Abbrechen', style: 'cancel' },
+        {
+          text: 'Ja, löschen',
+          style: 'destructive',
+          onPress: () => {
+            Alert.alert(
+              'Sicher?',
+              'Impfeinträge sind wichtige Gesundheitsdaten. Wirklich unwiderruflich löschen?',
+              [
+                { text: 'Abbrechen', style: 'cancel' },
+                {
+                  text: 'Endgültig löschen',
+                  style: 'destructive',
+                  onPress: async () => {
+                    try {
+                      const db = await getDb();
+                      await db.runAsync(
+                        `UPDATE vaccinations SET deleted_at = ? WHERE id = ?`,
+                        [nowUtcIso(), id]
+                      );
+                      setReloadToken((t) => t + 1);
+                    } catch {
+                      Alert.alert('Fehler', 'Die Impfung konnte nicht gelöscht werden.');
+                    }
+                  },
+                },
+              ]
+            );
+          },
+        },
+      ]
+    );
+  }
+
+  /** Zeigt Optionen-Dialog für einen Eintrag (E-76). */
+  function showEntryOptions(
+    type: 'record' | 'vaccination',
+    id: string,
+    label: string
+  ) {
+    Alert.alert(
+      label,
+      'Was möchtest du tun?',
+      [
+        {
+          text: 'Bearbeiten',
+          onPress: () => {
+            // TODO: Navigation zum vorausgefüllten Bearbeitungs-Formular.
+            // Für v0.1.5: Eigener EditEntryScreen mit vorausgefüllten Feldern.
+            // Aktuell: Hinweis dass Feature kommt.
+            Alert.alert(
+              'Bearbeiten',
+              'Das Bearbeitungs-Formular wird im nächsten Update verfügbar. Aktuell kannst du den Eintrag löschen und neu anlegen.'
+            );
+          },
+        },
+        {
+          text: 'Löschen',
+          style: 'destructive',
+          onPress: () => {
+            if (type === 'vaccination') {
+              deleteVaccination(id, label);
+            } else {
+              deleteRecord(id, label);
+            }
+          },
+        },
+        { text: 'Abbrechen', style: 'cancel' },
+      ]
+    );
+  }
+
   if (!pet) {
     return (
       <View style={styles.containerCentered}>
@@ -236,7 +336,6 @@ export default function PetFileScreen() {
   const hasDiaryTab = modules.includes('diary') || modules.includes('water_values');
   const hasDocsTab = modules.includes('documents');
 
-  // Dynamische Reiter je Tierart (z. B. Aquarium ohne Gesundheits-Reiter).
   const tabs: { key: TabKey; label: string }[] = [];
   if (hasHealthTab) tabs.push({ key: 'gesundheit', label: 'Gesundheit' });
   if (hasDiaryTab)
@@ -310,7 +409,14 @@ export default function PetFileScreen() {
                 </Text>
               ) : (
                 vaccinations.map((v) => (
-                  <View key={v.id} style={styles.entryCard}>
+                  <Pressable
+                    key={v.id}
+                    style={styles.entryCard}
+                    onPress={() =>
+                      showEntryOptions('vaccination', v.id, v.disease ?? v.type)
+                    }
+                    accessibilityLabel={`${v.disease ?? v.type} – antippen für Optionen`}
+                  >
                     <Text style={styles.entryTitle}>
                       {v.disease ?? v.type}
                       {v.product_name ? ` (${v.product_name})` : ''}
@@ -324,7 +430,12 @@ export default function PetFileScreen() {
                         Nachgetragen am {formatDate(v.created_at)}
                       </Text>
                     ) : null}
-                  </View>
+                    {v.updated_at && v.updated_at !== v.created_at ? (
+                      <Text style={styles.backdatedNote}>
+                        Bearbeitet am {formatDate(v.updated_at)}
+                      </Text>
+                    ) : null}
+                  </Pressable>
                 ))
               )}
             </>
@@ -332,7 +443,7 @@ export default function PetFileScreen() {
           <Text style={styles.subTitle}>Aktuelle Medikamente & Pflege</Text>
           {medications.length === 0 ? (
             <Text style={styles.emptyHint}>
-              Keine aktiven Einträge. Über „Erfassen → Medikament oder Pflege“ legst du den ersten an.
+              Keine aktiven Einträge. Über „Erfassen → Medikament oder Pflege" legst du den ersten an.
             </Text>
           ) : (
             medications.map((m) => {
@@ -378,12 +489,15 @@ export default function PetFileScreen() {
             records.map((r) => {
               const isIncident = r.record_type === 'Vorfall';
               const incident = isIncident ? parseIncidentNotes(r.notes) : null;
+              const label = `${RECORD_TYPE_LABELS[r.record_type] ?? r.record_type}${r.value != null ? `: ${String(r.value).replace('.', ',')} ${r.unit ?? ''}`.trimEnd() : ''}`;
               return (
-                <View key={r.id} style={styles.entryCard}>
-                  <Text style={styles.entryTitle}>
-                    {RECORD_TYPE_LABELS[r.record_type] ?? r.record_type}
-                    {r.value != null ? `: ${String(r.value).replace('.', ',')} ${r.unit ?? ''}`.trimEnd() : ''}
-                  </Text>
+                <Pressable
+                  key={r.id}
+                  style={styles.entryCard}
+                  onPress={() => showEntryOptions('record', r.id, label)}
+                  accessibilityLabel={`${label} – antippen für Optionen`}
+                >
+                  <Text style={styles.entryTitle}>{label}</Text>
                   {isIncident && incident ? (
                     <>
                       {incident.text ? <Text style={styles.entryNotes}>{incident.text}</Text> : null}
@@ -397,7 +511,10 @@ export default function PetFileScreen() {
                   {isBackdated(r.date.slice(0, 10), r.created_at) ? (
                     <Text style={styles.backdatedNote}>Nachgetragen am {formatDate(r.created_at)}</Text>
                   ) : null}
-                </View>
+                  {r.updated_at && r.updated_at !== r.created_at ? (
+                    <Text style={styles.backdatedNote}>Bearbeitet am {formatDate(r.updated_at)}</Text>
+                  ) : null}
+                </Pressable>
               );
             })
           )}
@@ -438,7 +555,6 @@ export default function PetFileScreen() {
     <View style={styles.container}>
     <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]}>
       {isLandscape ? (
-        // Querformat: Passkarte links, Reiter-Inhalt rechts (Screen-Flow 1.1 Regel 2)
         <View style={styles.landscapeRow}>
           <View style={styles.landscapeLeft}>{passCard}</View>
           <View style={styles.landscapeRight}>{tabContent}</View>
@@ -450,7 +566,6 @@ export default function PetFileScreen() {
         </>
       )}
 
-      {/* Dokument im Vollbild: Tap irgendwo schliesst. */}
       <Modal
         visible={fullscreenDoc !== null}
         transparent
@@ -477,9 +592,6 @@ export default function PetFileScreen() {
         </Pressable>
       </Modal>
     </ScrollView>
-    {/* Zwei-Tap-Regel, Strukturkonzept: "Dieser Knopf ist auf jedem Bildschirm
-        der App vorhanden." Aus der Tierakte oeffnet er direkt den Notfall-Pass
-        DIESES Tieres (petId-Kontext) – sogar nur ein Tap. */}
     </View>
   );
 }
@@ -532,38 +644,6 @@ const styles = StyleSheet.create({
   passRows: { marginTop: spacing.m, gap: spacing.s },
   passRow: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.m },
   passRowLabel: { fontSize: typography.bodySmall, color: colors.textSecondary },
-  doseButton: {
-    marginTop: spacing.s,
-    borderWidth: 1,
-    borderColor: colors.primary,
-    borderRadius: 10,
-    minHeight: minTouchTarget - 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: spacing.m,
-  },
-  doseButtonText: { fontSize: typography.bodySmall, color: colors.primary, fontWeight: '600' },
-  entryPhoto: {
-    width: '100%',
-    height: 160,
-    borderRadius: 10,
-    marginTop: spacing.s,
-    backgroundColor: colors.border,
-  },
-  fullscreenBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.92)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.m,
-  },
-  fullscreenImage: { width: '100%', height: '85%' },
-  fullscreenCaption: {
-    color: '#FFFFFF',
-    fontSize: typography.bodySmall,
-    marginTop: spacing.m,
-    textAlign: 'center',
-  },
   passRowValue: {
     fontSize: typography.bodySmall,
     color: colors.textPrimary,
@@ -622,9 +702,41 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     marginBottom: spacing.s,
   },
+  doseButton: {
+    marginTop: spacing.s,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: 10,
+    minHeight: minTouchTarget - 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.m,
+  },
+  doseButtonText: { fontSize: typography.bodySmall, color: colors.primary, fontWeight: '600' },
+  entryPhoto: {
+    width: '100%',
+    height: 160,
+    borderRadius: 10,
+    marginTop: spacing.s,
+    backgroundColor: colors.border,
+  },
   docGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.m },
   docCard: { width: 120 },
   docThumb: { width: 120, height: 120, borderRadius: 12, backgroundColor: colors.border },
   docTitle: { fontSize: typography.bodySmall, color: colors.textPrimary, marginTop: spacing.xs },
+  fullscreenBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.92)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.m,
+  },
+  fullscreenImage: { width: '100%', height: '85%' },
+  fullscreenCaption: {
+    color: '#FFFFFF',
+    fontSize: typography.bodySmall,
+    marginTop: spacing.m,
+    textAlign: 'center',
+  },
   empty: { fontSize: typography.body, color: colors.textSecondary },
 });

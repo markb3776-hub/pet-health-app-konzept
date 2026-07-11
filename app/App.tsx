@@ -22,6 +22,7 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { navigateToEmergencyPass } from './src/navigation/navigationRef';
 import { checkShortcutIntent, onShortcutIntent } from './src/utils/intentHandler';
 import { initPersistentNotification } from './src/services/persistentNotification';
+import { registerLowMemoryHandler } from './src/utils/lowMemoryHandler';
 
 // Notification-Handler: Zeigt Benachrichtigungen auch im Vordergrund an
 Notifications.setNotificationHandler({
@@ -73,7 +74,8 @@ export default function App() {
     // E-62: Permanente Notification pruefen und ggf. setzen
     initPersistentNotification();
 
-    // Praevention Nr. 33: Low-Memory-Handler
+    // E-52 / Praevention Nr. 33: Low-Memory-Handler
+    registerLowMemoryHandler();
     const appStateSub = AppState.addEventListener('change', (nextState) => {
       if (nextState === 'active') {
         // App kommt zurueck in den Vordergrund – DB-Verbindung ist stabil

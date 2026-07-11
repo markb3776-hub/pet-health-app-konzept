@@ -1,6 +1,6 @@
 /**
- * simplyPet: Navigation (v0.1.4)
- * Quelle: technische_spezifikation_screen_flow.md + E-58 + E-69 + E-70
+ * simplyPet: Navigation (v0.1.4 – E-75 Fix)
+ * Quelle: technische_spezifikation_screen_flow.md + E-58 + E-69 + E-70 + E-75
  *
  * 5 feste Tabs: Zuhause, Termine, Erfassen, Mehr, Notfall.
  * - Notfall-Tab: ISO 7010 E003 (weisses Kreuz auf #237F52). EINZIGES gruenes
@@ -8,6 +8,11 @@
  * - Erfassen-Tab: Oeffnet Overlay (kein eigener Screen). Icon ist ein
  *   Stift-Symbol (KEIN Plus in Gruen/Teal – E-69).
  * - EmergencyFab ENTFERNT (ersetzt durch 5. Tab).
+ *
+ * E-75: Tab-Bar muss auf ALLEN Screens sichtbar sein. Loesung: Jeder Tab
+ * bekommt seinen eigenen Stack-Navigator. Unter-Screens (Tierakte, Formulare)
+ * werden innerhalb des jeweiligen Tab-Stacks geoeffnet, sodass die Tab-Bar
+ * nie verschwindet.
  *
  * Kontoloses Onboarding (Freigabe 09.07.2026): Beim ersten Start zeigt
  * die App das Onboarding (Begruessung -> Halter-Name -> erstes Tier);
@@ -43,9 +48,10 @@ import { isOnboardingDone } from '../profile/profileStore';
 import { colors, typography } from '../theme/theme';
 import { navigationRef } from './navigationRef';
 
-export type RootStackParamList = {
-  Tabs: undefined;
-  Notfallpass: { petId?: string } | undefined;
+// ---------- Param Lists ----------
+
+export type HomeStackParamList = {
+  HomeMain: undefined;
   Tierakte: { petId: string };
   TierAnlegen: { firstPet?: boolean } | undefined;
   GewichtEintragen: { petId?: string } | undefined;
@@ -56,10 +62,31 @@ export type RootStackParamList = {
   DokumentAblegen: { petId?: string } | undefined;
   StammdatenBearbeiten: { petId: string };
   TiereVerwalten: undefined;
+  Notfallpass: { petId?: string } | undefined;
 };
 
+export type AppointmentsStackParamList = {
+  AppointmentsMain: undefined;
+};
+
+export type MoreStackParamList = {
+  MoreMain: undefined;
+  TiereVerwalten: undefined;
+};
+
+// Fuer externe Navigation (Shortcut, Notification) behalten wir einen
+// vereinfachten Typ bei:
+export type RootStackParamList = HomeStackParamList;
+
+// ---------- Stack Navigators fuer jeden Tab ----------
+
+const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+const AppointmentsStack = createNativeStackNavigator<AppointmentsStackParamList>();
+const MoreStack = createNativeStackNavigator<MoreStackParamList>();
+const Tab = createBottomTabNavigator();
+
 /** Zuordnung Erfassen-Overlay-Option -> Ziel-Formular (Screen-Flow 2.4). */
-const CAPTURE_ROUTE: Record<CaptureAction, keyof RootStackParamList> = {
+const CAPTURE_ROUTE: Record<CaptureAction, keyof HomeStackParamList> = {
   foto: 'DokumentAblegen',
   gewicht: 'GewichtEintragen',
   notiz: 'BeobachtungEintragen',
@@ -68,28 +95,125 @@ const CAPTURE_ROUTE: Record<CaptureAction, keyof RootStackParamList> = {
   medikament: 'MedikamentEintragen',
 };
 
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator<RootStackParamList>();
+// ---------- Tab-interne Stacks ----------
+
+function HomeStackScreen() {
+  return (
+    <HomeStack.Navigator
+      screenOptions={{
+        headerTitleStyle: { fontSize: typography.title },
+        headerTintColor: colors.textPrimary,
+      }}
+    >
+      <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ headerShown: false }} />
+      <HomeStack.Screen name="Tierakte" component={PetFileScreen} options={{ title: 'Tierakte' }} />
+      <HomeStack.Screen
+        name="TierAnlegen"
+        component={AddPetScreen}
+        options={{ title: 'Tier hinzufügen' }}
+      />
+      <HomeStack.Screen
+        name="GewichtEintragen"
+        component={WeightEntryScreen}
+        options={{ title: 'Gewicht festhalten' }}
+      />
+      <HomeStack.Screen
+        name="BeobachtungEintragen"
+        component={ObservationEntryScreen}
+        options={{ title: 'Beobachtung notieren' }}
+      />
+      <HomeStack.Screen
+        name="VorfallEintragen"
+        component={IncidentEntryScreen}
+        options={{ title: 'Vorfall festhalten' }}
+      />
+      <HomeStack.Screen
+        name="ImpfungEintragen"
+        component={VaccinationEntryScreen}
+        options={{ title: 'Impfung eintragen' }}
+      />
+      <HomeStack.Screen
+        name="MedikamentEintragen"
+        component={MedicationEntryScreen}
+        options={{ title: 'Medikament & Pflege' }}
+      />
+      <HomeStack.Screen
+        name="DokumentAblegen"
+        component={DocumentCaptureScreen}
+        options={{ title: 'Dokument ablegen' }}
+      />
+      <HomeStack.Screen
+        name="StammdatenBearbeiten"
+        component={EditPetScreen}
+        options={{ title: 'Stammdaten bearbeiten' }}
+      />
+      <HomeStack.Screen
+        name="TiereVerwalten"
+        component={ManagePetsScreen}
+        options={{ title: 'Tiere verwalten' }}
+      />
+      <HomeStack.Screen
+        name="Notfallpass"
+        component={EmergencyPassScreen}
+        options={{ title: 'Notfall-Pass' }}
+      />
+    </HomeStack.Navigator>
+  );
+}
+
+function AppointmentsStackScreen() {
+  return (
+    <AppointmentsStack.Navigator
+      screenOptions={{
+        headerTitleStyle: { fontSize: typography.title },
+        headerTintColor: colors.textPrimary,
+      }}
+    >
+      <AppointmentsStack.Screen
+        name="AppointmentsMain"
+        component={AppointmentsScreen}
+        options={{ headerShown: false }}
+      />
+    </AppointmentsStack.Navigator>
+  );
+}
+
+function MoreStackScreen() {
+  return (
+    <MoreStack.Navigator
+      screenOptions={{
+        headerTitleStyle: { fontSize: typography.title },
+        headerTintColor: colors.textPrimary,
+      }}
+    >
+      <MoreStack.Screen name="MoreMain" component={MoreScreen} options={{ headerShown: false }} />
+      <MoreStack.Screen
+        name="TiereVerwalten"
+        component={ManagePetsScreen}
+        options={{ title: 'Tiere verwalten' }}
+      />
+    </MoreStack.Navigator>
+  );
+}
 
 /** Platzhalter fuer den Erfassen-Tab: wird nie angezeigt, der Tab oeffnet nur das Overlay. */
 function CapturePlaceholder() {
   return null;
 }
 
-function Tabs() {
+// ---------- Haupt-Tab-Navigator ----------
+
+function MainTabs() {
   const [captureOpen, setCaptureOpen] = useState(false);
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026, Galaxy S24/Android 16):
-  // Die System-Navigationsleiste ueberlappte die Tab-Bar. Die Tab-Bar
-  // reserviert jetzt die vom System gemeldete Leisten-Hoehe (insets.bottom) —
-  // herstellerunabhaengig (3-Tasten-Leiste wie Gestensteuerung).
+  const navigation = useNavigation<any>();
   const insets = useSafeAreaInsets();
 
   // Overlay-Option gewaehlt: Sheet schliessen, Formular oeffnen.
   const handleCaptureAction = useCallback(
     (action: CaptureAction) => {
       setCaptureOpen(false);
-      navigation.navigate(CAPTURE_ROUTE[action] as any);
+      // Navigiere im HomeStack zum entsprechenden Formular
+      navigation.navigate('Zuhause', { screen: CAPTURE_ROUTE[action] });
     },
     [navigation]
   );
@@ -121,43 +245,40 @@ function Tabs() {
       >
         <Tab.Screen
           name="Zuhause"
-          component={HomeScreen}
+          component={HomeStackScreen}
           options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>⌂</Text> }}
         />
         <Tab.Screen
           name="Termine"
-          component={AppointmentsScreen}
+          component={AppointmentsStackScreen}
           options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>▤</Text> }}
         />
         <Tab.Screen
           name="Erfassen"
           component={CapturePlaceholder}
           options={{
-            // E-69: KEIN Plus in Gruen/Teal. Stift-Symbol in der Tab-Farbe (grau/teal je nach aktiv).
-            // Das Plus-Zeichen ist erlaubt, aber NICHT in Gruen. Da tabBarActiveTintColor = Teal ist,
-            // verwenden wir ein Stift-Symbol statt Plus, um jeden Zweifel auszuschliessen.
             tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>✎</Text>,
             tabBarButton: captureTabButton,
           }}
         />
         <Tab.Screen
           name="Mehr"
-          component={MoreScreen}
+          component={MoreStackScreen}
           options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>≡</Text> }}
         />
         <Tab.Screen
           name="Notfall"
           component={CapturePlaceholder}
-          listeners={({ navigation: nav }) => ({
+          listeners={{
             tabPress: (e) => {
               e.preventDefault();
-              nav.navigate('Notfallpass');
+              // Navigiere zum Notfallpass innerhalb des HomeStacks
+              navigation.navigate('Zuhause', { screen: 'Notfallpass' });
             },
-          })}
+          }}
           options={{
             // ISO 7010 E003: Weisses Kreuz auf gruenem Grund (#237F52).
-            // Dies ist das EINZIGE gruene Kreuz in der gesamten App (E-69).
-            tabBarIcon: ({ focused }) => (
+            tabBarIcon: () => (
               <View style={styles.emergencyTabIcon}>
                 <Text style={styles.emergencyTabCross}>✚</Text>
               </View>
@@ -176,6 +297,8 @@ function Tabs() {
     </View>
   );
 }
+
+// ---------- Root Navigator ----------
 
 export default function AppNavigator() {
   // Onboarding-Status: null = wird geladen, false = Onboarding zeigen, true = App.
@@ -202,69 +325,7 @@ export default function AppNavigator() {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      {onboarded ? (
-        <Stack.Navigator
-          screenOptions={{
-            headerTitleStyle: { fontSize: typography.title },
-            headerTintColor: colors.textPrimary,
-          }}
-        >
-          <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />
-          <Stack.Screen
-            name="Notfallpass"
-            component={EmergencyPassScreen}
-            options={{ title: 'Notfall-Pass' }}
-          />
-          <Stack.Screen name="Tierakte" component={PetFileScreen} options={{ title: 'Tierakte' }} />
-          <Stack.Screen
-            name="TierAnlegen"
-            component={AddPetScreen}
-            options={{ title: 'Tier hinzufügen' }}
-          />
-          <Stack.Screen
-            name="GewichtEintragen"
-            component={WeightEntryScreen}
-            options={{ title: 'Gewicht festhalten' }}
-          />
-          <Stack.Screen
-            name="BeobachtungEintragen"
-            component={ObservationEntryScreen}
-            options={{ title: 'Beobachtung notieren' }}
-          />
-          <Stack.Screen
-            name="VorfallEintragen"
-            component={IncidentEntryScreen}
-            options={{ title: 'Vorfall festhalten' }}
-          />
-          <Stack.Screen
-            name="ImpfungEintragen"
-            component={VaccinationEntryScreen}
-            options={{ title: 'Impfung eintragen' }}
-          />
-          <Stack.Screen
-            name="MedikamentEintragen"
-            component={MedicationEntryScreen}
-            options={{ title: 'Medikament & Pflege' }}
-          />
-          <Stack.Screen
-            name="DokumentAblegen"
-            component={DocumentCaptureScreen}
-            options={{ title: 'Dokument ablegen' }}
-          />
-          <Stack.Screen
-            name="StammdatenBearbeiten"
-            component={EditPetScreen}
-            options={{ title: 'Stammdaten bearbeiten' }}
-          />
-          <Stack.Screen
-            name="TiereVerwalten"
-            component={ManagePetsScreen}
-            options={{ title: 'Tiere verwalten' }}
-          />
-        </Stack.Navigator>
-      ) : (
-        <OnboardingScreen onDone={() => setOnboarded(true)} />
-      )}
+      {onboarded ? <MainTabs /> : <OnboardingScreen onDone={() => setOnboarded(true)} />}
     </NavigationContainer>
   );
 }
