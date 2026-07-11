@@ -39,6 +39,16 @@
 | 11 | Zukunfts-Datum-Validierung | Kein Gewicht/Beobachtung/Vorfall in der Zukunft möglich |
 | 12 | Try/Catch mit Fehlermeldung bei DB-Schreibfehlern | Verhindert stummes Scheitern bei vollem Speicher |
 
+### Datensicherung & Datenhoheit (festgelegt 11.07.2026)
+
+| Nr. | Feature | Beschreibung | Entscheidung |
+|:---|:---|:---|:---|
+| 13 | Automatisches Backup | App aktualisiert bei jeder Änderung eine lokale .simplypet-Datei | Bestätigt – Nutzer ist verantwortlich für externe Sicherung |
+| 14 | Backup exportieren | Export-Button öffnet Android-Teilen-Dialog (USB, Mail, Cloud – Nutzer wählt) | Bestätigt – App braucht kein Internet dafür |
+| 15 | Backup importieren | Import-Button auf neuem Gerät + .simplypet als registrierter Dateityp | Bestätigt – muss auf jedem Android-Gerät funktionieren |
+| 16 | Einträge bearbeiten | Stift-Symbol am Eintrag, Formular vorausgefüllt, Bearbeitungs-Vermerk | Bestätigt – Sichtbarkeit des Vermerks noch offen (O-01) |
+| 17 | Einträge löschen | Papierkorb-Symbol + Bestätigungs-Dialog, doppelte Bestätigung bei Impfungen/Medikamenten | Bestätigt – endgültig vs. Papierkorb noch offen (O-02) |
+
 ### Weitere Punkte (vom zweiten Tester – Interview ausstehend)
 
 _Wird ergänzt sobald Interview-Ergebnisse vorliegen._
