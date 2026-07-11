@@ -72,7 +72,7 @@
 | E-66 | App-Beschreibung | "Tiergesundheits-App" ENTFERNT. Neu: "simplyPet – dein unabhängiges Pocket-Tool für deine Liebsten." | Kein medizinischer Anspruch, emotional, trifft den Kern |
 | E-67 | Bug: Tierverwaltung Layout | Text wird vertikal dargestellt (Buchstabe pro Zeile). Ursache: flex-Layout der Kacheln. Fix: Text-Container flex:1 | Kritischer UI-Bug in v0.1.2 |
 | E-68 | Familien-Teilen | "Mit Familie teilen"-Button öffnet nativen Android-Teilen-Dialog. Nutzer entscheidet selbst: WhatsApp, E-Mail, Google Drive, Bluetooth etc. Kein Zwang zu bestimmtem Dienst. .simplypet-Dateityp als Intent-Filter registrieren (Tipp auf empfangene Datei → App öffnet sich). Kein eigener Server, keine INTERNET-Permission. | Nutzer-Souveränität: er wählt den Weg. Keine zusätzliche App nötig. Doktrin bleibt intakt. |
-| E-69 | Grünes Kreuz = NUR Notfall | Ein Kreuz-Symbol (+) in Verbindung mit Grün darf in der GESAMTEN App ausschließlich für den Notfallpass verwendet werden. Kein anderer Button, kein anderes Icon darf ein grünes Kreuz zeigen. Erscheint nur: (1) Notfall-Tab, (2) Notfallpass-Notification, (3) Notfallpass-Screen Header. | Eindeutige Assoziation: Grünes Kreuz = Notfall. Mehrere grüne Kreuze verwirren den Nutzer und verwässern die Bedeutung. ISO 7010 Prinzip. |
+| E-69 | Kreuz + Grün = NUR Notfallpass | In der GESAMTEN App existiert genau EIN EINZIGES Kreuz/Plus-Symbol in Verbindung mit jeglicher Grün-/Teal-Variante. Das ist der Notfallpass. VERBOTEN: grüne/teal Kreuze oder Plus-Zeichen für "Hinzufügen", "Neuer Eintrag" etc. Alternativen: dunkles/graues Plus, Stift-Icon, Text-Button. | Nutzer muss grünes Kreuz SOFORT und EINDEUTIG mit Notfall assoziieren. Jedes weitere grüne Plus verwässert diese lebensrettende Assoziation. |
 
 ### 10.07.2026
 
@@ -102,7 +102,7 @@ Diese Punkte sind NICHT verhandelbar:
 6. **Defensive Migrationen** – IF NOT EXISTS, niemals Spalten löschen
 7. **Einmalkauf** – kein Abo, keine Werbung, keine In-App-Käufe
 8. **Nutzer-Souveränität** – seine Daten, seine Entscheidung wo er sie speichert
-9. **Grünes Kreuz = NUR Notfall** – Kreuz + Grün ausschließlich für Notfallpass, nirgendwo sonst in der App
+9. **Kreuz + Grün = NUR Notfallpass** – In der gesamten App existiert genau EIN Kreuz/Plus in Verbindung mit jeder Grün-/Teal-Variante: der Notfallpass. Kein grünes/teal Plus für Hinzufügen, kein grünes Kreuz für sonstige Aktionen.
 
 ---
 

@@ -24,16 +24,17 @@
 
 ## VERBINDLICHE UI-REGELN
 
-### Regel 1: Grünes Kreuz = AUSSCHLIESSLICH Notfall (ISO 7010)
+### Regel 1: Kreuz + Grün = AUSSCHLIESSLICH Notfallpass
 
-> **Ein Kreuz-Symbol (+) in Verbindung mit der Farbe Grün darf in der gesamten App NUR für den Notfallpass verwendet werden.**
+> **In der GESAMTEN App existiert genau EIN EINZIGES Kreuz-Symbol (+) in Verbindung mit jeglicher Grün-Variante (Grün, Teal, Primary-Farbe #2E9E83, oder ähnlich). Das ist der Notfallpass-Button.**
 
-- Das grüne ISO-Erste-Hilfe-Kreuz erscheint **nur** an diesen Stellen:
+- Dieses Symbol erscheint **nur** an diesen Stellen:
   - Notfall-Tab in der Navigation (5. Tab)
   - Notfallpass-Notification (permanente Benachrichtigung)
   - Notfallpass-Screen Header
-- **Kein anderer Button, kein anderes Icon, kein anderes UI-Element** darf ein grünes Kreuz zeigen.
-- Begründung: Nutzer soll das grüne Kreuz sofort und eindeutig mit "Notfall" assoziieren. Mehrere grüne Kreuze verwirren und verwässern die Bedeutung.
+- **VERBOTEN:** Grüne/teal-farbene Kreuze oder Plus-Zeichen für "Hinzufügen", "Neuer Eintrag", "Tier anlegen" oder sonstige Aktionen.
+- **Alternativen für Hinzufügen-Aktionen:** Dunkles/graues Plus-Zeichen, Stift-Icon, Pfeil-Icon, oder Text-Button.
+- Begründung: Der Nutzer soll das grüne Kreuz SOFORT und EINDEUTIG mit "Notfall" assoziieren. Jedes weitere grüne Kreuz/Plus verwässert diese lebensrettende Assoziation.
 
 ### Regel 2: Einheitlicher App-Hintergrund
 
