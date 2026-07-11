@@ -196,7 +196,7 @@ export default function HomeScreen() {
               onPress={() => navigation.navigate('TierAnlegen', { firstPet: true })}
               accessibilityLabel="Erstes Tier anlegen"
             >
-              <Text style={styles.guideButtonText}>＋ Erstes Tier anlegen</Text>
+              <Text style={styles.guideButtonText}>Erstes Tier anlegen</Text>
             </Pressable>
           </View>
         ) : (
@@ -204,7 +204,7 @@ export default function HomeScreen() {
             {overdue > 0 ? (
               <Pressable
                 style={[styles.statusCard, styles.statusCardOverdue]}
-                onPress={() => navigation.navigate('Tabs' as never)}
+                onPress={() => navigation.navigate('Tabs' as never, { screen: 'Termine' } as never)}
                 accessibilityLabel={`${overdue} überfällige Aufgaben ansehen`}
               >
                 <Text style={styles.statusCardTitleOverdue}>
@@ -249,14 +249,8 @@ export default function HomeScreen() {
         windowSize={3}
       />
 
-      {/* Zone 3: Notfall-Knopf, fest verankert (Zwei-Tap-Regel) */}
-      <Pressable
-        style={[styles.emergencyButton, { marginBottom: insets.bottom + spacing.m }]}
-        onPress={() => navigation.navigate('Notfallpass')}
-        accessibilityLabel="Notfall-Pass öffnen"
-      >
-        <Text style={styles.emergencyText}>Notfall-Pass</Text>
-      </Pressable>
+      {/* Zone 3 entfernt: Notfall ist jetzt 5. Tab (E-58). Zwei-Tap-Regel
+          weiterhin erfuellt: Tab 1x antippen = Notfallpass. */}
     </View>
   );
 }
@@ -353,16 +347,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   addTileText: { fontSize: typography.body, color: colors.textSecondary },
-  emergencyButton: {
-    position: 'absolute',
-    bottom: spacing.m,
-    left: spacing.m,
-    right: spacing.m,
-    backgroundColor: colors.emergency,
-    borderRadius: 14,
-    minHeight: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emergencyText: { color: '#FFFFFF', fontSize: typography.button, fontWeight: '700' },
+
 });

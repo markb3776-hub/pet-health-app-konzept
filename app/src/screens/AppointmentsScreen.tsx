@@ -26,7 +26,6 @@ import {
   nowUtcIso,
   dateKeyWithOffset,
 } from '../time/timeModule';
-import EmergencyFab from '../components/EmergencyFab';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
 interface ReminderRow {
@@ -204,7 +203,6 @@ export default function AppointmentsScreen() {
           </>
         )}
       </ScrollView>
-      <EmergencyFab />
     </View>
   );
 }

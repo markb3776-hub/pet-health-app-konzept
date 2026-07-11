@@ -27,7 +27,6 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { getOwnerName, setOwnerName, getOwnerPhone, setOwnerPhone } from '../profile/profileStore';
 import { exportBackup, importBackup, getLastBackupDate } from '../backup/backupService';
-import EmergencyFab from '../components/EmergencyFab';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
 export default function MoreScreen() {
@@ -271,7 +270,6 @@ export default function MoreScreen() {
           simplyPet v0.1.2 · Deine Daten bleiben auf diesem Gerät – ohne Konto, ohne Anmeldung.
         </Text>
       </ScrollView>
-      <EmergencyFab />
     </View>
   );
 }

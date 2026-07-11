@@ -1,13 +1,13 @@
 /**
- * simplyPet: Navigation
- * Quelle: technische_spezifikation_screen_flow.md
+ * simplyPet: Navigation (v0.1.3)
+ * Quelle: technische_spezifikation_screen_flow.md + E-58 + E-69 + E-70
  *
- * Vier feste Bereiche in der Tab-Bar: Zuhause, Termine, Erfassen, Mehr.
- * Korrektur aus Zwischenanalyse (09.07.2026): "Erfassen" ist KEIN eigener
- * Bildschirm mehr, sondern oeffnet ein Overlay (BottomSheet) ueber dem
- * aktuellen Bildschirm. Der Notfallpass ist von jedem Hauptbildschirm in
- * maximal zwei Taps erreichbar (grosser Knopf auf Zuhause + FAB auf
- * Termine/Mehr).
+ * 5 feste Tabs: Zuhause, Termine, Erfassen, Mehr, Notfall.
+ * - Notfall-Tab: ISO 7010 E003 (weisses Kreuz auf #237F52). EINZIGES gruenes
+ *   Kreuz in der gesamten App (E-69).
+ * - Erfassen-Tab: Oeffnet Overlay (kein eigener Screen). Icon ist ein
+ *   Stift-Symbol (KEIN Plus in Gruen/Teal – E-69).
+ * - EmergencyFab ENTFERNT (ersetzt durch 5. Tab).
  *
  * Kontoloses Onboarding (Freigabe 09.07.2026): Beim ersten Start zeigt
  * die App das Onboarding (Begruessung -> Halter-Name -> erstes Tier);
@@ -132,7 +132,10 @@ function Tabs() {
           name="Erfassen"
           component={CapturePlaceholder}
           options={{
-            tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>＋</Text>,
+            // E-69: KEIN Plus in Gruen/Teal. Stift-Symbol in der Tab-Farbe (grau/teal je nach aktiv).
+            // Das Plus-Zeichen ist erlaubt, aber NICHT in Gruen. Da tabBarActiveTintColor = Teal ist,
+            // verwenden wir ein Stift-Symbol statt Plus, um jeden Zweifel auszuschliessen.
+            tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>✎</Text>,
             tabBarButton: captureTabButton,
           }}
         />
@@ -140,6 +143,28 @@ function Tabs() {
           name="Mehr"
           component={MoreScreen}
           options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>≡</Text> }}
+        />
+        <Tab.Screen
+          name="Notfall"
+          component={CapturePlaceholder}
+          listeners={({ navigation: nav }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              nav.navigate('Notfallpass');
+            },
+          })}
+          options={{
+            // ISO 7010 E003: Weisses Kreuz auf gruenem Grund (#237F52).
+            // Dies ist das EINZIGE gruene Kreuz in der gesamten App (E-69).
+            tabBarIcon: ({ focused }) => (
+              <View style={styles.emergencyTabIcon}>
+                <Text style={styles.emergencyTabCross}>✚</Text>
+              </View>
+            ),
+            tabBarActiveTintColor: colors.emergency,
+            tabBarInactiveTintColor: colors.emergency,
+            tabBarLabel: 'Notfall',
+          }}
         />
       </Tab.Navigator>
       <CaptureSheet
@@ -250,5 +275,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  /** ISO 7010 E003: Gruener Kreis/Quadrat mit weissem Kreuz */
+  emergencyTabIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
+    backgroundColor: colors.emergency,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emergencyTabCross: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
   },
 });

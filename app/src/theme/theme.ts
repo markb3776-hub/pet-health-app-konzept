@@ -1,12 +1,19 @@
 /**
  * simplyPet: Design-Grundlagen
- * Quelle: app_struktur_konzept.md (Abschnitt 5: Farbsystem)
+ * Quelle: FARBPALETTE.md (verbindliche UI-Regeln)
  *
  * Regeln:
+ * - Primary = Teal #2E9E83 (fixe App-Farbe, E-70)
  * - Grundton neutral und ruhig, Farben nur als Akzente
  * - Ein reserviertes Signalrot NUR fuer Warnhinweise (nie als Tierfarbe waehlbar)
  * - Kuratierte Palette: unterscheidbar auch in Helligkeit (Rot-Gruen-Schwaeche)
  * - Grosse Schrift als Standard (Zielgruppe 50+)
+ *
+ * VERBINDLICHE REGEL E-69:
+ * Kreuz/Plus (+) in Verbindung mit JEDER Farbe des Gruenspektrums
+ * (inkl. Teal, Mint, Lime, Olive, Smaragd, ISO-Gruen) ist STRIKT
+ * UNTERSAGT – ausser fuer den Notfallpass.
+ * Plus-Zeichen fuer "Hinzufuegen" etc. nur in Schwarz, Grau, Blau etc.
  */
 
 export const colors = {
@@ -15,10 +22,18 @@ export const colors = {
   textPrimary: '#2B2B2B',
   textSecondary: '#6B6B6B',
   border: '#E2DFD8',
-  primary: '#3E6B4F', // ruhiges Gruen
+  /** Fixe App-Farbe (E-70). Fuer Buttons, aktive Tabs, Akzente, Header. */
+  primary: '#2E9E83',
+  primaryLight: '#4DB89A',
+  primaryDark: '#1F7A64',
   /** RESERVIERT: nur fuer Warnhinweise, niemals als Tierfarbe vergeben */
   signalRed: '#C62828',
-  emergency: '#B4532A', // Notfallpass-Knopf: ruhig aber unuebersehbar
+  /**
+   * Notfallpass: ISO 7010 E003 (RAL 6032).
+   * EINZIGE Stelle in der App wo ein Kreuz/Plus mit Gruen kombiniert wird.
+   * Verwendung: Notfall-Tab-Icon, Notfallpass-Notification, Notfallpass-Header.
+   */
+  emergency: '#237F52',
 };
 
 /**
