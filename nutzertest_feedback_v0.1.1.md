@@ -45,6 +45,7 @@
 |:---|:---|:---|:---|
 | B-01 | Sperrbildschirm-Notification | Optionale permanente Notification für Notfallpass-Zugriff (Opt-in) | E-62 |
 | B-02 | Homescreen-Widget | 1×1 Kachel mit grünem Kreuz → öffnet Notfallpass | Kommt nach Prototyp |
+| B-03 | Familien-Teilen | "Mit Familie teilen"-Button (Android-Teilen-Dialog) + .simplypet Intent-Filter (Tipp auf Datei öffnet App). Nutzer wählt selbst: WhatsApp, E-Mail, Drive etc. | E-68 |
 
 ---
 

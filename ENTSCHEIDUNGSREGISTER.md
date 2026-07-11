@@ -71,6 +71,7 @@
 | E-65 | QR-Druckdatum | PDF-Ausdruck zeigt unten: "Stand: [Datum]" | Finder/Besitzer sieht sofort ob Pass aktuell ist |
 | E-66 | App-Beschreibung | "Tiergesundheits-App" ENTFERNT. Neu: "simplyPet – dein unabhängiges Pocket-Tool für deine Liebsten." | Kein medizinischer Anspruch, emotional, trifft den Kern |
 | E-67 | Bug: Tierverwaltung Layout | Text wird vertikal dargestellt (Buchstabe pro Zeile). Ursache: flex-Layout der Kacheln. Fix: Text-Container flex:1 | Kritischer UI-Bug in v0.1.2 |
+| E-68 | Familien-Teilen | "Mit Familie teilen"-Button öffnet nativen Android-Teilen-Dialog. Nutzer entscheidet selbst: WhatsApp, E-Mail, Google Drive, Bluetooth etc. Kein Zwang zu bestimmtem Dienst. .simplypet-Dateityp als Intent-Filter registrieren (Tipp auf empfangene Datei → App öffnet sich). Kein eigener Server, keine INTERNET-Permission. | Nutzer-Souveränität: er wählt den Weg. Keine zusätzliche App nötig. Doktrin bleibt intakt. |
 
 ### 10.07.2026
 
