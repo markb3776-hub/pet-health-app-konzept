@@ -95,16 +95,16 @@
 
 Diese Punkte sind NICHT verhandelbar:
 
-1. **Keine INTERNET-Permission** – App geht niemals online
-2. **Kein Account/Login** – nur lokaler Halter-Name
-3. **Kein Tracking/Analytics** – kein PostHog, kein Firebase, nichts
-4. **Keine medizinischen Empfehlungen** – nur ehrliche Hinweise
-5. **Null-Datenverlust** – Draft-Autosave auf jedem Formular
-6. **Defensive Migrationen** – IF NOT EXISTS, niemals Spalten löschen
-7. **Einmalkauf** – kein Abo, keine Werbung, keine In-App-Käufe
-8. **Nutzer-Souveränität** – seine Daten, seine Entscheidung wo er sie speichert
-9. **Kreuz/Plus + Grünspektrum = STRIKT UNTERSAGT** – Notfallpass nutzt ISO 7010 E003 (#237F52). Alle weiteren Kombinationen von +/Kreuz mit JEDER Farbe des Grünspektrums sind strikt untersagt. Keine Ausnahmen.
-10. **Dokumentation zuerst** – Bei jeder Änderung/Neuerung werden ZUERST die Dokumente und Dokumentation aktualisiert und gepusht, DANN erst der Code angefasst. So stehen Entscheidungen bei einem Sandbox-Reset immer zur Verfügung.
+1. **Dokumentation zuerst** – Bei jeder Änderung/Neuerung werden ZUERST die Dokumente und Dokumentation aktualisiert und gepusht, DANN erst der Code angefasst. So stehen Entscheidungen bei einem Sandbox-Reset immer zur Verfügung. Diese Regel steht vor allem anderen.
+2. **Keine INTERNET-Permission** – App geht niemals online
+3. **Kein Account/Login** – nur lokaler Halter-Name
+4. **Kein Tracking/Analytics** – kein PostHog, kein Firebase, nichts
+5. **Keine medizinischen Empfehlungen** – nur ehrliche Hinweise
+6. **Null-Datenverlust** – Draft-Autosave auf jedem Formular
+7. **Defensive Migrationen** – IF NOT EXISTS, niemals Spalten löschen
+8. **Einmalkauf** – kein Abo, keine Werbung, keine In-App-Käufe
+9. **Nutzer-Souveränität** – seine Daten, seine Entscheidung wo er sie speichert
+10. **Kreuz/Plus + Grünspektrum = STRIKT UNTERSAGT** – Notfallpass nutzt ISO 7010 E003 (#237F52). Alle weiteren Kombinationen von +/Kreuz mit JEDER Farbe des Grünspektrums sind strikt untersagt. Keine Ausnahmen.
 
 ---
 
