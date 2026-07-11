@@ -60,8 +60,10 @@ const HELP_TEXTS: Record<string, string> = {
     'Dauermedikation wird automatisch aus deinen aktiven Medikamenten-Einträgen in der Tierakte übernommen.',
   impfstatus:
     'Impfungen bearbeitest du über „Erfassen → Impfung" in der Tierakte.',
+  parasitenschutz:
+    'Parasitenschutz (Wurmkuren, Zecken-/Flohschutz) erfasst du über „Erfassen → Medikament/Pflege → Parasitenschutz“ in der Tierakte.',
   werte:
-    'Gewicht und andere Werte erfasst du über „Erfassen → Gewicht" in der Tierakte.',
+    'Gewicht und andere Werte erfasst du über „Erfassen → Gewicht“ in der Tierakte.',
 };
 
 export default function EmergencyPassScreen() {
@@ -235,12 +237,13 @@ export default function EmergencyPassScreen() {
   );
 
   /*
-   * Medizinischer Kernteil: Reihenfolge laut E-78:
+   * Medizinischer Kernteil: Reihenfolge laut E-78 + E-79:
    * 1. Allergien und Unverträglichkeiten
    * 2. Vorerkrankungen
    * 3. Dauermedikation
-   * 4. Impfstatus
-   * 5. Letzte bekannte Werte
+   * 4. Impfstatus (nur echte Impfungen)
+   * 5. Parasitenschutz (Wurmkuren, Zecken-/Flohschutz)
+   * 6. Letzte bekannte Werte
    */
   const medicalBlocks = (
     <>
@@ -292,6 +295,20 @@ export default function EmergencyPassScreen() {
           ))
         ) : (
           <Text style={styles.bodyMuted}>Keine Impfungen erfasst</Text>
+        )}
+      </Section>
+
+      <Section title="Parasitenschutz" helpKey="parasitenschutz" onHelp={setHelpVisible}>
+        {data.parasiteProtection.length ? (
+          data.parasiteProtection.map((p, i) => (
+            <Text key={i} style={styles.body}>
+              {p.name}
+              {p.sub_type ? ` (${p.sub_type})` : ''}
+              {p.active_since ? ` – seit ${formatDate(p.active_since)}` : ''}
+            </Text>
+          ))
+        ) : (
+          <Text style={styles.bodyMuted}>Kein Parasitenschutz erfasst</Text>
         )}
       </Section>
 

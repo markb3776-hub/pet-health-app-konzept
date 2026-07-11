@@ -57,6 +57,12 @@ export interface PassVaccination {
   valid_until: string | null;
 }
 
+export interface PassParasiteProtection {
+  name: string;
+  sub_type: string | null;
+  active_since: string | null;
+}
+
 export interface PassData {
   pet: PassPet;
   speciesLabel: string;
@@ -66,6 +72,7 @@ export interface PassData {
   conditions: PassCondition[];
   medications: PassMedication[];
   vaccinations: PassVaccination[];
+  parasiteProtection: PassParasiteProtection[];
   lastWeight: { value: number; unit: string; date: string } | null;
   ownerName: string | null;
   ownerPhone: string | null;
@@ -131,6 +138,25 @@ export async function loadPassData(petId: string): Promise<PassData | null> {
     .filter((m) => m.type === 'Medikament')
     .map((m) => ({ name: m.name, dosage: m.dosage, active_since: m.active_since }));
 
+  // E-79: Parasitenschutz separat laden (eigener Block im Notfallpass)
+  const parasiteRows = await db.getAllAsync<{
+    name: string;
+    sub_type: string | null;
+    active_since: string | null;
+    updated_at: string;
+  }>(
+    `SELECT name, sub_type, active_since, updated_at
+     FROM medications
+     WHERE pet_id = ? AND type = 'Parasitenschutz' AND is_active = 1 AND deleted_at IS NULL
+     ORDER BY created_at`,
+    [petId]
+  );
+  const parasiteProtection: PassParasiteProtection[] = parasiteRows.map((p) => ({
+    name: p.name,
+    sub_type: p.sub_type,
+    active_since: p.active_since,
+  }));
+
   // Impfstatus: die letzten Impfungen mit Datum (neueste zuerst, max. 5).
   const vaccinations = await db.getAllAsync<PassVaccination & { updated_at: string }>(
     `SELECT disease, product_name, date_given, valid_until, updated_at
@@ -161,6 +187,7 @@ export async function loadPassData(petId: string): Promise<PassData | null> {
   const timestamps = [
     pet.updated_at,
     ...medRows.map((m) => m.updated_at),
+    ...parasiteRows.map((p) => p.updated_at),
     ...vaccinations.map((v) => v.updated_at),
     ...(weightRow ? [weightRow.updated_at] : []),
   ].filter(Boolean);
@@ -175,6 +202,7 @@ export async function loadPassData(petId: string): Promise<PassData | null> {
     allergies,
     conditions,
     medications,
+    parasiteProtection,
     vaccinations: vaccinations.map(({ disease, product_name, date_given, valid_until }) => ({
       disease,
       product_name,
@@ -231,6 +259,11 @@ export function buildQrPayload(d: PassData): string {
       d.conditions.length ? d.conditions.map((c) => c.name).join(', ') : 'Keine erfasst'
     }`
   );
+  if (d.parasiteProtection.length) {
+    lines.push(
+      `Parasitenschutz: ${d.parasiteProtection.map((p) => `${p.name}${p.sub_type ? ` (${p.sub_type})` : ''}`).join(', ')}`
+    );
+  }
   if (d.ownerName || d.ownerPhone) {
     lines.push(`Halter: ${d.ownerName ?? ''}${d.ownerPhone ? ` – Tel. ${d.ownerPhone}` : ''}`.trim());
   }
@@ -296,6 +329,16 @@ export function buildPassHtml(d: PassData, photoDataUri: string | null): string 
   const conditions = d.conditions.length
     ? d.conditions.map((c) => `<div>${esc(c.name)}</div>`).join('')
     : '<div class="muted">Keine Vorerkrankungen erfasst</div>';
+  const parasites = d.parasiteProtection.length
+    ? d.parasiteProtection
+        .map(
+          (p) =>
+            `<div>${esc(p.name)}${p.sub_type ? ` (${esc(p.sub_type)})` : ''}${
+              p.active_since ? ` – seit ${formatDate(p.active_since)}` : ''
+            }</div>`
+        )
+        .join('')
+    : '<div class="muted">Kein Parasitenschutz erfasst</div>';
   const weight = d.lastWeight
     ? `${String(d.lastWeight.value).replace('.', ',')} ${esc(d.lastWeight.unit)} (${formatDate(
         d.lastWeight.date
@@ -343,9 +386,10 @@ export function buildPassHtml(d: PassData, photoDataUri: string | null): string 
         : '<span class="muted">Keine besonderen Merkmale erfasst</span>'
     }</div>
     <h2>Allergien und Unverträglichkeiten</h2>${allergies}
-    <h2>Dauermedikation</h2>${meds}
     <h2>Vorerkrankungen</h2>${conditions}
+    <h2>Dauermedikation</h2>${meds}
     <h2>Impfstatus</h2>${vacc}
+    <h2>Parasitenschutz</h2>${parasites}
     <h2>Letzte bekannte Werte</h2><div>Gewicht: ${weight}</div>
     <h2>Kontakt</h2>
     <div>Halter: ${

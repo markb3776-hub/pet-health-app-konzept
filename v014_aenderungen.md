@@ -13,6 +13,7 @@
 | 5 | **FIX:** Notification als Foreground Service (nicht wegwischbar) | E-73 | ⏳ |
 | 6 | Hilfe-Fragezeichen (?) bei Notfallpass-Bereichen (nur in App, nicht im Export) | E-77 | ⏳ |
 | 7 | Reihenfolge Notfallpass: Allergien + Vorerkrankungen direkt untereinander | E-78 | ⏳ |
+| 8 | Parasitenschutz = eigener Block im Notfallpass (getrennt von Impfstatus) | E-79 | ⏳ |
 
 ---
 
