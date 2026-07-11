@@ -14,6 +14,10 @@
  * - Erledigt-Liste (letzte 30 Tage) mit RÜCKGÄNGIG – ein Fehl-Tap ist
  *   folgenlos (Eingabe-Stabilitäts-Doktrin: verzeihende Bedienung).
  * - Zeit ausschließlich über das zentrale Zeit-Modul (kein stiller Drift).
+ *
+ * E-81: (1) Tiername eigene Zeile oberhalb des Texts.
+ *        (2) Visuelle + schriftliche Trennung "Hinweis" vs. "Termin".
+ *        (3) Prototyp-Hinweis am Ende.
  */
 import React, { useCallback, useState } from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
@@ -50,6 +54,17 @@ interface ReminderRow {
 export function isInSeason(month: number, start: number | null, end: number | null): boolean {
   if (start === null || end === null) return true; // ganzjaehrig
   return start <= end ? month >= start && month <= end : month >= start || month <= end;
+}
+
+/**
+ * E-81: Bestimmt ob ein Eintrag ein "Termin" (festes Datum, einmalig) oder
+ * ein "Hinweis" (taeglich/wiederkehrend, Pflege/Medikament) ist.
+ */
+function isTermin(r: ReminderRow): boolean {
+  // Termine: Impfungen, einmalige Faelligkeiten (kein repeat_rule)
+  if (r.source_type === 'impfung') return true;
+  if (!r.repeat_rule) return true;
+  return false;
 }
 
 export default function AppointmentsScreen() {
@@ -178,30 +193,49 @@ export default function AppointmentsScreen() {
             {done.length > 0 ? (
               <View style={styles.group}>
                 <Text style={styles.groupTitleDone}>Erledigt (letzte 30 Tage)</Text>
-                {done.map((r) => (
-                  <View key={r.id} style={[styles.card, styles.cardDone, { borderLeftColor: r.pet_color ?? colors.border }]}>
-                    <View style={styles.cardBody}>
-                      <Text style={[styles.cardTitle, styles.cardTitleDone]}>
-                        {r.pet_name}: {r.title}
-                      </Text>
-                      <Text style={styles.cardMeta}>
-                        Erledigt am {formatDate(r.done_at ?? r.due_date)}
-                      </Text>
-                    </View>
-                    <Pressable
-                      style={styles.undoButton}
-                      onPress={() => undo(r)}
-                      disabled={busyId !== null}
-                      accessibilityLabel={`${r.title} wieder öffnen`}
+                {done.map((r) => {
+                  const termin = isTermin(r);
+                  return (
+                    <View
+                      key={r.id}
+                      style={[
+                        styles.card,
+                        styles.cardDone,
+                        { borderLeftColor: termin ? colors.primary : '#E8890C' },
+                      ]}
                     >
-                      <Text style={styles.undoText}>Rückgängig</Text>
-                    </Pressable>
-                  </View>
-                ))}
+                      <View style={styles.cardBody}>
+                        {/* E-81: Tiername eigene Zeile */}
+                        <Text style={styles.petNameDone}>{r.pet_name}</Text>
+                        <Text style={[styles.cardTitle, styles.cardTitleDone]}>
+                          {r.title}
+                        </Text>
+                        <Text style={styles.cardMeta}>
+                          Erledigt am {formatDate(r.done_at ?? r.due_date)}
+                        </Text>
+                      </View>
+                      <Pressable
+                        style={styles.undoButton}
+                        onPress={() => undo(r)}
+                        disabled={busyId !== null}
+                        accessibilityLabel={`${r.title} wieder öffnen`}
+                      >
+                        <Text style={styles.undoText}>Rückgängig</Text>
+                      </Pressable>
+                    </View>
+                  );
+                })}
               </View>
             ) : null}
           </>
         )}
+
+        {/* E-81: Prototyp-Hinweis */}
+        <View style={styles.protoHint}>
+          <Text style={styles.protoHintText}>
+            Prototyp – noch keine Push-Notifications oder Kalender-Sync aktiv!
+          </Text>
+        </View>
       </ScrollView>
     </View>
   );
@@ -224,36 +258,49 @@ function ReminderGroup({
   return (
     <View style={styles.group}>
       <Text style={[styles.groupTitle, highlight && styles.groupTitleOverdue]}>{title}</Text>
-      {items.map((r) => (
-        <View
-          key={r.id}
-          style={[styles.card, { borderLeftColor: r.pet_color ?? colors.border }, highlight && styles.cardOverdue]}
-        >
-          {/* EIN-TAP-CHECKBOX: grosse Touchflaeche, keine Rueckfrage. */}
-          <Pressable
-            style={styles.checkbox}
-            onPress={() => onCheck(r)}
-            disabled={busyId !== null}
-            accessibilityLabel={`${r.title} als erledigt abhaken`}
+      {items.map((r) => {
+        const termin = isTermin(r);
+        return (
+          <View
+            key={r.id}
+            style={[
+              styles.card,
+              // E-81: Farbbalken – gruen/petrol fuer Termine, orange fuer Hinweise
+              { borderLeftColor: termin ? colors.primary : '#E8890C' },
+              highlight && styles.cardOverdue,
+            ]}
           >
-            <View style={styles.checkboxBox} />
-          </Pressable>
-          <View style={styles.cardBody}>
-            <Text style={styles.cardTitle}>
-              {r.pet_name}: {r.title}
-            </Text>
-            <Text style={styles.cardMeta}>
-              {r.repeat_rule === 'taeglich' ? 'Täglich' : `Fällig am ${formatDate(r.due_date)}`}
-              {r.hint_text ? ` · ${r.hint_text}` : ''}
-            </Text>
-            {highlight && r.source_type === 'impfung' ? (
-              <Text style={styles.overdueHint}>
-                Überfällig – bitte Tierarzt konsultieren
+            {/* EIN-TAP-CHECKBOX: grosse Touchflaeche, keine Rueckfrage. */}
+            <Pressable
+              style={styles.checkbox}
+              onPress={() => onCheck(r)}
+              disabled={busyId !== null}
+              accessibilityLabel={`${r.title} als erledigt abhaken`}
+            >
+              <View style={[styles.checkboxBox, termin && styles.checkboxBoxTermin]} />
+            </Pressable>
+            <View style={styles.cardBody}>
+              {/* E-81: Tiername eigene Zeile oberhalb */}
+              <Text style={styles.petName}>{r.pet_name}</Text>
+              <Text style={styles.cardTitle}>{r.title}</Text>
+              <Text style={styles.cardMeta}>
+                {/* E-81: Schriftlicher Typ-Hinweis "Termin" oder "Hinweis" */}
+                <Text style={termin ? styles.typeBadgeTermin : styles.typeBadgeHinweis}>
+                  {termin ? 'Termin' : 'Hinweis'}
+                </Text>
+                {'  '}
+                {r.repeat_rule === 'taeglich' ? 'Täglich' : `Fällig am ${formatDate(r.due_date)}`}
+                {r.hint_text ? ` · ${r.hint_text}` : ''}
               </Text>
-            ) : null}
+              {highlight && r.source_type === 'impfung' ? (
+                <Text style={styles.overdueHint}>
+                  Überfällig – bitte Tierarzt konsultieren
+                </Text>
+              ) : null}
+            </View>
           </View>
-        </View>
-      ))}
+        );
+      })}
     </View>
   );
 }
@@ -296,9 +343,31 @@ const styles = StyleSheet.create({
   cardOverdue: { borderWidth: 1, borderColor: colors.signalRed, borderLeftWidth: 6 },
   cardDone: { opacity: 0.75 },
   cardBody: { flex: 1 },
+  // E-81: Tiername eigene Zeile
+  petName: {
+    fontSize: typography.bodySmall,
+    fontWeight: '700',
+    color: colors.primary,
+    marginBottom: 2,
+  },
+  petNameDone: {
+    fontSize: typography.bodySmall,
+    fontWeight: '700',
+    color: colors.textSecondary,
+    marginBottom: 2,
+  },
   cardTitle: { fontSize: typography.body, fontWeight: '600', color: colors.textPrimary },
   cardTitleDone: { textDecorationLine: 'line-through', color: colors.textSecondary },
   cardMeta: { fontSize: typography.bodySmall, color: colors.textSecondary, marginTop: spacing.xs },
+  // E-81: Schriftlicher Typ-Hinweis
+  typeBadgeTermin: {
+    fontWeight: '700',
+    color: colors.primary,
+  },
+  typeBadgeHinweis: {
+    fontWeight: '700',
+    color: '#E8890C',
+  },
   overdueHint: { fontSize: typography.bodySmall, color: colors.signalRed, marginTop: spacing.xs, fontWeight: '600' },
   checkbox: {
     minWidth: minTouchTarget,
@@ -311,8 +380,12 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: colors.primary,
+    borderColor: '#E8890C',
     backgroundColor: colors.background,
+  },
+  // E-81: Termine bekommen gruene Checkbox-Umrandung
+  checkboxBoxTermin: {
+    borderColor: colors.primary,
   },
   undoButton: {
     borderWidth: 1,
@@ -323,4 +396,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   undoText: { fontSize: typography.bodySmall, color: colors.primary, fontWeight: '600' },
+  // E-81: Prototyp-Hinweis
+  protoHint: {
+    marginTop: spacing.l,
+    paddingVertical: spacing.s,
+    paddingHorizontal: spacing.m,
+    backgroundColor: colors.primaryLight,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  protoHintText: {
+    fontSize: typography.bodySmall,
+    color: colors.textSecondary,
+    fontStyle: 'italic',
+    textAlign: 'center',
+  },
 });
