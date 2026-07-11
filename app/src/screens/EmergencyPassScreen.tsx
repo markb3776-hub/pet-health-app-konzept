@@ -330,6 +330,16 @@ export default function EmergencyPassScreen() {
         </Pressable>
       </View>
 
+      {/* Tipp: neutraler Hinweis zur Nutzung (Nr. 40) */}
+      <View style={styles.tipCard}>
+        <Text style={styles.tipTitle}>Tipp</Text>
+        <Text style={styles.tipText}>
+          Halte diesen Pass aktuell – besonders Allergien, Dauermedikation und Chip-Nummer
+          sind im Notfall entscheidend. Dein Tierarzt kann den QR-Code direkt mit der
+          Handy-Kamera scannen.
+        </Text>
+      </View>
+
       {/* Doktrin: ehrliche Abgrenzung zu amtlichen Dokumenten. */}
       <Text style={styles.footnote}>
         Dieser Pass funktioniert vollständig ohne Internet – alle Angaben liegen auf deinem Gerät.
@@ -397,6 +407,13 @@ export default function EmergencyPassScreen() {
             <Text style={styles.qrHint}>
               Dieser Code enthält die Notfalldaten als Text – jede Handy-Kamera kann ihn direkt
               lesen, ganz ohne Internet. Die Browser-Freigabe für Praxen kommt nach dem Prototyp.
+            </Text>
+            <Text style={styles.qrChangeHint}>
+              Hinweis: Wenn du Daten änderst, wird dieser QR-Code automatisch aktualisiert.
+              Bereits gedruckte QR-Codes zeigen dann noch den alten Stand.
+            </Text>
+            <Text style={styles.qrPrintDate}>
+              Stand: {formatDate(new Date().toISOString().slice(0, 10))}
             </Text>
             <Pressable
               style={styles.qrClose}
@@ -556,6 +573,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 26,
   },
+  tipCard: {
+    backgroundColor: '#F0F8FF',
+    borderRadius: 12,
+    padding: spacing.m,
+    marginBottom: spacing.m,
+    borderLeftWidth: 4,
+    borderLeftColor: colors.primary,
+  },
+  tipTitle: {
+    fontSize: typography.bodySmall,
+    fontWeight: '700',
+    color: colors.primary,
+    marginBottom: spacing.xs,
+  },
+  tipText: {
+    fontSize: typography.bodySmall,
+    color: colors.textPrimary,
+    lineHeight: 20,
+  },
   footnote: {
     fontSize: typography.bodySmall,
     color: colors.textSecondary,
@@ -601,6 +637,22 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     textAlign: 'center',
     marginTop: spacing.m,
+  },
+  qrChangeHint: {
+    fontSize: typography.bodySmall - 1,
+    color: '#8B6914',
+    backgroundColor: '#FFF8E1',
+    borderRadius: 8,
+    padding: spacing.s,
+    marginTop: spacing.s,
+    lineHeight: 18,
+    textAlign: 'center',
+  },
+  qrPrintDate: {
+    fontSize: typography.bodySmall - 2,
+    color: '#555555',
+    marginTop: spacing.xs,
+    textAlign: 'center',
   },
   qrClose: {
     marginTop: spacing.m,

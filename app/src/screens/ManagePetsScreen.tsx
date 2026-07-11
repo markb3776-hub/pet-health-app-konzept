@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   petInfo: { flex: 1 },
   petName: { fontSize: typography.body, fontWeight: '600', color: colors.textPrimary },
   petSpecies: { fontSize: typography.bodySmall, color: colors.textSecondary },
-  petActions: { flexDirection: 'row', gap: spacing.s },
+  petActions: { flexDirection: 'column', gap: spacing.xs, alignItems: 'flex-end' },
   actionButton: {
     borderWidth: 1,
     borderColor: colors.border,

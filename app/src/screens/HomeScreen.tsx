@@ -204,7 +204,7 @@ export default function HomeScreen() {
             {overdue > 0 ? (
               <Pressable
                 style={[styles.statusCard, styles.statusCardOverdue]}
-                onPress={() => navigation.navigate('Tabs' as never, { screen: 'Termine' } as never)}
+                onPress={() => (navigation as any).navigate('Tabs', { screen: 'Termine' })}
                 accessibilityLabel={`${overdue} überfällige Aufgaben ansehen`}
               >
                 <Text style={styles.statusCardTitleOverdue}>
@@ -324,13 +324,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderRadius: 12,
     borderLeftWidth: 6,
-    padding: spacing.m,
+    padding: spacing.s,
+    paddingHorizontal: spacing.m,
     minHeight: minTouchTarget,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.m,
+    gap: spacing.s,
   },
-  petPhoto: { width: 56, height: 56, borderRadius: 28, backgroundColor: colors.border },
+  petPhoto: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.border },
   petPhotoPlaceholder: { alignItems: 'center', justifyContent: 'center' },
   petPhotoInitial: { fontSize: typography.title, fontWeight: '700', color: colors.textSecondary },
   petTileBody: { flex: 1, flexShrink: 1 },
