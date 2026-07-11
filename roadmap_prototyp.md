@@ -67,27 +67,45 @@ Ein Prototyp ist nicht die fertige App. Er ist die kleinste Version, an der wir 
 - ✅ Erste Bugs gemeldet und behoben → APK v0.1.1 (Insets-Fix + Jahr-Picker)
 - ✅ Zweite Testperson eingebunden
 - ✅ Konkurrenzanalyse durchgeführt (11.07.2026)
+- ✅ Korrektur-Durchlauf v0.1.2 durchgeführt (11.07.2026) → 33 Punkte implementiert
+- ✅ APK v0.1.2 gebaut und ausgeliefert (11.07.2026, 134 MB)
 - ⏳ Interview mit zweiter Testperson ausstehend
-- ⏳ Feedback-Sammlung läuft
+- ⏳ Feedback-Sammlung auf v0.1.2 läuft
+- ⏳ Testgeräte ZTE Blade A35e + PRITOM 7" Tablet bestellt
 
-### Schritt 6: Korrektur-Durchlauf v0.1.2 (GEPLANT — wartet auf GO)
+### Schritt 6: Korrektur-Durchlauf v0.1.2 — ✅ ABGESCHLOSSEN (11.07.2026)
 
-Nach Abschluss der Feedback-Sammlung wird ein gebündelter Korrektur-Durchlauf durchgeführt. Vollständige Auflistung aller geplanten Änderungen: siehe `nutzertest_feedback_v0.1.1.md`.
+Gebündelter Durchlauf mit 33 Punkten erfolgreich implementiert und als APK gebaut.
 
-**Geplante Features:**
-1. Rasse-Feld (Freitext) + permanenter Tierarzt-Tipp
-2. Bereich „Vorerkrankungen & Allergien“ (zwei separate Titelfelder in Stammdaten)
-3. Erinnerungs-Vorlauf einstellbar (X Tage vorher)
-4. Überfällig-Hinweis bei Impfungen (ehrlich, doktrin-konform)
-5. Ggf. Parasitenschutz-Typ als eigene Kategorie
+**Implementierte Features:**
+1. ✅ Rasse-Feld (Freitext) im AddPetScreen + permanenter Tierarzt-Tipp
+2. ✅ Allergien & Vorerkrankungen als separate Felder in Stammdaten
+3. ✅ Erinnerungs-Vorlauf einstellbar (X Tage vorher)
+4. ✅ Überfällig-Hinweis bei Impfungen
+5. ✅ Parasitenschutz als eigene Kategorie (Spot-On/Halsband/Tablette)
+6. ✅ Kennfarbe-Bezeichnung klargestellt + Hinweis-Text
+7. ✅ Farbpalette überarbeitet (Orange, Gelb, Weiß neu; weniger Grün)
 
-**Geplante Robustheit (präventiv, aus Konkurrenzanalyse):**
-6. Doppelklick-Schutz auf Speichern-Buttons
-7. Rotation sperren (Portrait-only)
-8. Dark Mode → Light erzwingen
-9. Foto-Komprimierung sicherstellen
-10. Zukunfts-Datum-Validierung
-11. Try/Catch mit Fehlermeldung bei DB-Schreibfehlern
+**Implementierte Datensicherung:**
+8. ✅ Automatisches lokales Backup nach jedem Save
+9. ✅ Export via Android-Teilen-Dialog (.simplypet Datei)
+10. ✅ Import via Datei-Picker (Ersetzen/Zusammenführen)
+11. ✅ MoreScreen mit Backup-Bereich und Datenschutz-Info
+
+**Implementierte Robustheit (33 Präventionsmaßnahmen):**
+12. ✅ Doppelklick-Schutz auf SaveButton (1s Cooldown)
+13. ✅ Portrait-Sperre (app.json orientation)
+14. ✅ FlatList statt ScrollView auf HomeScreen (RAM-Schutz)
+15. ✅ Shared ImagePicker-Helper (Android 13+ Galerie-Fix, Komprimierung)
+16. ✅ Foto-Komprimierung auf max 800px/70% JPEG
+17. ✅ Locale-sichere Datumsformatierung
+18. ✅ Notification-Permission-Request bei App-Start (Android 13+)
+19. ✅ Low-Memory-Handler
+20. ✅ Speicherplatz-Check vor Foto-Aufnahme
+21. ✅ DB Migration 004 (allergies, pre_conditions, sub_type, edited_at, reminder_offset_days)
+22. ✅ compileSdk 36 für AAR-Kompatibilität
+
+**TypeScript-Prüfung:** 0 Fehler. **Expo Export:** 1334 Module, 0 Fehler. **Build:** SUCCESSFUL.
 
 ### Schritt 7: Play Store Release (ZUKUNFT)
 

@@ -12,7 +12,7 @@
 |:---|:---|:---|:---|
 | O-01 | Bearbeiten/Löschen | Soll „Bearbeitet am…"-Vermerk immer sichtbar oder aufklappbar sein? | 11.07.2026 |
 | O-02 | Bearbeiten/Löschen | Soll Löschen endgültig sein oder erst in Papierkorb (30 Tage)? | 11.07.2026 |
-| O-03 | Parasitenschutz | Eigene Kategorie oder Typ-Auswahl unter Medikament/Pflege? | 11.07.2026 |
+| ~~O-03~~ | ~~Parasitenschutz~~ | **GELÖST → E-53:** Eigene Kategorie unter Medikament/Pflege mit Untertypen (Spot-On/Halsband/Tablette) | 11.07.2026 |
 | O-04 | Tester-Feedback | Interview mit zweiter Testperson – Ergebnisse ausstehend | 11.07.2026 |
 
 ---
@@ -56,6 +56,11 @@
 | E-50 | SQLite WAL-Modus | Write-Ahead-Logging aktivieren | Verhindert DB-Locks bei Backup während Nutzung |
 | E-51 | Speicherplatz-Check | Vor Backup-Erstellung freien Speicher prüfen | ZTE 64 GB kann voll sein |
 | E-52 | Low-Memory-Handling | Bei Android-Warning: Bilder-Cache leeren | Graceful Degradation statt Crash |
+| E-53 | Parasitenschutz | Eigene Kategorie unter Medikament/Pflege mit Untertypen: Spot-On, Halsband, Tablette | Nutzer-Feedback: klare Zuordnung nötig |
+| E-54 | Kennfarbe-Bezeichnung | "Kennfarbe in der App" statt "Farbe für dieses Tier" + Hinweis-Text | Testperson dachte es sei Fellfarbe |
+| E-55 | Farbpalette | Orange + Gelb hinzu, Oliv + Gold entfernt, Weiß (Cremeweiß mit Rand) ergänzt | Zu viel Grün, fehlende Grundfarben |
+| E-56 | Galerie-Favoriten | Shared ImagePicker-Helper mit korrektem Android 13+ Permission-Handling | Testperson: Fotos aus Favoriten nicht aufrufbar |
+| E-57 | APK v0.1.2 | Erfolgreich gebaut (134 MB), compileSdk 36, alle 33 Punkte implementiert | Build 11.07.2026 |
 
 ### 10.07.2026
 
