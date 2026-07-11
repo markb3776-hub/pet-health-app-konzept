@@ -14,19 +14,13 @@ Datum: 11.07.2026
 
 ---
 
-## OFFEN für v0.1.4 (Farb-Thema):
+## GESCHLOSSEN (Nutzer-validiert):
 
-### 2. Teal-Buttons vs. ISO-Grün Notfall-Tab – visuell zu nah
-- **Problem:** Der "Exportieren"-Button (Teal #2E9E83) und der Notfall-Tab (ISO-Grün #237F52) liegen im Grünspektrum nah beieinander. Auf dem Handy-Display schwer zu unterscheiden.
-- **Betroffene Stellen:**
-  - MoreScreen: "Exportieren"-Button (Teal BG)
-  - MoreScreen: "Speichern"-Button (Teal BG)
-  - HomeScreen: Action-Buttons (Teal BG)
-  - AddPetScreen: "Speichern"-Button (Teal BG)
-  - EmergencyPassScreen: Action-Buttons (Teal BG)
-  - Alle Screens: Active-Chips (Teal BG)
-- **Entscheidung nötig:** Soll die Button-Farbe von Teal auf eine andere Farbe wechseln (z.B. Dunkelblau, Anthrazit), oder bleibt Teal und der Notfall-Tab wird durch Größe/Form stärker differenziert?
-- **Status:** ⏳ OFFEN – Nutzer-Entscheidung ausstehend
+### 2. Teal-Buttons vs. ISO-Grün Notfall-Tab – kein Problem
+- **Ursprüngliche Bedenken:** Teal (#2E9E83) für Buttons und ISO-Grün (#237F52) für Notfall-Tab liegen im Grünspektrum nah beieinander.
+- **Nutzer-Feedback (11.07.2026):** Rücksprache mit Testperson ergab: Grün wird mit "OK / Bestätigung" assoziiert. Die aktuelle Farbgebung ist völlig in Ordnung. Der Notfall-Tab hebt sich durch Form (Quadrat + Kreuz) und Position (immer rechts unten) ausreichend ab.
+- **Entscheidung:** Keine Farbänderung nötig. Teal bleibt App-Farbe für alle Buttons und aktive Elemente.
+- **Status:** ✅ GESCHLOSSEN – Nutzer-validiert, kein Handlungsbedarf
 
 ---
 
