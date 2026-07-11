@@ -45,6 +45,17 @@
 | E-39 | ScrollView | Alle Screens scrollbar (kein festes Layout) | Split-Screen + kleine Displays |
 | E-40 | Flexible Feldhöhen | Keine fixen Pixel-Höhen bei Eingabefeldern | Barrierefreiheit: große Systemschrift muss passen |
 | E-41 | Google-unabhängig | Keine Abhängigkeit von Google Play Services | Budget-Tablets ohne Google müssen funktionieren |
+| E-42 | Notification-Permission | Explizit anfragen bei Android 13+ (POST_NOTIFICATIONS) | Ohne Anfrage: keine Erinnerungen |
+| E-43 | Kamera-Permission | READ_MEDIA_IMAGES statt READ_EXTERNAL_STORAGE auf Android 13+ | Sonst Absturz bei Foto-Auswahl |
+| E-44 | FlatList bei Listen | Tierliste + Einträge-Listen als FlatList (nicht ScrollView) | RAM-Schutz auf ZTE (2 GB) |
+| E-45 | Thumbnails in Listen | Tierfotos als Thumbnail laden, nicht Original | RAM-Explosion verhindern |
+| E-46 | Hermes-Engine | Aktiviert lassen (Standard bei Expo) | -30% RAM, schnellerer Start |
+| E-47 | Scoped Storage | Backup-Export über Share-Intent, nicht direkter Dateipfad | Android 11+ Pflicht |
+| E-48 | Locale-sichere Daten | Datumsformatierung unabhängig von Geräte-Locale (ISO intern, lokale Anzeige) | Crash-Prävention |
+| E-49 | Leerer Zustand | App-Start ohne Daten darf nicht crashen (Empty-States) | Neues Gerät nach Backup-Import |
+| E-50 | SQLite WAL-Modus | Write-Ahead-Logging aktivieren | Verhindert DB-Locks bei Backup während Nutzung |
+| E-51 | Speicherplatz-Check | Vor Backup-Erstellung freien Speicher prüfen | ZTE 64 GB kann voll sein |
+| E-52 | Low-Memory-Handling | Bei Android-Warning: Bilder-Cache leeren | Graceful Degradation statt Crash |
 
 ### 10.07.2026
 

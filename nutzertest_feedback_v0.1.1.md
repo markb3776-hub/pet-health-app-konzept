@@ -55,6 +55,17 @@
 | 20 | ScrollView auf allen Screens (kein festes Layout) | Split-Screen / kleine Displays → Inhalte müssen scrollbar sein |
 | 21 | Flexible Höhen statt fixer Pixel-Werte bei Eingabefeldern | Große Systemschrift (Barrierefreiheit) → Felder müssen mitwachsen |
 | 22 | Keine Abhängigkeit von Google Play Services | Budget-Tablets haben oft kein Google → App muss trotzdem laufen |
+| 23 | Notification-Permission explizit anfragen (Android 13+) | Ab Android 13 müssen Apps aktiv um Erlaubnis fragen – sonst kommen keine Erinnerungen an |
+| 24 | Kamera-Permission: neue Granularität (Android 13+) | READ_MEDIA_IMAGES statt READ_EXTERNAL_STORAGE – sonst Absturz bei Foto-Auswahl |
+| 25 | FlatList statt ScrollView bei langen Listen (Tierliste, Einträge) | ScrollView lädt ALLES in RAM → Absturz auf ZTE (2 GB). FlatList rendert nur Sichtbares |
+| 26 | Bilder in Listen: Thumbnail statt Originalgröße | Originale Tierfotos (5–12 MB) in einer Liste = RAM-Explosion auf Budget-Geräten |
+| 27 | Hermes-Engine aktiviert lassen | Hermes reduziert RAM-Verbrauch um ~30% und beschleunigt App-Start auf schwachen CPUs |
+| 28 | Backup-Export: Scoped Storage kompatibel (Android 11+) | Datei muss über Share-Intent oder MediaStore geteilt werden, nicht über direkten Dateipfad |
+| 29 | Locale-sichere Datumsformatierung | Manche Geräte haben türkische/arabische Locale → Datumsparser crasht wenn nicht abgefangen |
+| 30 | App-Start ohne Daten: leerer Zustand absichern | Erster Start auf neuem Gerät: kein Tier, keine Einträge → kein Crash bei leeren Listen |
+| 31 | SQLite WAL-Modus für Schreibperformance | Write-Ahead-Logging verhindert DB-Locks bei gleichzeitigem Lesen/Schreiben (Backup während Nutzung) |
+| 32 | Speicherplatz prüfen vor Backup-Erstellung | ZTE mit 64 GB kann voll sein → Fehlermeldung statt stummer Absturz |
+| 33 | Graceful Degradation bei wenig RAM | Wenn Android Low-Memory-Warning sendet: Bilder-Cache leeren, nur Text anzeigen |
 
 ### Weitere Punkte (vom zweiten Tester – Interview ausstehend)
 
