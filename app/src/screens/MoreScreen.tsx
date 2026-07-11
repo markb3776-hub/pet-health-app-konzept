@@ -1,5 +1,5 @@
 /**
- * simplyPet: Mehr-Bereich (v0.1.2)
+ * simplyPet: Mehr-Bereich (Version dynamisch aus app.json)
  * Quelle: technische_spezifikation_screen_flow.md (2.7)
  *
  * Neu in v0.1.2:
@@ -11,6 +11,7 @@
  * Zwei-Tap-Regel: Notfall-FAB fest auf diesem Bildschirm.
  */
 import React, { useCallback, useState } from 'react';
+import Constants from 'expo-constants';
 import {
   View,
   Text,
@@ -254,7 +255,7 @@ export default function MoreScreen() {
           onPress={() => {
             Alert.alert(
               'Über simplyPet',
-              'Version 0.1.2 (Prototyp)\n\n' +
+              `Version ${Constants.expoConfig?.version ?? '?'} (Prototyp)\n\n` +
                 'simplyPet ist eine unabhängige Tiergesundheits-App.\n' +
                 'Keine Werbung, kein Abo, keine versteckten Kosten.\n\n' +
                 'Einmal kaufen – für immer nutzen.',
@@ -267,7 +268,7 @@ export default function MoreScreen() {
         </Pressable>
 
         <Text style={styles.footnote}>
-          simplyPet v0.1.2 · Deine Daten bleiben auf diesem Gerät – ohne Konto, ohne Anmeldung.
+          {`simplyPet v${Constants.expoConfig?.version ?? '?'} · Deine Daten bleiben auf diesem Gerät – ohne Konto, ohne Anmeldung.`}
         </Text>
       </ScrollView>
     </View>
