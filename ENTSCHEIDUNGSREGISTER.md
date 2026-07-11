@@ -113,3 +113,4 @@ Diese Punkte sind NICHT verhandelbar:
 ## Aktualisierungs-Regel
 
 > **Dieses Dokument wird bei JEDER Einigung, JEDER neuen offenen Frage und JEDER Doktrin-Ergänzung sofort aktualisiert und gepusht. Kein Gespräch ohne Dokumentation.**
+| E-73 | Permanente Notification = Foreground Service | expo-notifications `sticky:true` reicht NICHT – Samsung OneUI behandelt sie als normale Notification (wegwischbar, zeitlich begrenzt, verschwindet nach Antippen). Fix: Nativer Android Foreground Service. Notification ist nicht wegwischbar, bleibt nach Antippen bestehen, verschwindet NUR wenn der Schalter auf AUS steht. Verhalten wie ein Lichtschalter: AN = da, AUS = weg. | Nutzer-Test 11.07.2026: Notification verschwand nach Nutzung trotz Aktivierung. Samsung "erneut anzeigen in X Min" Dialog beweist: nicht als ongoing erkannt. |

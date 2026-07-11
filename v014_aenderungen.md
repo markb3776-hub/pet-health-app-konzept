@@ -6,10 +6,11 @@
 
 | Nr. | Änderung | Quelle | Status |
 |:---|:---|:---|:---|
-| 1 | App-Shortcut: Lang drücken → "Notfallpass" | E-61 | ⏳ |
-| 2 | Permanente Notification (Opt-in, Lockscreen) | E-62 | ⏳ |
-| 3 | app.json Version auf 0.1.4, versionCode 4 | - | ⏳ |
-| 4 | TypeScript-Check + Build | - | ⏳ |
+| 1 | App-Shortcut: Lang drücken → "Notfallpass" | E-61 | ✅ |
+| 2 | Permanente Notification (Opt-in, Lockscreen) | E-62 | ✅ (aber Bug: nicht permanent) |
+| 3 | app.json Version auf 0.1.4, versionCode 4 | - | ✅ |
+| 4 | TypeScript-Check + Build | - | ✅ |
+| 5 | **FIX:** Notification als Foreground Service (nicht wegwischbar) | E-73 | ⏳ |
 
 ---
 
