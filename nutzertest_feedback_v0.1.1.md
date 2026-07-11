@@ -50,6 +50,11 @@
 | 10 | Foto-Komprimierung sicherstellen | Speicher-Überlauf verhindern |
 | 11 | Zukunfts-Datum-Validierung | Fehleingaben verhindern |
 | 12 | Try/Catch bei DB-Schreibfehlern | Stummes Scheitern verhindern |
+| 18 | Lange Texte: numberOfLines + Ellipsis oder flexibler Umbruch | Tablet niedrige DPI → Texte können überlaufen |
+| 19 | Mindest-Tap-Target 48dp auf allen Buttons/Icons | ZTE kleiner Bildschirm → Finger treffen sonst nicht |
+| 20 | ScrollView auf allen Screens (kein festes Layout) | Split-Screen / kleine Displays → Inhalte müssen scrollbar sein |
+| 21 | Flexible Höhen statt fixer Pixel-Werte bei Eingabefeldern | Große Systemschrift (Barrierefreiheit) → Felder müssen mitwachsen |
+| 22 | Keine Abhängigkeit von Google Play Services | Budget-Tablets haben oft kein Google → App muss trotzdem laufen |
 
 ### Weitere Punkte (vom zweiten Tester – Interview ausstehend)
 
@@ -59,9 +64,22 @@ _Wird ergänzt sobald Interview-Ergebnisse vorliegen._
 
 ## Geräte-Kompatibilität
 
+### Testgeräte-Matrix
+
+| Gerät | Segment | Display | RAM | Android | Status |
+|:---|:---|:---|:---|:---|:---|
+| Samsung S23 | Premium | 6,1" FHD+ | 8 GB | 16 | ✅ Getestet |
+| Samsung S24 | Premium | 6,2" FHD+ | 8 GB | 16 | ✅ Getestet |
+| ZTE Blade A35e | Budget | 6,52" HD (720p) | 2 GB | 13/14 | ⏳ Bestellt |
+| PRITOM 7" Tablet | Budget-Tablet | 7" (~1024×600) | 8 GB | 15 | ⏳ Bestellt |
+
+### Bekannte Risiken
+
 - **Insets-Fix:** Universell gültig (Standard-Android-API, kein Hersteller-Workaround)
-- **Xiaomi/Huawei-Risiko:** Notifications können verschluckt werden → Hinweis-Dialog für spätere Version
-- **RAM:** Kein Risiko (~80–120 MB, keine Hintergrund-Services)
+- **Xiaomi/Huawei/ZTE-Risiko:** Notifications können verschluckt werden → Hinweis-Dialog für spätere Version
+- **RAM (ZTE, 2 GB):** App ~80–120 MB, sollte passen – aber härtester Test
+- **Tablet niedrige DPI:** Texte erscheinen größer → Präventiv: flexible Umbruch-Logik (Nr. 18)
+- **Tablet ohne Google:** Keine Play Services nötig → App läuft unabhängig (Nr. 22)
 
 ---
 

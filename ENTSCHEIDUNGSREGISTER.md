@@ -40,6 +40,11 @@
 | E-34 | Foto-Komprimierung | Sicherstellen bei Kamera-Aufnahme | Speicher-Überlauf verhindern |
 | E-35 | Zukunfts-Datum | Gesperrt bei Gewicht/Beobachtung/Vorfall | Fehleingaben verhindern |
 | E-36 | DB-Fehlerbehandlung | Try/Catch mit sichtbarer Fehlermeldung | Kein stummes Scheitern |
+| E-37 | Textumbruch | numberOfLines + Ellipsis oder flexibler Umbruch bei langen Texten | Tablet niedrige DPI: Texte können überlaufen |
+| E-38 | Tap-Targets | Mindestens 48dp auf allen Buttons und Icons | ZTE/Budget: kleine Displays, dicke Finger |
+| E-39 | ScrollView | Alle Screens scrollbar (kein festes Layout) | Split-Screen + kleine Displays |
+| E-40 | Flexible Feldhöhen | Keine fixen Pixel-Höhen bei Eingabefeldern | Barrierefreiheit: große Systemschrift muss passen |
+| E-41 | Google-unabhängig | Keine Abhängigkeit von Google Play Services | Budget-Tablets ohne Google müssen funktionieren |
 
 ### 10.07.2026
 
