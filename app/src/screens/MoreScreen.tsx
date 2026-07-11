@@ -1,12 +1,13 @@
 /**
- * simplyPet: Mehr-Bereich
+ * simplyPet: Mehr-Bereich (v0.1.2)
  * Quelle: technische_spezifikation_screen_flow.md (2.7)
  *
- * Kontoloser Prototyp: Statt Konto-Verwaltung gibt es nur den Halter-Namen
- * (fuer den Notfallpass), direkt hier bearbeitbar – mit Draft-freier,
- * sofortiger Speicherung und sichtbarer Bestaetigung.
- * Alle noch nicht gebauten Unterseiten sind EHRLICH gekennzeichnet
- * (Doktrin: kein toter Knopf, kein falsches Versprechen).
+ * Neu in v0.1.2:
+ * - Datensicherung (Export/Import) – Entscheidung E-31/E-32/E-33
+ * - Letztes Backup-Datum anzeigen
+ * - Hinweis zur Eigenverantwortung
+ *
+ * Doktrin: Kein toter Knopf, kein falsches Versprechen.
  * Zwei-Tap-Regel: Notfall-FAB fest auf diesem Bildschirm.
  */
 import React, { useCallback, useState } from 'react';
@@ -18,39 +19,18 @@ import {
   Pressable,
   Alert,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { getOwnerName, setOwnerName, getOwnerPhone, setOwnerPhone } from '../profile/profileStore';
+import { exportBackup, importBackup, getLastBackupDate } from '../backup/backupService';
 import EmergencyFab from '../components/EmergencyFab';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
-const MENU: { key: string; label: string; hint: string; plannedIn: string | null }[] = [
-  {
-    key: 'tiere',
-    label: 'Tiere verwalten',
-    hint: 'Tiere bearbeiten oder ins Archiv verschieben.',
-    plannedIn: null, // seit 4.2 verdrahtet
-  },
-  {
-    key: 'datenschutz',
-    label: 'Deine Daten',
-    hint: 'Wo deine Daten liegen und wie du sie exportierst oder löschst.',
-    plannedIn: '4.4 „Interne Prüfung & APK"',
-  },
-  {
-    key: 'ueber',
-    label: 'Über simplyPet',
-    hint: 'Version, Quellen der Fachinformationen, Kontakt.',
-    plannedIn: '4.4 „Interne Prüfung & APK"',
-  },
-];
-
 export default function MoreScreen() {
-  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): kein Navigations-Header,
-  // daher eigenen Abstand zur Statusleiste reservieren.
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [name, setName] = useState('');
@@ -58,6 +38,8 @@ export default function MoreScreen() {
   const [editing, setEditing] = useState(false);
   const [savedName, setSavedName] = useState<string | null>(null);
   const [savedPhone, setSavedPhone] = useState<string | null>(null);
+  const [lastBackup, setLastBackup] = useState<string | null>(null);
+  const [backupBusy, setBackupBusy] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -65,11 +47,13 @@ export default function MoreScreen() {
       (async () => {
         const owner = await getOwnerName();
         const ownerPhone = await getOwnerPhone();
+        const backupDate = await getLastBackupDate();
         if (active) {
           setSavedName(owner);
           setName(owner ?? '');
           setSavedPhone(ownerPhone);
           setPhone(ownerPhone ?? '');
+          setLastBackup(backupDate);
         }
       })();
       return () => {
@@ -84,8 +68,6 @@ export default function MoreScreen() {
       Alert.alert('Name fehlt', 'Bitte gib deinen Namen ein – er erscheint auf dem Notfall-Pass.');
       return;
     }
-    // Telefon ist optional (kontoloser Prototyp) – aber wenn angegeben,
-    // dann als sinnvolle Nummer (Hinweis, kein Blocker bei Leereingabe).
     const trimmedPhone = phone.trim();
     await setOwnerName(trimmed);
     await setOwnerPhone(trimmedPhone);
@@ -95,12 +77,46 @@ export default function MoreScreen() {
     Alert.alert('Gespeichert', 'Deine Kontaktdaten wurden aktualisiert.');
   }
 
+  async function handleExport() {
+    setBackupBusy(true);
+    try {
+      await exportBackup();
+      const date = await getLastBackupDate();
+      setLastBackup(date);
+    } finally {
+      setBackupBusy(false);
+    }
+  }
+
+  async function handleImport() {
+    Alert.alert(
+      'Sicherung importieren',
+      'Beim Wiederherstellen werden alle aktuellen Daten durch die Sicherung ersetzt. Fortfahren?',
+      [
+        { text: 'Abbrechen', style: 'cancel' },
+        {
+          text: 'Datei wählen',
+          onPress: async () => {
+            setBackupBusy(true);
+            try {
+              await importBackup();
+              const date = await getLastBackupDate();
+              setLastBackup(date);
+            } finally {
+              setBackupBusy(false);
+            }
+          },
+        },
+      ]
+    );
+  }
+
   return (
     <View style={[styles.flex, { paddingTop: insets.top }]}>
-      <ScrollView style={styles.container} contentContainerStyle={styles.scroll}>
+      <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]}>
         <Text style={styles.headline}>Mehr</Text>
 
-        {/* Halter-Profil (kontolos: nur der Name) */}
+        {/* Halter-Profil */}
         <View style={styles.profileCard}>
           <Text style={styles.profileLabel}>Halter-Kontakt (erscheint auf dem Notfall-Pass)</Text>
           {editing ? (
@@ -155,40 +171,104 @@ export default function MoreScreen() {
                 onPress={() => setEditing(true)}
                 accessibilityLabel="Kontaktdaten bearbeiten"
               >
-                <Text style={styles.editLinkText}>✎ Bearbeiten</Text>
+                <Text style={styles.editLinkText}>Bearbeiten</Text>
               </Pressable>
             </View>
           )}
         </View>
 
-        {MENU.map((item) => (
-          <Pressable
-            key={item.key}
-            style={styles.item}
-            accessibilityLabel={item.label}
-            onPress={() => {
-              if (item.key === 'tiere') {
-                navigation.navigate('TiereVerwalten');
-                return;
-              }
-              // Ehrliche Kennzeichnung: noch nicht gebaute Unterseiten (Doktrin).
-              Alert.alert(
-                'Kommt im nächsten Schritt',
-                `„${item.label}" wird im Entwicklungsschritt ${item.plannedIn} gebaut.`,
-                [{ text: 'Verstanden' }]
-              );
-            }}
-          >
-            <Text style={styles.itemLabel}>{item.label}</Text>
-            <Text style={styles.itemHint}>{item.hint}</Text>
-            {item.plannedIn ? (
-              <Text style={styles.itemPlanned}>Kommt in {item.plannedIn}</Text>
-            ) : null}
-          </Pressable>
-        ))}
+        {/* Tiere verwalten */}
+        <Pressable
+          style={styles.item}
+          accessibilityLabel="Tiere verwalten"
+          onPress={() => navigation.navigate('TiereVerwalten')}
+        >
+          <Text style={styles.itemLabel}>Tiere verwalten</Text>
+          <Text style={styles.itemHint}>Tiere bearbeiten oder ins Archiv verschieben.</Text>
+        </Pressable>
+
+        {/* Datensicherung */}
+        <View style={styles.backupCard}>
+          <Text style={styles.backupTitle}>Datensicherung</Text>
+          <Text style={styles.backupInfo}>
+            Deine Daten werden automatisch als Sicherungsdatei auf diesem Gerät aktualisiert.
+          </Text>
+          <Text style={styles.backupWarning}>
+            Diese Datei liegt NUR auf diesem Gerät. Geht das Gerät verloren, sind auch deine Daten weg.
+            Speichere die Datei regelmäßig an einem zweiten Ort – z.B. USB-Stick, PC, SD-Karte oder ein anderes Gerät.
+          </Text>
+
+          {lastBackup ? (
+            <Text style={styles.backupDate}>
+              Letzte Sicherung: {(() => {
+                const d = new Date(lastBackup);
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const yyyy = d.getFullYear();
+                const hh = String(d.getHours()).padStart(2, '0');
+                const min = String(d.getMinutes()).padStart(2, '0');
+                return `${dd}.${mm}.${yyyy}, ${hh}:${min}`;
+              })()}
+            </Text>
+          ) : (
+            <Text style={styles.backupDate}>Noch keine Sicherung erstellt.</Text>
+          )}
+
+          {backupBusy ? (
+            <ActivityIndicator style={styles.backupSpinner} color={colors.primary} />
+          ) : (
+            <View style={styles.backupButtons}>
+              <Pressable style={styles.primaryButton} onPress={handleExport} accessibilityLabel="Sicherung exportieren">
+                <Text style={styles.primaryButtonText}>Exportieren</Text>
+              </Pressable>
+              <Pressable style={styles.secondaryButton} onPress={handleImport} accessibilityLabel="Sicherung importieren">
+                <Text style={styles.secondaryButtonText}>Importieren</Text>
+              </Pressable>
+            </View>
+          )}
+        </View>
+
+        {/* Datenschutz-Info */}
+        <Pressable
+          style={styles.item}
+          accessibilityLabel="Deine Daten"
+          onPress={() => {
+            Alert.alert(
+              'Deine Daten',
+              'Alle Daten bleiben auf diesem Gerät.\n\n' +
+                '• Kein Internet, kein Server, kein Konto.\n' +
+                '• Keine Analyse, kein Tracking.\n' +
+                '• Du hast die volle Kontrolle.\n\n' +
+                'Nutze die Datensicherung oben, um deine Daten extern zu sichern.',
+              [{ text: 'Verstanden' }]
+            );
+          }}
+        >
+          <Text style={styles.itemLabel}>Deine Daten</Text>
+          <Text style={styles.itemHint}>Wo deine Daten liegen und wie du sie exportierst oder löschst.</Text>
+        </Pressable>
+
+        {/* Über simplyPet */}
+        <Pressable
+          style={styles.item}
+          accessibilityLabel="Über simplyPet"
+          onPress={() => {
+            Alert.alert(
+              'Über simplyPet',
+              'Version 0.1.2 (Prototyp)\n\n' +
+                'simplyPet ist eine unabhängige Tiergesundheits-App.\n' +
+                'Keine Werbung, kein Abo, keine versteckten Kosten.\n\n' +
+                'Einmal kaufen – für immer nutzen.',
+              [{ text: 'OK' }]
+            );
+          }}
+        >
+          <Text style={styles.itemLabel}>Über simplyPet</Text>
+          <Text style={styles.itemHint}>Version, Kontakt, Datenschutz.</Text>
+        </Pressable>
 
         <Text style={styles.footnote}>
-          simplyPet Prototyp · Deine Daten bleiben auf diesem Gerät – ohne Konto, ohne Anmeldung.
+          simplyPet v0.1.2 · Deine Daten bleiben auf diesem Gerät – ohne Konto, ohne Anmeldung.
         </Text>
       </ScrollView>
       <EmergencyFab />
@@ -278,12 +358,41 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
     lineHeight: 22,
   },
-  itemPlanned: {
-    fontSize: typography.bodySmall - 2,
-    color: colors.textSecondary,
-    fontStyle: 'italic',
-    marginTop: spacing.xs,
+  backupCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: spacing.m,
+    marginBottom: spacing.m,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
+  backupTitle: {
+    fontSize: typography.body,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: spacing.s,
+  },
+  backupInfo: {
+    fontSize: typography.bodySmall,
+    color: colors.textSecondary,
+    lineHeight: 22,
+    marginBottom: spacing.s,
+  },
+  backupWarning: {
+    fontSize: typography.bodySmall,
+    color: colors.textPrimary,
+    lineHeight: 22,
+    marginBottom: spacing.m,
+    fontWeight: '600',
+  },
+  backupDate: {
+    fontSize: typography.bodySmall,
+    color: colors.primary,
+    marginBottom: spacing.m,
+    fontWeight: '600',
+  },
+  backupButtons: { flexDirection: 'row', gap: spacing.m },
+  backupSpinner: { marginVertical: spacing.m },
   footnote: {
     fontSize: typography.bodySmall,
     color: colors.textSecondary,

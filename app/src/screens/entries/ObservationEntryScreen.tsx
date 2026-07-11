@@ -27,7 +27,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
-import * as ImagePicker from 'expo-image-picker';
+// ImagePicker jetzt via shared Helper (../utils/imagePicker)
 import { getDb, uuid } from '../../db/database';
 import { getSpeciesConfig } from '../../config/species';
 import { colors, typography, spacing, minTouchTarget } from '../../theme/theme';
@@ -106,30 +106,9 @@ export default function ObservationEntryScreen() {
       : form.notes.trim().length > 0);
 
   async function pickPhoto(fromCamera: boolean) {
-    try {
-      if (fromCamera) {
-        const perm = await ImagePicker.requestCameraPermissionsAsync();
-        if (!perm.granted) {
-          Alert.alert(
-            'Kamera nicht freigegeben',
-            'Ohne Kamera-Freigabe kann kein Foto aufgenommen werden. Du kannst stattdessen ein Bild aus der Galerie wählen.'
-          );
-          return;
-        }
-        const result = await ImagePicker.launchCameraAsync({ quality: 0.7 });
-        if (!result.canceled && result.assets[0]) update('photoUri', result.assets[0].uri);
-      } else {
-        const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!perm.granted) {
-          Alert.alert('Galerie nicht freigegeben', 'Ohne Freigabe kann kein Bild gewählt werden.');
-          return;
-        }
-        const result = await ImagePicker.launchImageLibraryAsync({ quality: 0.7 });
-        if (!result.canceled && result.assets[0]) update('photoUri', result.assets[0].uri);
-      }
-    } catch {
-      Alert.alert('Foto nicht möglich', 'Das Foto konnte nicht übernommen werden. Bitte versuche es erneut.');
-    }
+    const { takePhoto, pickFromGallery } = require('../utils/imagePicker');
+    const result = fromCamera ? await takePhoto() : await pickFromGallery();
+    if (!result.cancelled) update('photoUri', result.uri);
   }
 
   async function save() {

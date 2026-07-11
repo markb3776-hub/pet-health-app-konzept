@@ -133,6 +133,20 @@ async function migrate(database: SQLite.SQLiteDatabase): Promise<void> {
   await addColumnIfMissing(database, 'pets', 'coat_color', 'TEXT'); // Fellfarbe/Zeichnung
   await addColumnIfMissing(database, 'pets', 'vet_practice_name', 'TEXT'); // Stammtierarzt-Praxis
   await addColumnIfMissing(database, 'pets', 'vet_practice_phone', 'TEXT');
+
+  // Migration 004 (v0.1.2): Allergien/Vorerkrankungen in Stammdaten,
+  // Parasitenschutz-Untertyp, Erinnerungs-Vorlauf, Bearbeitungs-Vermerk.
+  await addColumnIfMissing(database, 'pets', 'allergies', 'TEXT'); // Freitext, separate Anzeige
+  await addColumnIfMissing(database, 'pets', 'pre_conditions', 'TEXT'); // Freitext, separate Anzeige
+  await addColumnIfMissing(database, 'medications', 'sub_type', 'TEXT'); // Parasitenschutz: Spot-On/Halsband/Tablette
+  await addColumnIfMissing(database, 'reminders', 'offset_days', 'INTEGER'); // Vorlauf-Tage (z.B. 7 = 7 Tage vorher)
+  // Bearbeitungs-Vermerk: wann wurde ein Eintrag zuletzt bearbeitet (fuer Transparenz)
+  await addColumnIfMissing(database, 'health_records', 'edited_at', 'TEXT');
+  await addColumnIfMissing(database, 'vaccinations', 'edited_at', 'TEXT');
+  await addColumnIfMissing(database, 'medications', 'edited_at', 'TEXT');
+  await addColumnIfMissing(database, 'reminders', 'edited_at', 'TEXT');
+  // Backup-Metadaten
+  await addColumnIfMissing(database, 'pets', 'last_backup_at', 'TEXT');
 }
 
 async function addColumnIfMissing(

@@ -39,14 +39,15 @@ export const colors = {
 export const petColorPalette: { key: string; hex: string; label: string }[] = [
   { key: 'blau', hex: '#2F6495', label: 'Blau' },
   { key: 'gruen', hex: '#365233', label: 'Grün' },
-  { key: 'gold', hex: '#B98A2F', label: 'Gold' },
+  { key: 'orange', hex: '#C96A2B', label: 'Orange' },
+  { key: 'gelb', hex: '#C4A820', label: 'Gelb' },
   { key: 'violett', hex: '#61517A', label: 'Violett' },
   { key: 'petrol', hex: '#225A5A', label: 'Petrol' },
   { key: 'braun', hex: '#A7795E', label: 'Braun' },
   { key: 'rosa', hex: '#B06A8C', label: 'Altrosa' },
   { key: 'grau', hex: '#5F6B6D', label: 'Steingrau' },
-  { key: 'oliv', hex: '#7A7C39', label: 'Oliv' },
   { key: 'nachtblau', hex: '#242D4E', label: 'Nachtblau' },
+  { key: 'weiss', hex: '#F0EDE8', label: 'Weiß' },
 ];
 
 export const typography = {

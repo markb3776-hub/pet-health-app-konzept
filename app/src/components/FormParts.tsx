@@ -8,7 +8,7 @@
  * - FieldLabel / Hint / SaveButton / ChoiceChips: einheitliche Optik,
  *   grosse Touchflaechen (Zielgruppe 50+).
  */
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, Text, Pressable, Image, StyleSheet } from 'react-native';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 import { getSpeciesConfig } from '../config/species';
@@ -124,11 +124,19 @@ export function SaveButton({
   saving: boolean;
   label?: string;
 }) {
+  // Doppelklick-Schutz (Praevention Nr. 7): 1 Sekunde Cooldown nach Tap
+  const lastTap = useRef(0);
+  function handlePress() {
+    const now = Date.now();
+    if (now - lastTap.current < 1000) return; // Doppelklick ignorieren
+    lastTap.current = now;
+    onPress();
+  }
   return (
     <Pressable
       style={[styles.saveButton, disabled && styles.saveButtonDisabled]}
-      disabled={disabled}
-      onPress={onPress}
+      disabled={disabled || saving}
+      onPress={handlePress}
       accessibilityLabel={label}
     >
       <Text style={styles.saveButtonText}>{saving ? 'Speichert …' : label}</Text>

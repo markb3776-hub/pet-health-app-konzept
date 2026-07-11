@@ -248,6 +248,11 @@ function ReminderGroup({
               {r.repeat_rule === 'taeglich' ? 'Täglich' : `Fällig am ${formatDate(r.due_date)}`}
               {r.hint_text ? ` · ${r.hint_text}` : ''}
             </Text>
+            {highlight && r.source_type === 'impfung' ? (
+              <Text style={styles.overdueHint}>
+                Überfällig – bitte Tierarzt konsultieren
+              </Text>
+            ) : null}
           </View>
         </View>
       ))}
@@ -296,6 +301,7 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: typography.body, fontWeight: '600', color: colors.textPrimary },
   cardTitleDone: { textDecorationLine: 'line-through', color: colors.textSecondary },
   cardMeta: { fontSize: typography.bodySmall, color: colors.textSecondary, marginTop: spacing.xs },
+  overdueHint: { fontSize: typography.bodySmall, color: colors.signalRed, marginTop: spacing.xs, fontWeight: '600' },
   checkbox: {
     minWidth: minTouchTarget,
     minHeight: minTouchTarget,

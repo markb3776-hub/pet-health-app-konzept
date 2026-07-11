@@ -42,6 +42,7 @@ interface VaccinationDraft {
   productName: string;
   dateGiven: string;
   validUntil: string | null;
+  reminderDaysBefore: number;
 }
 
 export default function VaccinationEntryScreen() {
@@ -67,6 +68,7 @@ export default function VaccinationEntryScreen() {
       productName: '',
       dateGiven: todayKey(),
       validUntil: null,
+      reminderDaysBefore: 7,
     }),
     [presetPetId]
   );
@@ -110,15 +112,20 @@ export default function VaccinationEntryScreen() {
             ]
           );
           if (form.validUntil) {
+            // Erinnerungs-Vorlauf: due_date = valid_until MINUS X Tage (Entscheidung E-04)
+            const dueDate = new Date(form.validUntil);
+            dueDate.setDate(dueDate.getDate() - Math.max(1, form.reminderDaysBefore));
+            const dueDateStr = dueDate.toISOString().slice(0, 10);
             await db.runAsync(
-              `INSERT INTO reminders (id, pet_id, title, due_date, status, source_type, source_id, created_at, updated_at, is_synced)
-               VALUES (?, ?, ?, ?, 'Offen', 'impfung', ?, ?, ?, 0)`,
+              `INSERT INTO reminders (id, pet_id, title, due_date, status, source_type, source_id, offset_days, created_at, updated_at, is_synced)
+               VALUES (?, ?, ?, ?, 'Offen', 'impfung', ?, ?, ?, ?, 0)`,
               [
                 uuid(),
                 effectivePetId,
                 `${form.vaccType} auffrischen: ${form.disease.trim()}`,
-                form.validUntil,
+                dueDateStr,
                 vaccId,
+                form.reminderDaysBefore,
                 ts,
                 ts,
               ]
@@ -201,6 +208,26 @@ export default function VaccinationEntryScreen() {
               allowFuture
               hint="Wenn du ein Datum setzt, entsteht die Erinnerung automatisch – du musst an nichts mehr denken."
             />
+
+            {form.validUntil ? (
+              <>
+                <FieldLabel>Tage vorher erinnern</FieldLabel>
+                <TextInput
+                  style={styles.input}
+                  value={String(form.reminderDaysBefore)}
+                  onChangeText={(t) => {
+                    const n = parseInt(t, 10);
+                    if (!isNaN(n) && n >= 1 && n <= 90) update('reminderDaysBefore', n);
+                    else if (t === '') update('reminderDaysBefore', 7);
+                  }}
+                  keyboardType="number-pad"
+                  placeholder="7"
+                  placeholderTextColor={colors.textSecondary}
+                  accessibilityLabel="Tage vorher erinnern"
+                />
+                <Hint>Du wirst {form.reminderDaysBefore} Tag{form.reminderDaysBefore !== 1 ? 'e' : ''} vor Fälligkeit erinnert.</Hint>
+              </>
+            ) : null}
           </View>
         </View>
 

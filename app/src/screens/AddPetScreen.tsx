@@ -34,10 +34,10 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import * as ImagePicker from 'expo-image-picker';
+// ImagePicker jetzt via shared Helper (./utils/imagePicker)
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { getDb, uuid } from '../db/database';
-import { SPECIES_LIST } from '../config/species';
+import { SPECIES_LIST, getSpeciesConfig } from '../config/species';
 import { colors, typography, spacing, minTouchTarget, petColorPalette } from '../theme/theme';
 import DateField from '../components/DateField';
 import { nowUtcIso } from '../time/timeModule';
@@ -54,6 +54,7 @@ const DRAFT_KEY = 'add_pet';
 interface AddPetDraft {
   species: string | null;
   name: string;
+  breed: string;
   birthDate: string | null;
   gender: string | null;
   colorKey: string;
@@ -63,6 +64,7 @@ interface AddPetDraft {
 const EMPTY_DRAFT: AddPetDraft = {
   species: null,
   name: '',
+  breed: '',
   birthDate: null,
   gender: null,
   colorKey: petColorPalette[0].key,
@@ -94,6 +96,7 @@ export default function AddPetScreen() {
     () =>
       form.species !== null ||
       form.name.trim().length > 0 ||
+      form.breed.trim().length > 0 ||
       form.birthDate !== null ||
       form.gender !== null ||
       form.photoUri !== null,
@@ -135,33 +138,9 @@ export default function AddPetScreen() {
   useUnsavedChangesGuard(hydrated && isDirty && !saved, () => clearDraft(DRAFT_KEY));
 
   async function pickPhoto(fromCamera: boolean) {
-    try {
-      if (fromCamera) {
-        const perm = await ImagePicker.requestCameraPermissionsAsync();
-        if (!perm.granted) {
-          Alert.alert(
-            'Kamera nicht freigegeben',
-            'Ohne Kamera-Freigabe kann kein Foto aufgenommen werden. Du kannst stattdessen ein Bild aus der Galerie wählen.'
-          );
-          return;
-        }
-        const result = await ImagePicker.launchCameraAsync({ quality: 0.7 });
-        if (!result.canceled && result.assets[0]) update('photoUri', result.assets[0].uri);
-      } else {
-        const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!perm.granted) {
-          Alert.alert(
-            'Galerie nicht freigegeben',
-            'Ohne Freigabe kann kein Bild aus der Galerie gewählt werden.'
-          );
-          return;
-        }
-        const result = await ImagePicker.launchImageLibraryAsync({ quality: 0.7 });
-        if (!result.canceled && result.assets[0]) update('photoUri', result.assets[0].uri);
-      }
-    } catch {
-      Alert.alert('Foto nicht möglich', 'Das Foto konnte nicht übernommen werden. Bitte versuche es erneut.');
-    }
+    const { takePhoto, pickFromGallery } = require('../utils/imagePicker');
+    const result = fromCamera ? await takePhoto() : await pickFromGallery();
+    if (!result.cancelled) update('photoUri', result.uri);
   }
 
   async function save() {
@@ -174,12 +153,13 @@ export default function AddPetScreen() {
       const ts = nowUtcIso();
       // Atomar: EIN Insert – entweder vollstaendig gespeichert oder gar nicht.
       await db.runAsync(
-        `INSERT INTO pets (id, name, species, gender, birth_date, color_theme, photo_uri, created_at, updated_at, is_synced)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`,
+        `INSERT INTO pets (id, name, species, breed, gender, birth_date, color_theme, photo_uri, created_at, updated_at, is_synced)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`,
         [
           uuid(),
           form.name.trim(),
           form.species,
+          form.breed.trim() || null,
           form.gender,
           form.birthDate,
           hex,
@@ -258,6 +238,26 @@ export default function AddPetScreen() {
                 accessibilityLabel={nameLabel}
               />
 
+              {/* Rasse-Feld: nur fuer Einzeltiere (nicht Aquarium etc.) */}
+              {!isHabitat ? (
+                <>
+                  <Text style={styles.sectionTitle}>Rasse / Art (optional)</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={form.breed}
+                    onChangeText={(t) => update('breed', t)}
+                    placeholder="z. B. Labrador, Maine Coon, Zwergwidder"
+                    placeholderTextColor={colors.textSecondary}
+                    accessibilityLabel="Rasse"
+                  />
+                  {form.breed.trim().length > 0 ? (
+                    <Text style={styles.vetTipText}>
+                      Tipp: Frag deinen Tierarzt nach rassetypischen Vorsorge-Untersuchungen für deine Rasse.
+                    </Text>
+                  ) : null}
+                </>
+              ) : null}
+
               {/* Geburtsdatum & Geschlecht nur fuer Einzeltiere, nicht fuer Behaeltnisse (Aquarium) */}
               {!isHabitat ? (
                 <>
@@ -325,7 +325,8 @@ export default function AddPetScreen() {
                 </View>
               )}
 
-              <Text style={styles.sectionTitle}>Farbe für dieses Tier</Text>
+              <Text style={styles.sectionTitle}>Kennfarbe in der App</Text>
+              <Text style={styles.hint}>Damit erkennst du dieses Tier auf einen Blick in der Übersicht.</Text>
               <View style={styles.colorRow}>
                 {petColorPalette.map((c) => (
                   <Pressable
@@ -334,6 +335,7 @@ export default function AddPetScreen() {
                     style={[
                       styles.colorDot,
                       { backgroundColor: c.hex },
+                      c.key === 'weiss' && styles.colorDotLight,
                       form.colorKey === c.key && styles.colorDotActive,
                     ]}
                     onPress={() => update('colorKey', c.key)}
@@ -440,7 +442,21 @@ const styles = StyleSheet.create({
   photoRemoveText: { fontSize: typography.bodySmall, color: colors.textSecondary },
   colorRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.m },
   colorDot: { width: 40, height: 40, borderRadius: 20 },
+  colorDotLight: { borderWidth: 1, borderColor: colors.border },
   colorDotActive: { borderWidth: 3, borderColor: colors.textPrimary },
+  vetTipText: {
+    fontSize: typography.bodySmall,
+    color: colors.primary,
+    marginTop: spacing.s,
+    lineHeight: 22,
+    fontStyle: 'italic',
+  },
+  hint: {
+    fontSize: typography.bodySmall,
+    color: colors.textSecondary,
+    marginBottom: spacing.m,
+    lineHeight: 22,
+  },
   footnote: {
     fontSize: typography.bodySmall,
     color: colors.textSecondary,

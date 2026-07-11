@@ -35,6 +35,8 @@ export interface PassPet {
   specialist_vet_phone: string | null;
   vet_practice_name: string | null;
   vet_practice_phone: string | null;
+  allergies: string | null;
+  pre_conditions: string | null;
   updated_at: string;
 }
 
@@ -88,7 +90,8 @@ export async function loadPassData(petId: string): Promise<PassData | null> {
     `SELECT id, name, species, breed, gender, birth_date, castration_status,
             chip_number, coat_color, photo_uri, special_features,
             specialist_vet_name, specialist_vet_phone,
-            vet_practice_name, vet_practice_phone, updated_at
+            vet_practice_name, vet_practice_phone,
+            allergies, pre_conditions, updated_at
      FROM pets WHERE id = ? AND deleted_at IS NULL`,
     [petId]
   );
@@ -109,10 +112,21 @@ export async function loadPassData(petId: string): Promise<PassData | null> {
      ORDER BY created_at`,
     [petId]
   );
-  const allergies = medRows.filter((m) => m.type === 'Allergie').map((m) => ({ name: m.name }));
-  const conditions = medRows
-    .filter((m) => m.type === 'Vorerkrankung')
-    .map((m) => ({ name: m.name }));
+  // Allergien/Vorerkrankungen: ZUERST aus pets-Stammdaten (v0.1.2), DANN Fallback auf medications
+  const petAllergies = pet.allergies?.trim()
+    ? pet.allergies.split(',').map((a) => ({ name: a.trim() })).filter((a) => a.name.length > 0)
+    : [];
+  const petConditions = pet.pre_conditions?.trim()
+    ? pet.pre_conditions.split(',').map((c) => ({ name: c.trim() })).filter((c) => c.name.length > 0)
+    : [];
+  // Fallback: alte Eintraege aus medications-Tabelle (Rueckwaertskompatibilitaet)
+  const medAllergies = medRows.filter((m) => m.type === 'Allergie').map((m) => ({ name: m.name }));
+  const medConditions = medRows.filter((m) => m.type === 'Vorerkrankung').map((m) => ({ name: m.name }));
+  // Zusammenfuehren ohne Duplikate
+  const allergyNames = new Set(petAllergies.map((a) => a.name.toLowerCase()));
+  const allergies = [...petAllergies, ...medAllergies.filter((a) => !allergyNames.has(a.name.toLowerCase()))];
+  const conditionNames = new Set(petConditions.map((c) => c.name.toLowerCase()));
+  const conditions = [...petConditions, ...medConditions.filter((c) => !conditionNames.has(c.name.toLowerCase()))];
   const medications = medRows
     .filter((m) => m.type === 'Medikament')
     .map((m) => ({ name: m.name, dosage: m.dosage, active_since: m.active_since }));

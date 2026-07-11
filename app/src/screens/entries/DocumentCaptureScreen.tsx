@@ -28,7 +28,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRoute } from '@react-navigation/native';
-import * as ImagePicker from 'expo-image-picker';
+// ImagePicker jetzt via shared Helper (../utils/imagePicker)
 import { getDb, uuid } from '../../db/database';
 import { colors, typography, spacing, minTouchTarget } from '../../theme/theme';
 import { PetPicker, FieldLabel, Hint, SaveButton, ChoiceChips } from '../../components/FormParts';
@@ -90,35 +90,18 @@ export default function DocumentCaptureScreen() {
   async function capturePhoto() {
     setAsking(true);
     try {
-      const perm = await ImagePicker.requestCameraPermissionsAsync();
-      if (!perm.granted) {
-        Alert.alert(
-          'Kamera nicht freigegeben',
-          'Ohne Kamera-Freigabe kann kein Foto aufgenommen werden. Du kannst das Dokument stattdessen aus der Galerie wählen – oder die Freigabe in den Android-Einstellungen erteilen.'
-        );
-        return;
-      }
-      const result = await ImagePicker.launchCameraAsync({ quality: 0.85 });
-      if (!result.canceled && result.assets[0]) update('photoUri', result.assets[0].uri);
-    } catch {
-      Alert.alert('Foto nicht möglich', 'Das Foto konnte nicht aufgenommen werden. Bitte versuche es erneut.');
+      const { takePhoto } = require('../utils/imagePicker');
+      const result = await takePhoto();
+      if (!result.cancelled) update('photoUri', result.uri);
     } finally {
       setAsking(false);
     }
   }
 
   async function pickFromGallery() {
-    try {
-      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!perm.granted) {
-        Alert.alert('Galerie nicht freigegeben', 'Ohne Freigabe kann kein Bild aus der Galerie gewählt werden.');
-        return;
-      }
-      const result = await ImagePicker.launchImageLibraryAsync({ quality: 0.85 });
-      if (!result.canceled && result.assets[0]) update('photoUri', result.assets[0].uri);
-    } catch {
-      Alert.alert('Foto nicht möglich', 'Das Bild konnte nicht übernommen werden. Bitte versuche es erneut.');
-    }
+    const { pickFromGallery: pick } = require('../utils/imagePicker');
+    const result = await pick();
+    if (!result.cancelled) update('photoUri', result.uri);
   }
 
   async function save() {

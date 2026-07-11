@@ -111,6 +111,13 @@ export function useEntryForm<T extends object>(options: EntryFormOptions<T>) {
       await write();
       setSaved(true);
       await clearDraft(draftKey);
+      // Praevention Nr. 13: Auto-Backup nach jedem erfolgreichen Save
+      try {
+        const { autoBackup } = require('../backup/backupService');
+        autoBackup(); // Fire-and-forget, blockiert nicht
+      } catch {
+        // Backup-Fehler darf Save-Erfolg nicht beeintraechtigen
+      }
       Alert.alert(confirmation.title, confirmation.message, [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);

@@ -30,7 +30,8 @@ import { PetPicker, FieldLabel, Hint, SaveButton, ChoiceChips } from '../../comp
 import { usePets, useEntryForm } from '../../forms/useEntryForm';
 import { todayKey, nowUtcIso } from '../../time/timeModule';
 
-const MED_TYPES = ['Medikament', 'Pflege', 'Vorerkrankung', 'Allergie'];
+const MED_TYPES = ['Medikament', 'Pflege', 'Parasitenschutz', 'Vorerkrankung', 'Allergie'];
+const PARASIT_SUB_TYPES = ['Spot-On', 'Halsband', 'Tablette', 'Sonstiges'];
 
 /** Artgerechte Pflege-Vorschlaege (tierarten_abdeckung_festlegungen.md §2). */
 const CARE_SUGGESTIONS: Record<string, string[]> = {
@@ -60,6 +61,7 @@ function isValidTime(t: string): boolean {
 interface MedicationDraft {
   petId: string | null;
   medType: string;
+  subType: string | null;
   name: string;
   dosage: string;
   timesPerDay: number;
@@ -84,6 +86,7 @@ export default function MedicationEntryScreen() {
     () => ({
       petId: presetPetId,
       medType: 'Medikament',
+      subType: null,
       name: '',
       dosage: '',
       timesPerDay: 1,
@@ -107,6 +110,7 @@ export default function MedicationEntryScreen() {
   const effectivePetId = form.petId ?? (pets.length === 1 ? pets[0].id : null);
   const pet = pets.find((p) => p.id === effectivePetId);
   const isCare = form.medType === 'Pflege';
+  const isParasit = form.medType === 'Parasitenschutz';
   const isCondition = form.medType === 'Vorerkrankung' || form.medType === 'Allergie';
   const suggestions = isCare && pet ? CARE_SUGGESTIONS[pet.species] ?? [] : [];
 
@@ -146,12 +150,13 @@ export default function MedicationEntryScreen() {
           : [];
         await db.withTransactionAsync(async () => {
           await db.runAsync(
-            `INSERT INTO medications (id, pet_id, type, name, dosage, times_per_day, dose_times, hint_text, active_since, is_active, created_at, updated_at, is_synced)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, 0)`,
+            `INSERT INTO medications (id, pet_id, type, sub_type, name, dosage, times_per_day, dose_times, hint_text, active_since, is_active, created_at, updated_at, is_synced)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, 0)`,
             [
               medId,
               effectivePetId,
               form.medType,
+              form.subType || null,
               form.name.trim(),
               form.dosage.trim() || null,
               isCondition ? 1 : form.timesPerDay,
@@ -214,10 +219,22 @@ export default function MedicationEntryScreen() {
           allowDeselect={false}
         />
 
+        {isParasit ? (
+          <>
+            <FieldLabel>Art des Parasitenschutzes</FieldLabel>
+            <ChoiceChips
+              options={PARASIT_SUB_TYPES}
+              value={form.subType}
+              onChange={(v) => update('subType', v ?? null)}
+              allowDeselect
+            />
+          </>
+        ) : null}
+
         <View style={isLandscape ? styles.landscapeColumns : undefined}>
           <View style={isLandscape ? styles.landscapeColumn : undefined}>
             <FieldLabel>
-              {isCare ? 'Welche Pflege-Aufgabe?' : isCondition ? `Welche ${form.medType}?` : 'Name des Medikaments'}
+              {isCare ? 'Welche Pflege-Aufgabe?' : isCondition ? `Welche ${form.medType}?` : isParasit ? 'Produktname' : 'Name des Medikaments'}
             </FieldLabel>
             <TextInput
               style={styles.input}

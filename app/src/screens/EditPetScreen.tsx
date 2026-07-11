@@ -28,7 +28,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import * as ImagePicker from 'expo-image-picker';
+// ImagePicker jetzt via shared Helper (./utils/imagePicker)
 import { getDb } from '../db/database';
 import { getSpeciesConfig } from '../config/species';
 import { colors, typography, spacing, minTouchTarget, petColorPalette } from '../theme/theme';
@@ -61,6 +61,8 @@ interface PetRow {
   coat_color: string | null;
   vet_practice_name: string | null;
   vet_practice_phone: string | null;
+  allergies: string | null;
+  pre_conditions: string | null;
 }
 
 interface EditPetDraft {
@@ -74,6 +76,8 @@ interface EditPetDraft {
   colorHex: string;
   photoUri: string | null;
   specialFeatures: string;
+  allergies: string;
+  preConditions: string;
   vetName: string;
   vetPhone: string;
   coatColor: string;
@@ -96,6 +100,8 @@ function petToDraft(p: PetRow): EditPetDraft {
     colorHex: p.color_theme ?? petColorPalette[0].hex,
     photoUri: p.photo_uri,
     specialFeatures: p.special_features ?? '',
+    allergies: p.allergies ?? '',
+    preConditions: p.pre_conditions ?? '',
     vetName: p.specialist_vet_name ?? '',
     vetPhone: p.specialist_vet_phone ?? '',
     coatColor: p.coat_color ?? '',
@@ -190,30 +196,9 @@ export default function EditPetScreen() {
   const canSave = form !== null && form.name.trim().length > 0 && isDirty && !saving && !saved;
 
   async function pickPhoto(fromCamera: boolean) {
-    try {
-      if (fromCamera) {
-        const perm = await ImagePicker.requestCameraPermissionsAsync();
-        if (!perm.granted) {
-          Alert.alert(
-            'Kamera nicht freigegeben',
-            'Ohne Kamera-Freigabe kann kein Foto aufgenommen werden. Du kannst stattdessen ein Bild aus der Galerie wählen.'
-          );
-          return;
-        }
-        const result = await ImagePicker.launchCameraAsync({ quality: 0.7 });
-        if (!result.canceled && result.assets[0]) update('photoUri', result.assets[0].uri);
-      } else {
-        const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (!perm.granted) {
-          Alert.alert('Galerie nicht freigegeben', 'Ohne Freigabe kann kein Bild gewählt werden.');
-          return;
-        }
-        const result = await ImagePicker.launchImageLibraryAsync({ quality: 0.7 });
-        if (!result.canceled && result.assets[0]) update('photoUri', result.assets[0].uri);
-      }
-    } catch {
-      Alert.alert('Foto nicht möglich', 'Das Foto konnte nicht übernommen werden. Bitte versuche es erneut.');
-    }
+    const { takePhoto, pickFromGallery } = require('../utils/imagePicker');
+    const result = fromCamera ? await takePhoto() : await pickFromGallery();
+    if (!result.cancelled) update('photoUri', result.uri);
   }
 
   async function save() {
@@ -228,6 +213,7 @@ export default function EditPetScreen() {
            name = ?, breed = ?, gender = ?, birth_date = ?,
            castration_status = ?, castration_date = ?, chip_number = ?,
            color_theme = ?, photo_uri = ?, special_features = ?,
+           allergies = ?, pre_conditions = ?,
            specialist_vet_name = ?, specialist_vet_phone = ?,
            coat_color = ?, vet_practice_name = ?, vet_practice_phone = ?,
            updated_at = ?, is_synced = 0
@@ -245,6 +231,8 @@ export default function EditPetScreen() {
           form.colorHex,
           form.photoUri,
           form.specialFeatures.trim() || null,
+          form.allergies.trim() || null,
+          form.preConditions.trim() || null,
           form.vetName.trim() || null,
           form.vetPhone.trim() || null,
           form.coatColor.trim() || null,
@@ -317,6 +305,11 @@ export default function EditPetScreen() {
                   placeholderTextColor={colors.textSecondary}
                   accessibilityLabel="Rasse"
                 />
+                {form.breed.trim().length > 0 ? (
+                  <Text style={styles.vetTipText}>
+                    Tipp: Frag deinen Tierarzt nach rassetypischen Vorsorge-Untersuchungen für deine Rasse.
+                  </Text>
+                ) : null}
 
                 <FieldLabel>Geschlecht</FieldLabel>
                 <ChoiceChips options={GENDER_OPTIONS} value={form.gender} onChange={(v) => update('gender', v)} />
@@ -374,11 +367,39 @@ export default function EditPetScreen() {
               style={[styles.input, styles.multiline]}
               value={form.specialFeatures}
               onChangeText={(t) => update('specialFeatures', t)}
-              placeholder="z. B. Allergien, Ängste, Eigenheiten – wichtig für Sitter und Tierarzt"
+              placeholder="z. B. Ängste, Eigenheiten – wichtig für Sitter und Tierarzt"
               placeholderTextColor={colors.textSecondary}
               multiline
               accessibilityLabel="Besonderheiten"
             />
+
+            {/* Vorerkrankungen & Allergien: zwei separate Titelfelder (Entscheidung E-02) */}
+            <View style={styles.healthSection}>
+              <Text style={styles.healthSectionTitle}>Vorerkrankungen & Allergien</Text>
+              <FieldLabel>Allergien (optional)</FieldLabel>
+              <TextInput
+                style={[styles.input, styles.multiline]}
+                value={form.allergies}
+                onChangeText={(t) => update('allergies', t)}
+                placeholder="z. B. Hühnereiweiß, Gräser, Flohspeichel"
+                placeholderTextColor={colors.textSecondary}
+                multiline
+                accessibilityLabel="Allergien"
+              />
+              <Hint>Erscheint auf dem Notfall-Pass – wichtig für den Tierarzt im Notfall.</Hint>
+
+              <FieldLabel>Vorerkrankungen (optional)</FieldLabel>
+              <TextInput
+                style={[styles.input, styles.multiline]}
+                value={form.preConditions}
+                onChangeText={(t) => update('preConditions', t)}
+                placeholder="z. B. Epilepsie seit 2020, HD links"
+                placeholderTextColor={colors.textSecondary}
+                multiline
+                accessibilityLabel="Vorerkrankungen"
+              />
+              <Hint>Erscheint auf dem Notfall-Pass – wichtig für den Tierarzt im Notfall.</Hint>
+            </View>
 
             <FieldLabel>{speciesCfg?.terminology.vet ?? 'Tierarzt'} (optional)</FieldLabel>
             <TextInput
@@ -451,7 +472,8 @@ export default function EditPetScreen() {
               </View>
             )}
 
-            <FieldLabel>Farbe für dieses Tier</FieldLabel>
+            <FieldLabel>Kennfarbe in der App</FieldLabel>
+            <Hint>Damit erkennst du dieses Tier auf einen Blick in der Übersicht.</Hint>
             <View style={styles.colorRow}>
               {petColorPalette.map((c) => (
                 <Pressable
@@ -460,6 +482,7 @@ export default function EditPetScreen() {
                   style={[
                     styles.colorDot,
                     { backgroundColor: c.hex },
+                    c.key === 'weiss' && styles.colorDotLight,
                     form.colorHex === c.hex && styles.colorDotActive,
                   ]}
                   onPress={() => update('colorHex', c.hex)}
@@ -518,12 +541,32 @@ const styles = StyleSheet.create({
   photoButtonText: { fontSize: typography.bodySmall, color: colors.textPrimary },
   colorRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.m },
   colorDot: { width: 44, height: 44, borderRadius: 22 },
+  colorDotLight: { borderWidth: 1, borderColor: colors.border },
   colorDotActive: { borderWidth: 4, borderColor: colors.textPrimary },
   footnote: {
     fontSize: typography.bodySmall,
     color: colors.textSecondary,
     textAlign: 'center',
     marginTop: spacing.m,
+  },
+  vetTipText: {
+    fontSize: typography.bodySmall,
+    color: colors.primary,
+    marginTop: spacing.s,
+    lineHeight: 22,
+    fontStyle: 'italic',
+  },
+  healthSection: {
+    marginTop: spacing.l,
+    paddingTop: spacing.m,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  healthSectionTitle: {
+    fontSize: typography.title,
+    fontWeight: '600',
+    color: colors.textPrimary,
+    marginBottom: spacing.m,
   },
   emptyWrap: { flex: 1, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center', padding: spacing.l },
   emptyText: { fontSize: typography.body, color: colors.textSecondary, textAlign: 'center', lineHeight: 26 },

@@ -1,5 +1,5 @@
 /**
- * simplyPet: Startbildschirm ("Mein Zuhause")
+ * simplyPet: Startbildschirm ("Mein Zuhause") – v0.1.2
  * Quelle: technische_spezifikation_screen_flow.md (2.2)
  *
  * Zone 1: Status-Karten ("Heute fällig: …") – Tap oeffnet die Terminliste.
@@ -7,19 +7,21 @@
  * Zone 3: fester Notfallpass-Knopf (Zwei-Tap-Regel).
  * Leerer Zustand: freundliche Anleitungskarte statt leerer Kacheln.
  *
- * Querformat (Screen-Flow 1.1): Tier-Kacheln mehrspaltig, kein
- * Zustandsverlust beim Drehen. Zeit-Modul: "Heute fällig" nutzt
- * useTodayKey (kein stiller Drift nach Mitternacht/Hintergrund).
+ * v0.1.2 Aenderungen:
+ * - FlatList statt ScrollView+map fuer Tier-Kacheln (RAM-Schutz Nr. 25)
+ * - Kleine Foto-Dimensionen (Thumbnail-Effekt, Nr. 26)
+ * - flexShrink auf Texte (Nr. 18)
  */
 import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
-  ScrollView,
+  FlatList,
   Pressable,
   Image,
   StyleSheet,
   useWindowDimensions,
+  ListRenderItemInfo,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -47,13 +49,15 @@ interface ReminderRow {
   pet_name: string;
 }
 
+// Spezieller Eintrag fuer die "+Tier hinzufuegen"-Kachel am Ende der FlatList
+const ADD_TILE_ID = '__add_tile__';
+type TileItem = PetRow | { id: typeof ADD_TILE_ID };
+
 export default function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
   const todayKey = useTodayKey();
-  // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): Home hat keinen
-  // Navigations-Header, daher eigenen Abstand zur Statusleiste reservieren.
   const insets = useSafeAreaInsets();
 
   const [pets, setPets] = useState<PetRow[]>([]);
@@ -69,9 +73,6 @@ export default function HomeScreen() {
         const rows = await db.getAllAsync<PetRow>(
           'SELECT id, name, species, color_theme, photo_uri FROM pets WHERE archived = 0 AND deleted_at IS NULL ORDER BY created_at'
         );
-        // "Heute fällig" ueber das zentrale Zeit-Modul (todayKey), nie mit eigenem Datum.
-        // Saisonfenster (season_start/end): Erinnerungen ausserhalb ihrer Monate zaehlen
-        // nicht mit – gleiche Logik wie im Termine-Tab (inkl. Jahreswechsel-Fenster).
         const currentMonth = parseInt(todayKey.slice(5, 7), 10);
         const seasonFilter = `(
           r.season_start IS NULL OR r.season_end IS NULL OR (
@@ -113,14 +114,76 @@ export default function HomeScreen() {
 
   const hasPets = pets.length > 0;
 
-  return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <ScrollView contentContainerStyle={styles.scroll}>
+  // FlatList-Daten: Tiere + Add-Kachel am Ende
+  const tileData: TileItem[] = hasPets
+    ? [...pets, { id: ADD_TILE_ID }]
+    : [];
+
+  const renderTile = useCallback(
+    ({ item }: ListRenderItemInfo<TileItem>) => {
+      if (item.id === ADD_TILE_ID) {
+        return (
+          <Pressable
+            style={[
+              styles.addTile,
+              isLandscape ? styles.petTileLandscape : styles.petTilePortrait,
+            ]}
+            onPress={() => navigation.navigate('TierAnlegen')}
+            accessibilityLabel="Weiteres Tier hinzufügen"
+          >
+            <Text style={styles.addTileText}>＋ Tier hinzufügen</Text>
+          </Pressable>
+        );
+      }
+      const pet = item as PetRow;
+      const cfg = getSpeciesConfig(pet.species);
+      return (
+        <Pressable
+          style={[
+            styles.petTile,
+            isLandscape ? styles.petTileLandscape : styles.petTilePortrait,
+            { borderLeftColor: pet.color_theme ?? colors.border },
+          ]}
+          onPress={() => navigation.navigate('Tierakte', { petId: pet.id })}
+          accessibilityLabel={`Tierakte von ${pet.name} öffnen`}
+        >
+          {pet.photo_uri ? (
+            <Image
+              source={{ uri: pet.photo_uri }}
+              style={styles.petPhoto}
+              resizeMode="cover"
+            />
+          ) : (
+            <View style={[styles.petPhoto, styles.petPhotoPlaceholder]}>
+              <Text style={styles.petPhotoInitial}>
+                {pet.name.charAt(0).toUpperCase()}
+              </Text>
+            </View>
+          )}
+          <View style={styles.petTileBody}>
+            <Text style={styles.petName} numberOfLines={1} ellipsizeMode="tail">
+              {pet.name}
+            </Text>
+            <Text style={styles.petSpecies} numberOfLines={1} ellipsizeMode="tail">
+              {cfg?.label ?? pet.species}
+            </Text>
+          </View>
+        </Pressable>
+      );
+    },
+    [isLandscape, navigation]
+  );
+
+  const keyExtractor = useCallback((item: TileItem) => item.id, []);
+
+  // Header-Komponente fuer FlatList (Greeting + Status-Karten + Sectiontitle)
+  const ListHeader = useCallback(
+    () => (
+      <View>
         <Text style={styles.greeting}>
           {ownerName ? `Hallo ${ownerName}!` : 'Hallo!'}
         </Text>
 
-        {/* Zone 1: Was jetzt wichtig ist */}
         {!hasPets ? (
           <View style={styles.guideCard}>
             <Text style={styles.guideTitle}>Schön, dass du da bist!</Text>
@@ -153,7 +216,7 @@ export default function HomeScreen() {
             {dueToday.length > 0 ? (
               dueToday.map((r) => (
                 <View key={r.id} style={styles.statusCard}>
-                  <Text style={styles.statusCardTitle}>
+                  <Text style={styles.statusCardTitle} numberOfLines={2} ellipsizeMode="tail">
                     Heute fällig: {r.pet_name} – {r.title}
                   </Text>
                 </View>
@@ -163,61 +226,32 @@ export default function HomeScreen() {
                 <Text style={styles.statusCardTitle}>Alles versorgt – heute ist nichts fällig.</Text>
               </View>
             ) : null}
+            <Text style={styles.sectionTitle}>Meine Tiere</Text>
           </>
         )}
+      </View>
+    ),
+    [ownerName, hasPets, overdue, dueToday, navigation]
+  );
 
-        {/* Zone 2: Meine Tiere */}
-        {hasPets ? (
-          <>
-            <Text style={styles.sectionTitle}>Meine Tiere</Text>
-            <View style={[styles.tileGrid, isLandscape && styles.tileGridLandscape]}>
-              {pets.map((pet) => {
-                const cfg = getSpeciesConfig(pet.species);
-                return (
-                  <Pressable
-                    key={pet.id}
-                    style={[
-                      styles.petTile,
-                      isLandscape ? styles.petTileLandscape : styles.petTilePortrait,
-                      { borderLeftColor: pet.color_theme ?? colors.border },
-                    ]}
-                    onPress={() => navigation.navigate('Tierakte', { petId: pet.id })}
-                    accessibilityLabel={`Tierakte von ${pet.name} öffnen`}
-                  >
-                    {pet.photo_uri ? (
-                      <Image source={{ uri: pet.photo_uri }} style={styles.petPhoto} />
-                    ) : (
-                      <View style={[styles.petPhoto, styles.petPhotoPlaceholder]}>
-                        <Text style={styles.petPhotoInitial}>
-                          {pet.name.charAt(0).toUpperCase()}
-                        </Text>
-                      </View>
-                    )}
-                    <View style={styles.petTileBody}>
-                      <Text style={styles.petName}>{pet.name}</Text>
-                      <Text style={styles.petSpecies}>{cfg?.label ?? pet.species}</Text>
-                    </View>
-                  </Pressable>
-                );
-              })}
-              <Pressable
-                style={[
-                  styles.addTile,
-                  isLandscape ? styles.petTileLandscape : styles.petTilePortrait,
-                ]}
-                onPress={() => navigation.navigate('TierAnlegen')}
-                accessibilityLabel="Weiteres Tier hinzufügen"
-              >
-                <Text style={styles.addTileText}>＋ Tier hinzufügen</Text>
-              </Pressable>
-            </View>
-          </>
-        ) : null}
-      </ScrollView>
+  return (
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <FlatList
+        data={tileData}
+        renderItem={renderTile}
+        keyExtractor={keyExtractor}
+        ListHeaderComponent={ListHeader}
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+        removeClippedSubviews={true}
+        initialNumToRender={5}
+        maxToRenderPerBatch={5}
+        windowSize={3}
+      />
 
-      {/* Zone 3: Notfall-Knopf, fest verankert (Zwei-Tap-Regel, beide Ausrichtungen) */}
+      {/* Zone 3: Notfall-Knopf, fest verankert (Zwei-Tap-Regel) */}
       <Pressable
-        style={styles.emergencyButton}
+        style={[styles.emergencyButton, { marginBottom: insets.bottom + spacing.m }]}
         onPress={() => navigation.navigate('Notfallpass')}
         accessibilityLabel="Notfall-Pass öffnen"
       >
@@ -272,7 +306,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.signalRed,
   },
-  statusCardTitle: { fontSize: typography.body, color: colors.textPrimary },
+  statusCardTitle: { fontSize: typography.body, color: colors.textPrimary, flexShrink: 1 },
   statusCardTitleOverdue: {
     fontSize: typography.body,
     color: colors.signalRed,
@@ -290,14 +324,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.m,
     marginBottom: spacing.m,
   },
-  tileGrid: {},
-  tileGridLandscape: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.m,
-  },
   petTilePortrait: { marginBottom: spacing.m },
-  petTileLandscape: { flexBasis: '47%', flexGrow: 1, marginBottom: 0 },
+  petTileLandscape: { flexBasis: '47%', flexGrow: 1, marginBottom: spacing.m },
   petTile: {
     backgroundColor: colors.surface,
     borderRadius: 12,
@@ -311,7 +339,7 @@ const styles = StyleSheet.create({
   petPhoto: { width: 56, height: 56, borderRadius: 28, backgroundColor: colors.border },
   petPhotoPlaceholder: { alignItems: 'center', justifyContent: 'center' },
   petPhotoInitial: { fontSize: typography.title, fontWeight: '700', color: colors.textSecondary },
-  petTileBody: { flex: 1 },
+  petTileBody: { flex: 1, flexShrink: 1 },
   petName: { fontSize: typography.title, color: colors.textPrimary, fontWeight: '600' },
   petSpecies: { fontSize: typography.bodySmall, color: colors.textSecondary },
   addTile: {
