@@ -27,18 +27,24 @@
 10. TypeScript-Check (`npx tsc --noEmit` – muss 0 Fehler haben)
 11. **Sofort auf GitHub speichern** (Sicherung – geht bei Absturz nichts verloren)
 
-### Phase 4: APK bauen
+### Phase 4: GO abwarten
 
-12. Erst NACH dem Speichern auf GitHub wird gebaut
-13. `npx expo prebuild --platform android --no-install`
-14. `./gradlew assembleRelease`
-15. APK dem Nutzer übergeben
+12. **GO vom Nutzer abwarten** – NICHT eigenständig mit dem Build beginnen
+13. Nutzer bestätigt explizit dass gebaut werden soll
+
+### Phase 5: APK bauen
+
+14. Erst NACH dem GO wird gebaut
+15. `npx expo prebuild --platform android --no-install`
+16. `./gradlew assembleRelease`
+17. APK dem Nutzer übergeben
 
 ---
 
 ## Verbote
 
 - **NIEMALS** APK bauen bevor Code auf GitHub liegt
+- **NIEMALS** APK bauen ohne explizites GO vom Nutzer
 - **NIEMALS** `rm -rf android` ohne vorher zu prüfen ob Code gesichert ist
 - **NIEMALS** Code ändern ohne vorherige Besprechung/GO
 - **NIEMALS** von Null anfangen wenn 80% schon existieren
@@ -47,7 +53,7 @@
 
 ## Reihenfolge in einem Satz
 
-> **Besprechen → Dokumentieren → Aus GitHub holen → Ändern → Auf GitHub speichern → Dann erst bauen.**
+> **Besprechen → Dokumentieren → Aus GitHub holen → Ändern → Auf GitHub speichern → GO für Build abwarten → Dann erst bauen.**
 
 ---
 
