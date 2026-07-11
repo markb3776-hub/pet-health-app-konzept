@@ -41,10 +41,10 @@ if [ ! -f "package.json" ]; then
 fi
 
 # Umgebungsvariablen setzen
-export JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-17-openjdk-amd64}
+export JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/jdk-17.0.11+9}
 export ANDROID_HOME=${ANDROID_HOME:-/home/ubuntu/android-sdk}
 export ANDROID_SDK_ROOT=$ANDROID_HOME
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/35.0.0
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/36.0.0
 
 # ─── Schritt 1: TypeScript-Prüfung ──────────────────────────────────────────
 echo -e "${YELLOW}[1/5]${NC} TypeScript-Prüfung..."

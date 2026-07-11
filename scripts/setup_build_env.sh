@@ -70,7 +70,7 @@ else
     export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
     echo -e "${GREEN}✓${NC} JDK 17 installiert"
 fi
-export JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/java-17-openjdk-amd64}
+export JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/jdk-17.0.11+9}
 
 # ─── Schritt 4: Android SDK prüfen und einrichten ────────────────────────────
 echo -e "${YELLOW}[3/5]${NC} Android SDK einrichten..."
@@ -78,7 +78,7 @@ export ANDROID_HOME=${ANDROID_HOME:-/home/ubuntu/android-sdk}
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
 
-if [ ! -d "$ANDROID_HOME/platforms/android-35" ]; then
+if [ ! -d "$ANDROID_HOME/platforms/android-36" ]; then
     echo "  → Android SDK wird heruntergeladen (dies dauert 1-2 Minuten)..."
     mkdir -p $ANDROID_HOME/cmdline-tools
     
@@ -94,11 +94,10 @@ if [ ! -d "$ANDROID_HOME/platforms/android-35" ]; then
     # Lizenzen akzeptieren und Pakete installieren
     yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
     $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install \
-        "platforms;android-35" \
-        "platform-tools" \
-        "build-tools;35.0.0" \
-        "ndk;27.0.12077973" > /dev/null 2>&1
-    echo -e "${GREEN}✓${NC} Android SDK installiert (API 35)"
+        "platforms;android-36" \
+        "build-tools;36.0.0" \
+        "platform-tools" > /dev/null 2>&1
+    echo -e "${GREEN}✓${NC} Android SDK installiert (API 36)"
 else
     echo -e "${GREEN}✓${NC} Android SDK bereits vorhanden"
 fi
