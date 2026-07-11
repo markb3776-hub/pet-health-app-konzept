@@ -31,6 +31,8 @@ import { getDb, uuid } from '../db/database';
 import { getSpeciesConfig } from '../config/species';
 import { formatDate, isBackdated, compareDateKeysDesc, todayKey, nowUtcIso } from '../time/timeModule';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
+import EditEntryModal from '../components/EditEntryModal';
+import type { EditableField } from '../components/EditEntryModal';
 
 interface PetRow {
   id: string;
@@ -142,6 +144,12 @@ export default function PetFileScreen() {
   const [tab, setTab] = useState<TabKey>('gesundheit');
   const [fullscreenDoc, setFullscreenDoc] = useState<DocumentRow | null>(null);
   const [reloadToken, setReloadToken] = useState(0);
+
+  // E-29: Inline-Bearbeitung
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editModalTitle, setEditModalTitle] = useState('');
+  const [editModalFields, setEditModalFields] = useState<EditableField[]>([]);
+  const [editModalMeta, setEditModalMeta] = useState<{ type: 'record' | 'vaccination'; id: string } | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -284,6 +292,77 @@ export default function PetFileScreen() {
     );
   }
 
+  /** Öffnet das Bearbeitungs-Modal mit allen Feldern des Eintrags (E-29). */
+  function openEditModal(type: 'record' | 'vaccination', id: string) {
+    if (type === 'record') {
+      const rec = records.find((r) => r.id === id);
+      if (!rec) return;
+      const fields: EditableField[] = [];
+      const rt = rec.record_type;
+      fields.push({ key: 'date', label: 'Datum', value: rec.date.slice(0, 10), type: 'date' });
+      if (rec.value != null) {
+        fields.push({ key: 'value', label: 'Wert', value: String(rec.value).replace('.', ','), type: 'number' });
+      }
+      if (rec.unit) {
+        fields.push({ key: 'unit', label: 'Einheit', value: rec.unit, type: 'text' });
+      }
+      fields.push({ key: 'notes', label: 'Notiz', value: rec.notes ?? '', type: 'multiline' });
+      setEditModalTitle(`${RECORD_TYPE_LABELS[rt] ?? rt} bearbeiten`);
+      setEditModalFields(fields);
+      setEditModalMeta({ type: 'record', id });
+      setEditModalVisible(true);
+    } else {
+      const vacc = vaccinations.find((v) => v.id === id);
+      if (!vacc) return;
+      const fields: EditableField[] = [
+        { key: 'disease', label: 'Krankheit', value: vacc.disease ?? '', type: 'text' },
+        { key: 'product_name', label: 'Produkt', value: vacc.product_name ?? '', type: 'text' },
+        { key: 'date_given', label: 'Geimpft am', value: vacc.date_given.slice(0, 10), type: 'date' },
+        { key: 'valid_until', label: 'Gültig bis', value: vacc.valid_until?.slice(0, 10) ?? '', type: 'date' },
+      ];
+      setEditModalTitle(`${vacc.disease ?? vacc.type} bearbeiten`);
+      setEditModalFields(fields);
+      setEditModalMeta({ type: 'vaccination', id });
+      setEditModalVisible(true);
+    }
+  }
+
+  /** Speichert die bearbeiteten Felder in die DB (E-29). */
+  async function handleEditSave(updatedFields: Record<string, string>) {
+    if (!editModalMeta) return;
+    const { type, id } = editModalMeta;
+    const ts = nowUtcIso();
+    try {
+      const db = await getDb();
+      if (type === 'record') {
+        const sets: string[] = ['updated_at = ?'];
+        const params: any[] = [ts];
+        if ('date' in updatedFields) { sets.push('date = ?'); params.push(updatedFields.date); }
+        if ('value' in updatedFields) {
+          const numVal = parseFloat(updatedFields.value.replace(',', '.'));
+          sets.push('value = ?'); params.push(isNaN(numVal) ? null : numVal);
+        }
+        if ('unit' in updatedFields) { sets.push('unit = ?'); params.push(updatedFields.unit || null); }
+        if ('notes' in updatedFields) { sets.push('notes = ?'); params.push(updatedFields.notes || null); }
+        params.push(id);
+        await db.runAsync(`UPDATE health_records SET ${sets.join(', ')} WHERE id = ?`, params);
+      } else {
+        const sets: string[] = ['updated_at = ?'];
+        const params: any[] = [ts];
+        if ('disease' in updatedFields) { sets.push('disease = ?'); params.push(updatedFields.disease || null); }
+        if ('product_name' in updatedFields) { sets.push('product_name = ?'); params.push(updatedFields.product_name || null); }
+        if ('date_given' in updatedFields) { sets.push('date_given = ?'); params.push(updatedFields.date_given); }
+        if ('valid_until' in updatedFields) { sets.push('valid_until = ?'); params.push(updatedFields.valid_until || null); }
+        params.push(id);
+        await db.runAsync(`UPDATE vaccinations SET ${sets.join(', ')} WHERE id = ?`, params);
+      }
+      setReloadToken((t) => t + 1);
+      setEditModalVisible(false);
+    } catch {
+      Alert.alert('Fehler', 'Die Änderungen konnten nicht gespeichert werden.');
+    }
+  }
+
   /** Zeigt Optionen-Dialog für einen Eintrag (E-76). */
   function showEntryOptions(
     type: 'record' | 'vaccination',
@@ -296,15 +375,7 @@ export default function PetFileScreen() {
       [
         {
           text: 'Bearbeiten',
-          onPress: () => {
-            // TODO: Navigation zum vorausgefüllten Bearbeitungs-Formular.
-            // Für v0.1.5: Eigener EditEntryScreen mit vorausgefüllten Feldern.
-            // Aktuell: Hinweis dass Feature kommt.
-            Alert.alert(
-              'Bearbeiten',
-              'Das Bearbeitungs-Formular wird im nächsten Update verfügbar. Aktuell kannst du den Eintrag löschen und neu anlegen.'
-            );
-          },
+          onPress: () => openEditModal(type, id),
         },
         {
           text: 'Löschen',
@@ -592,6 +663,14 @@ export default function PetFileScreen() {
         </Pressable>
       </Modal>
     </ScrollView>
+
+      <EditEntryModal
+        visible={editModalVisible}
+        title={editModalTitle}
+        fields={editModalFields}
+        onSave={handleEditSave}
+        onCancel={() => setEditModalVisible(false)}
+      />
     </View>
   );
 }
