@@ -59,4 +59,48 @@ Ein Prototyp ist nicht die fertige App. Er ist die kleinste Version, an der wir 
 - **Server:** Der Kellerserver (150–300 €) wird erst relevant, wenn wir nach dem Prototyp mit den KI-OCR-Tests beginnen.
 - **Arbeitskosten (Agent-Credits):** Die Entwicklung (Schritt 2 bis 4) ist der ressourcenintensivste Teil. Empfehlung: Diese Schritte einzeln und klar umrissen beauftragen, um Kosten zu kontrollieren.
 
-**Zusammenfassung:** Alles Konzeptionelle ist fertig; die Schritte 1 bis 3 sind seit dem 08.07.2026 abgeschlossen, **Schritt 4 (Entwicklung) ist seit dem 10.07.2026 komplett** (4.1 Fundament + Kern-Screens, 4.2 Funktionen/Einträge, 4.3 Notfallpass + QR, 4.4 interne Prüfung + APK). Der nächste logische Schritt ist **Schritt 5 (Auslieferung & Überprüfung)**: Die APK ist übergeben — jetzt folgt der Nutzertest auf beiden Android-Geräten anhand von `pruefprotokoll_prototyp_nutzertest.md`.
+**Zusammenfassung:** Alles Konzeptionelle ist fertig; die Schritte 1 bis 3 sind seit dem 08.07.2026 abgeschlossen, **Schritt 4 (Entwicklung) ist seit dem 10.07.2026 komplett** (4.1 Fundament + Kern-Screens, 4.2 Funktionen/Einträge, 4.3 Notfallpass + QR, 4.4 interne Prüfung + APK). **Schritt 5 (Nutzertest) läuft seit dem 10.07.2026** — APK v0.1.1 auf S23 + S24 installiert, Feedback wird gesammelt.
+
+### Schritt 5 Status: ⏳ LAUFEND (seit 10.07.2026)
+
+- ✅ APK v0.1.0 ausgeliefert und installiert (10.07.2026)
+- ✅ Erste Bugs gemeldet und behoben → APK v0.1.1 (Insets-Fix + Jahr-Picker)
+- ✅ Zweite Testperson eingebunden
+- ✅ Konkurrenzanalyse durchgeführt (11.07.2026)
+- ⏳ Interview mit zweiter Testperson ausstehend
+- ⏳ Feedback-Sammlung läuft
+
+### Schritt 6: Korrektur-Durchlauf v0.1.2 (GEPLANT — wartet auf GO)
+
+Nach Abschluss der Feedback-Sammlung wird ein gebündelter Korrektur-Durchlauf durchgeführt. Vollständige Auflistung aller geplanten Änderungen: siehe `nutzertest_feedback_v0.1.1.md`.
+
+**Geplante Features:**
+1. Rasse-Feld (Freitext) + permanenter Tierarzt-Tipp
+2. Bereich „Vorerkrankungen & Allergien“ (zwei separate Titelfelder in Stammdaten)
+3. Erinnerungs-Vorlauf einstellbar (X Tage vorher)
+4. Überfällig-Hinweis bei Impfungen (ehrlich, doktrin-konform)
+5. Ggf. Parasitenschutz-Typ als eigene Kategorie
+
+**Geplante Robustheit (präventiv, aus Konkurrenzanalyse):**
+6. Doppelklick-Schutz auf Speichern-Buttons
+7. Rotation sperren (Portrait-only)
+8. Dark Mode → Light erzwingen
+9. Foto-Komprimierung sicherstellen
+10. Zukunfts-Datum-Validierung
+11. Try/Catch mit Fehlermeldung bei DB-Schreibfehlern
+
+### Schritt 7: Play Store Release (ZUKUNFT)
+
+- Preismodell: **Einmalkauf 2,99€** (kein Abo, keine Werbung, keine In-App-Käufe)
+- Google Play Registrierung: 25$ (einmalig)
+- Store-Listing: Positionierung gegen Konkurrenz-Schwächen (siehe `konkurrenzanalyse_simplypet.md`)
+- Datenschutzerklärung erstellen
+- App-Signierung und Release-Build
+
+## 5. Konkurrenzanalyse (11.07.2026)
+
+Vollständige Analyse in `konkurrenzanalyse_simplypet.md`. Kernerkenntnisse:
+- Häufigster 1-Stern-Grund bei Konkurrenz: Datenverlust durch Server/Updates → simplyPet immun (lokal)
+- Zweit-häufigster Frust: Abo-Zwang → simplyPet: Einmalkauf 2,99€
+- Trend 2026: Privacy-First wird Verkaufsargument → simplyPet: keine INTERNET-Permission
+- Zentrale Nutzer-Erkenntnis: „Weniger Features, weniger Reibung“ → simplyPet: Navigation/UX verbessern
