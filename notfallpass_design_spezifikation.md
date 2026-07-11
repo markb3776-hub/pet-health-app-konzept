@@ -19,7 +19,11 @@ Der Pass ist als Karte im Hochformat gestaltet, angelehnt an die vertraute Optik
 
 ### Medizinischer Kernteil (der "Notfall-Block")
 
-Direkt unter der Passkarte folgen die im Notfall kritischen Blöcke in fester Reihenfolge, farblich ruhig, aber klar getrennt: Allergien und Unverträglichkeiten, Dauermedikation (Präparat, Dosis, seit wann), Vorerkrankungen, Impfstatus (letzte Impfungen mit Datum), letzte bekannte Werte (Gewicht mit Datum). Bei Tierarten mit Spezialisten-Bedarf (Vogel, Kaninchen, Reptil) erscheint zusätzlich der hinterlegte fachkundige Tierarzt mit Telefonnummer.
+Direkt unter der Passkarte folgen die im Notfall kritischen Blöcke in fester Reihenfolge (E-78/E-79), farblich ruhig, aber klar getrennt: (1) Allergien und Unverträglichkeiten, (2) Vorerkrankungen, (3) Dauermedikation (Präparat, Dosis, seit wann), (4) Impfstatus (nur echte Impfungen mit Datum), (5) Parasitenschutz (Wurmkuren, Spot-On, Halsbänder – E-79: eigener Block, getrennt von Impfstatus), (6) Letzte bekannte Werte (Gewicht mit Datum). Bei Tierarten mit Spezialisten-Bedarf (Vogel, Kaninchen, Reptil) erscheint zusätzlich der hinterlegte fachkundige Tierarzt mit Telefonnummer.
+
+Jede Bereichs-Überschrift trägt ein kleines (?)-Icon (E-77). Beim Antippen erscheint eine kurze Hilfeblase, die erklärt wo die Daten bearbeitet werden können. Dieses Hilfe-Icon ist NUR in der App sichtbar – nicht im PDF, nicht im QR-Code.
+
+Bei species=pferd wird ein komplett eigener Block gerendert (E-80): Equidenpass-Nr., Abzeichen, Brand, Kolik-Vorgeschichte, Kotprobe/EpG, geschätztes Gewicht, Stallkontakt, Hufschmied, Haltungsform. Generische Blöcke (Allergien, Dauermedikation, Impfstatus) bleiben gleich.
 
 ### Fußbereich (Kontakt und Freigabe)
 

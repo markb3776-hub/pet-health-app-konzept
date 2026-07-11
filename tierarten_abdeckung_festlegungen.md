@@ -34,7 +34,7 @@ Die Struktur (Mehrfach-Zeiten, Erinnerung, Timeline, Sitter-Zettel) passt für a
 | Frettchen | Krallen, Ohrenreinigung, Impf-Vorbereitung |
 | Ziervogel | Krallen-/Schnabelkontrolle, Käfig-/Volierenreinigung, Bade-/Sprühgelegenheit |
 | Reptil | UV-Lampen-Wechsel (Leistungsverlust nach 6–12 Monaten — klassisch vergessene Aufgabe!), Terrarienreinigung, Häutungskontrolle, Wasserbecken |
-| Pferd | Hufpflege/Hufschmied (alle 6–8 Wochen), Fellwechsel-Pflege, Weidepflege-Kontrolle, Equidenpass-Kontrolle |
+| Pferd | Hufpflege/Hufschmied (alle 6–8 Wochen), Fellwechsel-Pflege, Weidepflege-Kontrolle, Equidenpass-Kontrolle. **Notfallpass:** Eigener Block (E-80) mit Equidenpass-Nr., Abzeichen, Brand, Kolik-Vorgeschichte, Kotprobe/EpG, geschätztes Gewicht, Stallkontakt, Hufschmied, Haltungsform |
 | Aquarium | Teilwasserwechsel (wöchentlich), Filterreinigung, Wasserwerte messen, Scheiben reinigen |
 
 Das Saisonfenster ist ebenfalls artübergreifend nützlich: Fliegenmaden-Kontrolle beim Kaninchen (Mai–September), Weidegang-Aufgaben beim Pferd (Saison), Winterruhe-Vorbereitung bei Landschildkröten (Reptil, Oktober), Mauser-Beobachtung beim Ziervogel.
@@ -59,7 +59,7 @@ Für Hund/Katze reicht Fütterung + Medikamente + Eigenheiten. Für Käfig-, Ter
 - **Aquarium:** Technik-Check (Filter, Heizer, Beleuchtungszeit), Was-tun-bei-Ausfall, Zielwerte.
 - **Ziervogel:** Freiflug ja/nein (und Regeln!), Zugluft-/Dämpfe-Warnung.
 - **Kleinsäuger:** Außengehege-Sicherung (Marder!), Temperaturgrenzen (Hitzschlag-Risiko: Kaninchen/Meerschweinchen/Frettchen ab ~26 °C).
-- **Pferd:** Weide-/Boxenregime, Decken-Regeln, Hufschmied-/Stallkontakt.
+- **Pferd:** Weide-/Boxenregime, Decken-Regeln, Hufschmied-/Stallkontakt. (Notfallpass: eigener Block mit Stallkontakt + Hufschmied, E-80)
 
 Umsetzung: Der Sitter-Zettel erhält einen optionalen Abschnitt **"Haltung & Technik"**, gespeist aus `care_notes` plus artspezifischen Feldern der Tierarten-Konfiguration. Kein neues Modul — nur eine zusätzliche Sektion im PDF-Generator.
 

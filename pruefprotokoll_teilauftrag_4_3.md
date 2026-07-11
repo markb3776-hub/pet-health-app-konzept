@@ -50,7 +50,7 @@ Skriptbasierter Test (esbuild-transpiliert, Node) mit vollständigem und leerem 
 |:---|:---|:---|
 | Eine einzige Zeitquelle, kein `new Date()` außerhalb des Zeit-Moduls | Offline-Strategie 2.3 | **Erfüllt** (0 Treffer außerhalb `timeModule.ts`) |
 | Erkennungsmerkmale IMMER sichtbar (nie ausgeblendet) | Notfallpass-Spez + Nutzer-Festlegung | **Erfüllt** in allen drei Darstellungen: Screen, QR, PDF |
-| Feste Reihenfolge Notfall-Block: Allergien → Dauermedikation → Vorerkrankungen → Impfstatus → letzte Werte → Spezialist → Kontakt | Notfallpass-Spez | **Erfüllt** (Sektions-Reihenfolge im Code verifiziert) |
+| Feste Reihenfolge Notfall-Block: Allergien → Vorerkrankungen → Dauermedikation → Impfstatus → Parasitenschutz → letzte Werte → Spezialist → Kontakt (aktualisiert gemäß E-78/E-79, 12.07.2026) | Notfallpass-Spez | **Erfüllt** (Sektions-Reihenfolge im Code verifiziert) |
 | Doktrin-Fußnote (ersetzt kein amtliches Dokument) | Projektdoktrin | **Erfüllt** in Screen und PDF |
 | QR-Umfang ehrlich gekennzeichnet (Browser-Freigabe für Praxen kommt nach dem Prototyp) | Freigabe-Konzept / Prototyp-Abgrenzung | **Erfüllt** |
 | Zwei-Tap-Regel: Notfallpass von jedem Haupt-Tab (Zuhause, Termine, Mehr) in max. 2 Taps | Screen-Flow Z. 16 + 76 | **Erfüllt** (Zuhause: fester Zone-3-Knopf; Termine + Mehr: FAB) |

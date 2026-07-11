@@ -43,6 +43,20 @@ Dies ist die zentrale Entität. Das Feld `species` (Tierart) steuert die Logik.
 | `specialist_vet_id` | UUID | FK zu Vets (für vogel-/reptilienkundige Tierärzte) |
 | `feeding_info` | JSONB | Strukturierter Fütterungs-Block (siehe unten) |
 | `care_notes` | TEXT | Eigenheiten und Warnungen für Betreuer ("versteckt sich bei Gewitter", "darf keine Leckerli") |
+| `allergies` | TEXT | Allergien und Unverträglichkeiten (Freitext) |
+| `pre_conditions` | TEXT | Vorerkrankungen (Freitext) |
+| `equine_pass_number` | VARCHAR | Equidenpass-Nummer (nur Pferd, E-80) |
+| `equine_markings` | TEXT | Abzeichen/Zeichnungen (nur Pferd, E-80) |
+| `equine_brand` | VARCHAR | Brand (nur Pferd, E-80) |
+| `equine_colic_history` | TEXT | Kolik-Vorgeschichte (nur Pferd, E-80) |
+| `equine_estimated_weight_kg` | REAL | Geschätztes Gewicht in kg (nur Pferd, E-80) |
+| `equine_weight_date` | DATE | Datum der letzten Gewichtsschätzung (nur Pferd, E-80) |
+| `equine_stable_name` | VARCHAR | Name des Stalls/Pensionsstall (nur Pferd, E-80) |
+| `equine_stable_phone` | VARCHAR | Telefon Stall (nur Pferd, E-80) |
+| `equine_box_number` | VARCHAR | Box-/Paddock-Nummer (nur Pferd, E-80) |
+| `equine_farrier_name` | VARCHAR | Name des Hufschmieds (nur Pferd, E-80) |
+| `equine_farrier_phone` | VARCHAR | Telefon Hufschmied (nur Pferd, E-80) |
+| `equine_housing_type` | VARCHAR | Haltungsform: Box/Offenstall/Weide (nur Pferd, E-80) |
 | `created_at` | TIMESTAMP | |
 | `updated_at` | TIMESTAMP | |
 
@@ -56,11 +70,12 @@ Für Symptome, Gewichts-Einträge und allgemeine Notizen.
 | :--- | :--- | :--- |
 | `id` | UUID | Primärschlüssel |
 | `pet_id` | UUID | Fremdschlüssel (Pets) |
-| `record_type` | VARCHAR | Art ('Gewicht', 'Symptom', 'Notiz', 'Wasserwert', 'Medikamentengabe', 'Vorfall') |
+| `record_type` | VARCHAR | Art ('Gewicht', 'Symptom', 'Notiz', 'Wasserwert', 'Medikamentengabe', 'Vorfall', 'Kotprobe') |
 | `date` | TIMESTAMP | **Ereignis-Datum** (vom Nutzer wählbar, rückdatierbar — siehe Nachtrag-Semantik unten) |
 | `value` | NUMERIC | Zahlenwert (z.B. Gewicht in kg, pH-Wert) |
 | `notes` | TEXT | Freitext-Beschreibung |
 | `photo_uri` | VARCHAR | Optionales Foto zum Eintrag |
+| `epg_value` | INTEGER | EpG-Wert bei Kotprobe (nur Pferd, E-80; Schwellenwert 200 EpG) |
 | `created_at` | TIMESTAMP | Erfassungs-Zeitpunkt (automatisch, nicht änderbar) |
 
 **Eintragstyp 'Vorfall' (Festlegung des Projektinhabers, 09.07.2026):** Besondere Ereignisse wie ein Biss durch ein fremdes Tier, Kratzer, Sturz oder Giftverdacht werden als eigener Eintragstyp im Verlauf erfasst — nicht als bloße Notiz. Strukturierte Angaben (im `notes`-Feld als JSON bzw. eigene Detailmaske): Was ist passiert (Biss, Kratzer, Sturz, Giftverdacht, Verbrennung, Hitzschlag, Fremdkörper, Flucht/Entweichen, Angriff durch anderes Tier, Sonstiges), Verursacher (anderes eigenes Tier, fremdes Tier, Wildtier, Mensch/Unfall, unbekannt, entfällt), Körperstelle, optional Wundfoto (`photo_uri`), Tierarzt aufgesucht (ja/nein). Die Auswahllisten sind bewusst **artneutral** formuliert und gelten für alle 14 Tierarten — artspezifische Beispiele (Anflugtrauma beim Ziervogel, Wärmelampen-Verbrennung beim Reptil, Greifvogelangriff beim Kaninchen, Weideunfall beim Pferd): siehe tierarten_abdeckung_festlegungen.md.

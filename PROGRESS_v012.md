@@ -22,11 +22,19 @@
 19. ✅ package.json: expo-image-manipulator + expo-document-picker hinzugefügt
 20. ✅ backupService.ts: Schema-Fix (health_records statt weights/observations/incidents)
 
+## Phase 7 (E-77 bis E-81) – ERLEDIGT:
+21. ✅ E-77: Hilfe-Fragezeichen (?) bei Notfallpass-Bereichen (nur in App)
+22. ✅ E-78: Reihenfolge Notfallpass korrigiert (Allergien + Vorerkrankungen direkt untereinander)
+23. ✅ E-79: Parasitenschutz = eigener Block im Notfallpass (getrennt von Impfstatus)
+24. ✅ E-80: Pferde-spezifischer Notfallpass (EquinePassBlocks, Migration 005, PDF+QR)
+25. ✅ E-81: Termine-Screen Redesign (Tiername eigene Zeile, Hinweis vs. Termin, Prototyp-Hinweis)
+
 ## NOCH OFFEN:
 - [ ] HomeScreen: ScrollView → FlatList für Tier-Kacheln (RAM-Schutz Nr. 25)
 - [ ] Locale-sichere Datumsformatierung in MoreScreen (toLocaleDateString → manuelles Format)
 - [ ] useEntryForm.ts: Auto-Backup nach Save prüfen (wurde in App.tsx referenziert)
-- [ ] TypeScript-Prüfung (npx tsc --noEmit)
+- [ ] EditPetScreen: Eingabefelder für Pferde-Felder (Equidenpass-Nr., Stallkontakt, Hufschmied etc.)
+- [ ] Kotprobe als eigener Erfassungstyp (record_type = 'Kotprobe' mit EpG-Wert)
 - [ ] Quality-Check durchführen
 - [ ] APK bauen
 

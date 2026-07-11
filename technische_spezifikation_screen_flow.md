@@ -61,7 +61,9 @@ Für den MVP-Umfang ist der Flow "Dokument scannen" wie folgt definiert: Zunäch
 
 ### 2.5. Termine (Erinnerungs-Liste)
 
-Der Bereich "Termine" bietet eine chronologische Liste aller offenen und anstehenden Aufgaben. Diese Liste ist übersichtlich in die Kategorien "Überfällig", "Heute" und "Demnächst" gruppiert. Um Verwechslungen in Mehrtier-Haushalten auszuschließen, zeigt jeder Eintrag die gewählte Tier-Farbe, das Tier-Foto und den Tier-Namen an (z. B. "Balou (Hund): Tablette"). Die Bestätigung einer Aufgabe erfolgt effizient über eine Checkbox direkt auf dem Listeneintrag (Ein-Tap-Bestätigung).
+Der Bereich "Termine" bietet eine chronologische Liste aller offenen und anstehenden Aufgaben. Diese Liste ist übersichtlich in die Kategorien "Überfällig", "Heute" und "Demnächst" gruppiert. Um Verwechslungen in Mehrtier-Haushalten auszuschließen, zeigt jeder Eintrag den Tier-Namen als **eigene Zeile oberhalb** des Aufgabentexts (E-81) sowie die gewählte Tier-Farbe. Die Bestätigung einer Aufgabe erfolgt effizient über eine Checkbox direkt auf dem Listeneintrag (Ein-Tap-Bestätigung).
+
+Zusätzlich unterscheidet der Screen visuell und schriftlich zwischen **Hinweisen** (tägliche/wiederkehrende Erinnerungen wie Medikamentengabe, Pflege) und **Terminen** (einmalige Fälligkeiten wie Impfauffrischung). Hinweise erhalten einen orangenen Seitenbalken und das Label „Hinweis“; Termine einen grünen/petrol Seitenbalken und das Label „Termin“ (E-81). Am Ende des Screens erscheint ein dezenter Prototyp-Hinweis: „Prototyp – noch keine Push-Notifications oder Kalender-Sync aktiv!“
 
 ### 2.6. Notfallpass - *Mockup existiert*
 

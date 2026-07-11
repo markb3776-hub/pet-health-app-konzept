@@ -147,3 +147,13 @@ Vollständige Analyse: siehe `konkurrenzanalyse_simplypet.md`
 4. 🧪 quality_check.sh + TypeScript-Prüfung
 5. 📦 Neue APK bauen (v0.1.2)
 6. 🔄 Erneuter Nutzertest
+
+### Nutzertest-Feedback 11.07.2026 (Prototyp v0.1.1 auf Gerät)
+
+| Nr. | Feedback | Umsetzung | Status |
+|:---|:---|:---|:---|
+| 33 | Notfallpass: Felder nicht bearbeitbar → Nutzer weiß nicht wo Eingabe | E-77: Hilfe-Fragezeichen (?) bei Bereichs-Überschriften, nur in App | ✅ Implementiert |
+| 34 | Notfallpass: Allergien und Vorerkrankungen nicht direkt untereinander | E-78: Reihenfolge korrigiert (Allergien → Vorerkrankungen → Dauermedikation) | ✅ Implementiert |
+| 35 | Notfallpass: Parasitenschutz fälschlicherweise unter Impfstatus | E-79: Eigener Block „Parasitenschutz" getrennt von Impfstatus | ✅ Implementiert |
+| 36 | Pferde haben erheblich andere Notfall-Anforderungen | E-80: Pferde-spezifischer Notfallpass-Block (EquinePassBlocks) | ✅ Implementiert |
+| 37 | Termine-Screen: Tiername geht unter, Hinweise und Termine nicht unterscheidbar | E-81: Tiername eigene Zeile, visuelle+schriftliche Trennung Hinweis/Termin, Prototyp-Hinweis | ✅ Implementiert |

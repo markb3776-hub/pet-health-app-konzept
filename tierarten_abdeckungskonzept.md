@@ -18,7 +18,7 @@ Die folgende Matrix basiert auf tierärztlichen Leitlinien, offiziellen Impfempf
 | **Hamster** | *Nein* | Ja | **JA** (Zähne) | Sehr kurze Lebenserwartung (2-3 Jahre) |
 | **Ziervögel** (Sittiche, Papageien) | *Nein* | Ja (Vögel verbergen Krankheiten) | Nein | Jährlicher **Routine-Check** [5], "vogelkundiger" Tierarzt [6] |
 | **Reptilien** (Schildkröten etc.) | *Nein* | Ja | Nein | **CITES-Nachweise** [7], **Winterstarre-Zyklus** [8] |
-| **Pferde** | **JA** (Tetanus, Influenza, Herpes) | Nein (kaum wiegbar) | **JA** (jährlicher Pferdezahnarzt) | **Equidenpass** (EU-Pflicht) [9], Medikationsdoku |
+| **Pferde** | **JA** (Tetanus, Influenza, Herpes) | Nein (kaum wiegbar; geschätztes Gewicht via Maßband, E-80) | **JA** (jährlicher Pferdezahnarzt) | **Equidenpass** (EU-Pflicht) [9], Medikationsdoku, **eigener Notfallpass-Block (E-80)** mit Equidenpass-Nr., Kolik-Vorgeschichte, Kotprobe/EpG, Stallkontakt, Hufschmied |
 
 ## 2. Der Sonderfall: Fische / Aquaristik
 

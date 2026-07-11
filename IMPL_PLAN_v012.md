@@ -163,3 +163,41 @@
 13. src/navigation/AppNavigator.tsx (BackupScreen Route)
 14. NEU: src/backup/backupManager.ts
 15. NEU: src/screens/BackupScreen.tsx
+
+---
+
+## Phase 7: Notfallpass-Verbesserungen & Termine-Screen (E-77 bis E-81)
+
+### Nr. 30 – Hilfe-Fragezeichen im Notfallpass (E-77)
+- (?)-Icon neben jeder Bereichs-Überschrift im EmergencyPassScreen
+- Beim Antippen: Modal mit Erläuterung ("Bearbeiten in der Tierakte")
+- NUR in App sichtbar – nicht im PDF, nicht im QR-Code
+
+### Nr. 31 – Reihenfolge Notfallpass korrigiert (E-78)
+- Neue Reihenfolge: Allergien → Vorerkrankungen → Dauermedikation → Impfstatus → Parasitenschutz → Letzte bekannte Werte
+- Allergien und Vorerkrankungen direkt untereinander (nicht mehr durch Dauermedikation getrennt)
+
+### Nr. 32 – Parasitenschutz eigener Block (E-79)
+- Neuer Block "PARASITENSCHUTZ" im Notfallpass (App, PDF, QR)
+- Getrennt von Impfstatus (fachlich: Parasitenschutz ist keine Impfung)
+- Gilt für alle Tierarten
+
+### Nr. 33 – Pferde-spezifischer Notfallpass (E-80)
+- Migration 005: equine_* Felder in pets-Tabelle + epg_value in health_records
+- NEU: src/emergency/EquinePassBlocks.tsx
+- Bedingtes Rendering: species=pferd → eigene Blöcke
+- Felder: Equidenpass-Nr., Abzeichen, Brand, Kolik-Vorgeschichte, Kotprobe/EpG, geschätztes Gewicht, Stallkontakt, Hufschmied, Haltungsform
+- PDF und QR enthalten Pferde-Daten
+
+### Nr. 34 – Termine-Screen Redesign (E-81)
+- Tiername als eigene Zeile OBERHALB des Aufgabentexts
+- Visuelle Trennung: Hinweise (orange Balken) vs. Termine (grüner Balken)
+- Schriftliche Trennung: Label "Hinweis" oder "Termin" in Meta-Zeile
+- Prototyp-Hinweis am Ende: "noch keine Push-Notifications oder Kalender-Sync aktiv!"
+
+### Betroffene Dateien (Phase 7)
+16. src/screens/EmergencyPassScreen.tsx (E-77, E-78, E-79)
+17. src/emergency/passData.ts (E-79, E-80: Parasitenschutz + equineData)
+18. NEU: src/emergency/EquinePassBlocks.tsx (E-80)
+19. src/db/database.ts (Migration 005: Pferde-Felder)
+20. src/screens/AppointmentsScreen.tsx (E-81: Redesign)

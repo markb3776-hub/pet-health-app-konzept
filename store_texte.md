@@ -26,7 +26,8 @@ Verpasse nie wieder eine Impfung, eine Wurmkur oder den nächsten Tierarztbesuch
 
 📝 **Tagebuch & Gesundheits-Tracking**
 Dokumentiere Gewicht, Beobachtungen, Medikamentengaben und Vorfälle chronologisch. Perfekt, um beim nächsten Tierarztbesuch alle Details parat zu haben.
-- **Parasitenschutz:** Eigene Kategorie für Spot-Ons, Halsbänder und Tabletten.
+- **Parasitenschutz:** Eigene Kategorie für Spot-Ons, Halsbänder und Tabletten – klar getrennt von echten Impfungen.
+- **Pferde-Notfallpass:** Speziell für Pferdehalter – mit Equidenpass-Nr., Kolik-Vorgeschichte, Kotprobe/EpG, Stallkontakt und Hufschmied.
 - **Kennfarben:** Weise jedem Tier eine eigene Farbe zu, um es in der Übersicht sofort zu erkennen.
 
 **UNSERE PHILOSOPHIE: 100% DATENSCHUTZ**
