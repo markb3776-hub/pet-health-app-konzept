@@ -55,18 +55,16 @@ pet-health-app-konzept/
 
 ## 3. Unveränderliche Regeln (Doktrin)
 
-Diese Regeln dürfen NIEMALS gebrochen werden:
+> Vollständige Doktrin-Liste: siehe `ENTSCHEIDUNGSREGISTER.md` → Abschnitt „Doktrin"
 
-| Regel | Prüfung |
+Diese Regeln dürfen NIEMALS gebrochen werden. Automatisierte Prüfung:
+
+| Regel | Automatische Prüfung durch |
 |:---|:---|
-| **Keine INTERNET-Permission** | `quality_check.sh` prüft AndroidManifest.xml |
-| **Kein Account/Login** | Nur Halter-Name lokal gespeichert |
-| **Kein Tracking/Analytics** | `quality_check.sh` prüft package.json |
-| **Kein Netzwerk-Code** | `quality_check.sh` prüft src/ auf fetch/axios |
-| **Null-Datenverlust** | Jedes Formular hat Draft-Autosave |
-| **Defensive Migrationen** | Alle CREATE TABLE mit IF NOT EXISTS |
-| **Keine medizinischen Empfehlungen** | Nur ehrliche Hinweise, kein Rat |
-| **Einmalkauf, kein Abo** | Preismodell: 2,99€ einmalig |
+| Keine INTERNET-Permission | `quality_check.sh` → AndroidManifest.xml |
+| Kein Tracking/Analytics | `quality_check.sh` → package.json |
+| Kein Netzwerk-Code | `quality_check.sh` → src/ auf fetch/axios |
+| Defensive Migrationen | `quality_check.sh` → CREATE TABLE ohne IF NOT EXISTS |
 
 ---
 
@@ -177,10 +175,18 @@ Versionsnummer MUSS in `package.json` UND `app.json` identisch sein.
 
 ## 10. Wichtige Dateien (Schnellreferenz)
 
+**Zuerst lesen (bei jeder Session):**
+
 | Datei | Zweck |
 |:---|:---|
-| `roadmap_prototyp.md` | Gesamtplan mit aktuellem Status |
-| `nutzertest_feedback_v0.1.1.md` | Gesammeltes Feedback + geplante Änderungen |
+| `ENTSCHEIDUNGSREGISTER.md` | Quelle der Wahrheit: alle Entscheidungen + offene Punkte + Doktrin |
+| `nutzertest_feedback_v0.1.1.md` | Was wird im nächsten Durchlauf gebaut? |
+| `roadmap_prototyp.md` | Wo stehen wir im Gesamtplan? |
+
+**Nachschlagen bei Bedarf:**
+
+| Datei | Zweck |
+|:---|:---|
 | `konkurrenzanalyse_simplypet.md` | Wettbewerber-Analyse + Differenzierung |
 | `pruefdoktrin_eingabe_stabilitaet.md` | Null-Datenverlust-Regel (3-fach-Prüfung) |
 | `technische_spezifikation_datenmodell.md` | DB-Schema-Referenz |
@@ -199,3 +205,26 @@ Versionsnummer MUSS in `package.json` UND `app.json` identisch sein.
 - [ ] Commit-Message folgt Konvention
 - [ ] Versionsnummer erhöht (bei Feature/Fix)
 - [ ] Relevante .md-Datei aktualisiert
+- [ ] `ENTSCHEIDUNGSREGISTER.md` aktualisiert (falls neue Entscheidung/offener Punkt)
+
+---
+
+## 12. Dokumentations-Hygiene
+
+**Prinzipien:**
+- Jede Information hat genau EINEN Ort (keine Dopplungen)
+- `ENTSCHEIDUNGSREGISTER.md` ist die Quelle der Wahrheit für Entscheidungen
+- Andere Dateien verweisen auf das Register, wiederholen es nicht
+- Wenn sich etwas ändert, wird die ALTE Version überschrieben (nicht daneben geschrieben)
+- Jede Datei hat EINEN klaren Zweck
+- Bei jeder Einigung oder neuem offenen Punkt: sofort dokumentieren und pushen
+
+**Dateihierarchie:**
+```
+ENTSCHEIDUNGSREGISTER.md    → Was ist entschieden? Was ist offen? (Quelle der Wahrheit)
+nutzertest_feedback_*.md     → Was wird gebaut? (Arbeitsliste)
+roadmap_prototyp.md          → Wo stehen wir? (Gesamtplan)
+ENTWICKLER_HANDBUCH.md       → Wie arbeiten wir? (Konventionen)
+konkurrenzanalyse_*.md       → Warum? (Hintergrund)
+technische_spezifikation_*.md → Wie genau? (Technische Details)
+```

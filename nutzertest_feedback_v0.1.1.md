@@ -4,6 +4,8 @@
 **Testgeräte:** Samsung S23 + Samsung S24 (SM-S921B/DS, Android 16, One UI 8.5)  
 **Tester:** Hauptnutzer + zweite Testperson (Interview ausstehend)
 
+> Alle getroffenen Entscheidungen und offenen Punkte: siehe `ENTSCHEIDUNGSREGISTER.md`
+
 ---
 
 ## Bereits in v0.1.1 behoben
@@ -15,39 +17,39 @@
 
 ---
 
-## Gesammeltes Feedback für nächsten Durchlauf (v0.1.2)
+## Geplant für v0.1.2 (wartet auf GO)
 
-### Features & UX-Verbesserungen
+### Features & UX
 
-| Nr. | Feature | Beschreibung | Entscheidung |
+| Nr. | Feature | Beschreibung | Status |
 |:---|:---|:---|:---|
-| 1 | Rasse-Feld | Freitext-Feld in Stammdaten (AddPetScreen + EditPetScreen) | Bestätigt – kein Dropdown, reiner Freitext |
-| 2 | Tierarzt-Tipp | Permanenter Hinweis unter Rasse-Feld: „Frag deinen Tierarzt nach rassetypischen Vorsorge-Untersuchungen für deine Rasse." Erscheint nur wenn Rasse ausgefüllt. | Bestätigt – statischer Text, keine medizinische Aussage |
-| 3 | Allergien & Vorerkrankungen | Ein Bereich in den Stammdaten mit ZWEI separaten Titelfeldern (Allergien / Vorerkrankungen). Logisch zusammen, visuell getrennt. | Bestätigt – Nutzer bestätigte UX-Problem „wo finde ich das?" |
-| 4 | Erinnerungs-Vorlauf | Einstellbar: X Tage vorher erinnern (min. 1 Tag). Bei Impfungen, Medikamenten, Terminen. | Bestätigt |
-| 5 | Überfällig-Hinweis Impfungen | Ehrlicher Text: „Überfällig – bitte Tierarzt konsultieren, ob Nachimpfung oder Neustart nötig ist." Keine medizinische Empfehlung. | Bestätigt – Doktrin-konform |
-| 6 | Parasitenschutz-Typ | Ggf. eigene Kategorie (Spot-On / Halsband / Tablette). Entscheidung: eigene Kategorie oder Typ-Auswahl unter Medikament/Pflege? | Offen – wartet auf Tester-Feedback |
+| 1 | Rasse-Feld | Freitext in Stammdaten (AddPet + EditPet) | ✅ Bestätigt |
+| 2 | Tierarzt-Tipp | Permanenter Hinweis unter Rasse-Feld (wenn ausgefüllt) | ✅ Bestätigt |
+| 3 | Allergien & Vorerkrankungen | Ein Bereich, zwei separate Titelfelder in Stammdaten | ✅ Bestätigt |
+| 4 | Erinnerungs-Vorlauf | X Tage vorher erinnern (min. 1 Tag) | ✅ Bestätigt |
+| 5 | Überfällig-Hinweis Impfungen | Ehrlicher Text, keine medizinische Empfehlung | ✅ Bestätigt |
+| 6 | Parasitenschutz-Typ | Eigene Kategorie oder Typ-Auswahl? | ⏳ Offen (O-03) |
 
-### Robustheit (präventiv, aus Konkurrenzanalyse abgeleitet)
+### Datensicherung & Datenhoheit
+
+| Nr. | Feature | Beschreibung | Status |
+|:---|:---|:---|:---|
+| 13 | Automatisches Backup | Lokale .simplypet-Datei, bei jeder Änderung aktualisiert | ✅ Bestätigt |
+| 14 | Backup exportieren | Android-Teilen-Dialog (kein Internet nötig) | ✅ Bestätigt |
+| 15 | Backup importieren | Import-Button + .simplypet als registrierter Dateityp | ✅ Bestätigt |
+| 16 | Einträge bearbeiten | Stift-Symbol, Formular vorausgefüllt | ✅ Bestätigt (Vermerk-Sichtbarkeit offen: O-01) |
+| 17 | Einträge löschen | Bestätigungs-Dialog, doppelt bei Impfungen/Medikamenten | ✅ Bestätigt (endgültig vs. Papierkorb offen: O-02) |
+
+### Robustheit (präventiv)
 
 | Nr. | Maßnahme | Begründung |
 |:---|:---|:---|
-| 7 | Doppelklick-Schutz auf Speichern-Buttons | Konkurrenz: Doppeleinträge durch schnelles Tippen |
-| 8 | Rotation sperren (Portrait-only) | Verhindert Layout-Brüche auf allen Geräten |
-| 9 | Dark Mode → Light erzwingen | Verhindert unsichtbare Texte bei System-Dark-Mode |
-| 10 | Foto-Komprimierung sicherstellen | Verhindert Speicher-Überlauf bei 12MP-Fotos |
-| 11 | Zukunfts-Datum-Validierung | Kein Gewicht/Beobachtung/Vorfall in der Zukunft möglich |
-| 12 | Try/Catch mit Fehlermeldung bei DB-Schreibfehlern | Verhindert stummes Scheitern bei vollem Speicher |
-
-### Datensicherung & Datenhoheit (festgelegt 11.07.2026)
-
-| Nr. | Feature | Beschreibung | Entscheidung |
-|:---|:---|:---|:---|
-| 13 | Automatisches Backup | App aktualisiert bei jeder Änderung eine lokale .simplypet-Datei | Bestätigt – Nutzer ist verantwortlich für externe Sicherung |
-| 14 | Backup exportieren | Export-Button öffnet Android-Teilen-Dialog (USB, Mail, Cloud – Nutzer wählt) | Bestätigt – App braucht kein Internet dafür |
-| 15 | Backup importieren | Import-Button auf neuem Gerät + .simplypet als registrierter Dateityp | Bestätigt – muss auf jedem Android-Gerät funktionieren |
-| 16 | Einträge bearbeiten | Stift-Symbol am Eintrag, Formular vorausgefüllt, Bearbeitungs-Vermerk | Bestätigt – Sichtbarkeit des Vermerks noch offen (O-01) |
-| 17 | Einträge löschen | Papierkorb-Symbol + Bestätigungs-Dialog, doppelte Bestätigung bei Impfungen/Medikamenten | Bestätigt – endgültig vs. Papierkorb noch offen (O-02) |
+| 7 | Doppelklick-Schutz auf Speichern-Buttons | Doppeleinträge verhindern |
+| 8 | Rotation sperren (Portrait-only) | Layout-Brüche verhindern |
+| 9 | Dark Mode → Light erzwingen | Unsichtbare Texte verhindern |
+| 10 | Foto-Komprimierung sicherstellen | Speicher-Überlauf verhindern |
+| 11 | Zukunfts-Datum-Validierung | Fehleingaben verhindern |
+| 12 | Try/Catch bei DB-Schreibfehlern | Stummes Scheitern verhindern |
 
 ### Weitere Punkte (vom zweiten Tester – Interview ausstehend)
 
@@ -55,63 +57,31 @@ _Wird ergänzt sobald Interview-Ergebnisse vorliegen._
 
 ---
 
-## Entscheidungen & Doktrin-Ergänzungen
+## Geräte-Kompatibilität
 
-### Preismodell (festgelegt 11.07.2026)
-- **Einmalkauf 2,99€** im Play Store (kein Abo, keine Werbung, keine In-App-Käufe)
-- Alle Features, alle Tiere, für immer
-- Begründung: Konkurrenzanalyse zeigt eindeutig – Nutzer akzeptieren Einmalkauf, hassen Abos
-
-### Rassenspezifische Features (festgelegt 11.07.2026)
-- **Prototyp:** Nur Freitext-Feld + statischer Tierarzt-Tipp
-- **Später (nach Prototyp):** Ggf. optionale Checkliste häufiger Rasse-Themen (Variante B)
-- **Nicht geplant:** Automatische Prädispositions-Vorschläge (Haftungsrisiko)
-- Begründung: Doktrin verbietet medizinische Empfehlungen
-
-### Allergien-Zuordnung (festgelegt 11.07.2026)
-- Allergien gehören unter den Bereich „Vorerkrankungen & Allergien" in den Stammdaten
-- Zwei separate Titel-Felder innerhalb eines logischen Blocks
-- Begründung: Nutzer fragte „zählt Allergie zu Vorerkrankung?" → Lösung: beides am selben Ort, aber klar beschriftet
+- **Insets-Fix:** Universell gültig (Standard-Android-API, kein Hersteller-Workaround)
+- **Xiaomi/Huawei-Risiko:** Notifications können verschluckt werden → Hinweis-Dialog für spätere Version
+- **RAM:** Kein Risiko (~80–120 MB, keine Hintergrund-Services)
 
 ---
 
-## Geräte-Kompatibilität (Analyse 11.07.2026)
-
-### Insets-Fix: Universell gültig
-Der SafeAreaView-Fix basiert auf Standard-Android-APIs (react-native-safe-area-context) und greift auf allen Geräten (Samsung, Pixel, Xiaomi, OnePlus). Kein herstellerspezifischer Workaround.
-
-### Bekanntes Risiko: Notification-Unterdrückung auf Xiaomi/Huawei
-Aggressive Battery-Management-Systeme können lokale Notifications verschlucken. Lösung für spätere Version: Hinweis-Dialog beim ersten Start auf betroffenen Geräten.
-
-### RAM/Performance: Kein Risiko
-App verbraucht geschätzt 80–120 MB RAM (vs. 300–800 MB bei typischen Apps). Kein Netzwerk, keine Hintergrund-Services, keine endlosen Listen.
-
----
-
-## Konkurrenzanalyse-Zusammenfassung (11.07.2026)
+## Konkurrenzanalyse
 
 Vollständige Analyse: siehe `konkurrenzanalyse_simplypet.md`
 
-### Kernerkenntnisse:
-1. **Häufigster 1-Stern-Grund bei Konkurrenz:** Datenverlust durch Server-Probleme/Updates
-2. **Zweit-häufigster Frust:** Abo-Zwang / Paywall (nur 1 Tier kostenlos)
-3. **Trend 2026:** Privacy-First wird Verkaufsargument (Pawza, dog-stories)
-4. **Zentrale Nutzer-Erkenntnis:** „Pet parents don't need more features, they need less friction"
-5. **simplyPets größter Vorteil:** Echte Offline-Garantie (keine INTERNET-Permission) – geht weiter als jeder Konkurrent
-
-### Differenzierung für Play Store Listing:
-- Kein Account, kein Abo, kein Internet
-- Einmal kaufen (2,99€), für immer nutzen
-- Alle Tiere, alle Features, keine Limits
-- 14 Tierarten (Konkurrenz: meist nur Hund + Katze)
+**Kernerkenntnisse:**
+1. Häufigster 1-Stern-Grund: Datenverlust durch Server/Updates → Wir: komplett offline
+2. Zweit-häufigster Frust: Abo-Zwang / Paywall → Wir: Einmalkauf 2,99€
+3. Trend 2026: Privacy-First → Wir: keine INTERNET-Permission (stärker als Konkurrenz)
+4. Nutzer-Erkenntnis: „Less friction, not more features" → Wir: klare Navigation lösen
 
 ---
 
 ## Nächste Schritte
 
-1. ⏳ **Warten auf Interview-Ergebnisse** vom zweiten Tester
-2. ⏳ **Warten auf GO** vom Hauptnutzer
+1. ⏳ Interview-Ergebnisse vom zweiten Tester abwarten
+2. ⏳ GO vom Hauptnutzer abwarten
 3. 🔧 Gebündelter Korrektur-Durchlauf (alle Punkte oben)
-4. 🧪 TypeScript-Prüfung + Expo-Rauchtest
+4. 🧪 quality_check.sh + TypeScript-Prüfung
 5. 📦 Neue APK bauen (v0.1.2)
 6. 🔄 Erneuter Nutzertest
