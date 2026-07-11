@@ -13,6 +13,7 @@
 | **Text Secondary** | `#6B7280` | Untertitel, Hinweise |
 | **Error/Überfällig** | `#DC2626` | Überfällig-Badges, Fehlermeldungen |
 | **Success** | `#16A34A` | Bestätigungen, aktive Status |
+| **Notfall (ISO-Grün)** | `#237F52` | AUSSCHLIESSLICH Notfallpass-Kreuz (ISO 7010 E003, RAL 6032) |
 
 ## Store-Screenshot Hintergrund
 
@@ -24,17 +25,18 @@
 
 ## VERBINDLICHE UI-REGELN
 
-### Regel 1: Kreuz + Grün = AUSSCHLIESSLICH Notfallpass
+### Regel 1: Kreuz/Plus + Grünspektrum = STRIKT UNTERSAGT (außer Notfallpass)
 
-> **In der GESAMTEN App existiert genau EIN EINZIGES Kreuz-Symbol (+) in Verbindung mit jeglicher Grün-Variante (Grün, Teal, Primary-Farbe #2E9E83, oder ähnlich). Das ist der Notfallpass-Button.**
+> **Der Notfall-Tab verwendet das exakte ISO 7010 E003 Symbol: weißes Kreuz auf ISO-Grün (#237F52, RAL 6032). Alle weiteren Kombinationen von Kreuz/Plus (+) mit JEDER Farbe des gesamten Grünspektrums sind STRIKT UNTERSAGT.**
 
-- Dieses Symbol erscheint **nur** an diesen Stellen:
+- **Notfallpass-Symbol:** Weißes Kreuz auf `#237F52` (ISO-Grün, NICHT unser Teal)
+- **STRIKT VERBOTEN:** Plus/Kreuz (+) in Kombination mit: Grün, Teal, Mint, Lime, Olive, Smaragd, #2E9E83, #4DB89A, #16A34A, #237F52 (außer Notfallpass), oder JEDER anderen Farbe des Grünspektrums.
+- **Erlaubt:** Plus-Zeichen in Schwarz, Grau, Weiß, Blau, Orange, Lila, Rot – jede Farbe außerhalb des Grünspektrums.
+- Das ISO-Kreuz erscheint **nur** an diesen Stellen:
   - Notfall-Tab in der Navigation (5. Tab)
   - Notfallpass-Notification (permanente Benachrichtigung)
   - Notfallpass-Screen Header
-- **VERBOTEN:** Grüne/teal-farbene Kreuze oder Plus-Zeichen für "Hinzufügen", "Neuer Eintrag", "Tier anlegen" oder sonstige Aktionen.
-- **Alternativen für Hinzufügen-Aktionen:** Dunkles/graues Plus-Zeichen, Stift-Icon, Pfeil-Icon, oder Text-Button.
-- Begründung: Der Nutzer soll das grüne Kreuz SOFORT und EINDEUTIG mit "Notfall" assoziieren. Jedes weitere grüne Kreuz/Plus verwässert diese lebensrettende Assoziation.
+- Begründung: Eindeutige, sofortige Assoziation: Grünes Kreuz = Notfall. Keine Ausnahmen, keine Verwechslung.
 
 ### Regel 2: Einheitlicher App-Hintergrund
 
