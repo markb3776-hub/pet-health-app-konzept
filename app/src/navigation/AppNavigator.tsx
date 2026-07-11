@@ -1,5 +1,5 @@
 /**
- * simplyPet: Navigation (v0.1.3)
+ * simplyPet: Navigation (v0.1.4)
  * Quelle: technische_spezifikation_screen_flow.md + E-58 + E-69 + E-70
  *
  * 5 feste Tabs: Zuhause, Termine, Erfassen, Mehr, Notfall.
@@ -41,6 +41,7 @@ import EditPetScreen from '../screens/EditPetScreen';
 import ManagePetsScreen from '../screens/ManagePetsScreen';
 import { isOnboardingDone } from '../profile/profileStore';
 import { colors, typography } from '../theme/theme';
+import { navigationRef } from './navigationRef';
 
 export type RootStackParamList = {
   Tabs: undefined;
@@ -200,7 +201,7 @@ export default function AppNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       {onboarded ? (
         <Stack.Navigator
           screenOptions={{

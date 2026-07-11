@@ -2,13 +2,15 @@
  * simplyPet: Mehr-Bereich (Version dynamisch aus app.json)
  * Quelle: technische_spezifikation_screen_flow.md (2.7)
  *
- * Neu in v0.1.2:
+ * v0.1.4:
+ * - Notfallpass-Schnellzugriff Toggle (E-62): Permanente Notification
+ *
+ * v0.1.2:
  * - Datensicherung (Export/Import) – Entscheidung E-31/E-32/E-33
  * - Letztes Backup-Datum anzeigen
  * - Hinweis zur Eigenverantwortung
  *
  * Doktrin: Kein toter Knopf, kein falsches Versprechen.
- * Zwei-Tap-Regel: Notfall-FAB fest auf diesem Bildschirm.
  */
 import React, { useCallback, useState } from 'react';
 import Constants from 'expo-constants';
@@ -18,6 +20,7 @@ import {
   TextInput,
   ScrollView,
   Pressable,
+  Switch,
   Alert,
   StyleSheet,
   ActivityIndicator,
@@ -28,6 +31,10 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { getOwnerName, setOwnerName, getOwnerPhone, setOwnerPhone } from '../profile/profileStore';
 import { exportBackup, importBackup, getLastBackupDate } from '../backup/backupService';
+import {
+  isPersistentNotificationEnabled,
+  setPersistentNotificationEnabled,
+} from '../services/persistentNotification';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
 export default function MoreScreen() {
@@ -40,6 +47,7 @@ export default function MoreScreen() {
   const [savedPhone, setSavedPhone] = useState<string | null>(null);
   const [lastBackup, setLastBackup] = useState<string | null>(null);
   const [backupBusy, setBackupBusy] = useState(false);
+  const [notifEnabled, setNotifEnabled] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -48,12 +56,14 @@ export default function MoreScreen() {
         const owner = await getOwnerName();
         const ownerPhone = await getOwnerPhone();
         const backupDate = await getLastBackupDate();
+        const notifOn = await isPersistentNotificationEnabled();
         if (active) {
           setSavedName(owner);
           setName(owner ?? '');
           setSavedPhone(ownerPhone);
           setPhone(ownerPhone ?? '');
           setLastBackup(backupDate);
+          setNotifEnabled(notifOn);
         }
       })();
       return () => {
@@ -175,6 +185,34 @@ export default function MoreScreen() {
               </Pressable>
             </View>
           )}
+        </View>
+
+        {/* Notfallpass-Schnellzugriff (E-62) */}
+        <View style={styles.notifCard}>
+          <View style={styles.notifRow}>
+            <View style={styles.notifTextWrap}>
+              <Text style={styles.notifTitle}>Notfallpass-Schnellzugriff</Text>
+              <Text style={styles.notifHint}>
+                Zeigt ein kleines Symbol in der Statusleiste. Tippe darauf, um den Notfallpass sofort zu öffnen.
+              </Text>
+            </View>
+            <Switch
+              value={notifEnabled}
+              onValueChange={async (value) => {
+                setNotifEnabled(value);
+                await setPersistentNotificationEnabled(value);
+                if (value) {
+                  Alert.alert(
+                    'Schnellzugriff aktiviert',
+                    'Du siehst jetzt ein kleines Symbol in der Statusleiste. Tippe darauf, um den Notfallpass sofort zu öffnen.'
+                  );
+                }
+              }}
+              trackColor={{ false: colors.border, true: colors.primaryLight ?? colors.primary }}
+              thumbColor={notifEnabled ? colors.primary : '#F4F3F4'}
+              accessibilityLabel="Notfallpass-Schnellzugriff aktivieren"
+            />
+          </View>
         </View>
 
         {/* Tiere verwalten */}
@@ -392,6 +430,31 @@ const styles = StyleSheet.create({
   },
   backupButtons: { flexDirection: 'row', gap: spacing.m },
   backupSpinner: { marginVertical: spacing.m },
+  notifCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 12,
+    padding: spacing.m,
+    marginBottom: spacing.m,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  notifRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  notifTextWrap: { flex: 1, marginRight: spacing.m },
+  notifTitle: {
+    fontSize: typography.body,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+  notifHint: {
+    fontSize: typography.bodySmall,
+    color: colors.textSecondary,
+    lineHeight: 22,
+  },
   footnote: {
     fontSize: typography.bodySmall,
     color: colors.textSecondary,

@@ -1,6 +1,11 @@
 /**
- * simplyPet – Einstiegspunkt (v0.1.2)
+ * simplyPet – Einstiegspunkt (v0.1.4)
  * Roadmap Schritt 3: Projektbasis mit Navigation und lokaler Datenbank.
+ *
+ * v0.1.4 Ergaenzungen:
+ * - App-Shortcut Intent-Handling (E-61): Lang druecken -> Notfallpass
+ * - Notification-Response-Handler (E-62): Tipp auf Notification -> Notfallpass
+ * - Permanente Notification beim Start pruefen und ggf. setzen
  *
  * v0.1.2 Ergaenzungen:
  * - Notification-Permission-Request beim Start (Praevention Nr. 23)
@@ -14,6 +19,9 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Notifications from 'expo-notifications';
 import AppNavigator from './src/navigation/AppNavigator';
+import { navigateToEmergencyPass } from './src/navigation/navigationRef';
+import { checkShortcutIntent, onShortcutIntent } from './src/utils/intentHandler';
+import { initPersistentNotification } from './src/services/persistentNotification';
 
 // Notification-Handler: Zeigt Benachrichtigungen auch im Vordergrund an
 Notifications.setNotificationHandler({
@@ -39,18 +47,43 @@ export default function App() {
     }
     requestNotificationPermission();
 
+    // E-61: App-Shortcut Intent pruefen (lang druecken auf Icon)
+    async function handleShortcutOnStart() {
+      const shouldOpenEmergency = await checkShortcutIntent();
+      if (shouldOpenEmergency) {
+        setTimeout(() => navigateToEmergencyPass(), 500);
+      }
+    }
+    handleShortcutOnStart();
+
+    // E-61: Shortcut-Intent waehrend App laeuft (z.B. aus Recents)
+    const cleanupShortcut = onShortcutIntent(() => {
+      navigateToEmergencyPass();
+    });
+
+    // E-62: Notification-Response-Handler (Tipp auf Notification -> Notfallpass)
+    const notificationResponseSub =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        const data = response.notification.request.content.data;
+        if (data?.action === 'open_emergency_pass') {
+          navigateToEmergencyPass();
+        }
+      });
+
+    // E-62: Permanente Notification pruefen und ggf. setzen
+    initPersistentNotification();
+
     // Praevention Nr. 33: Low-Memory-Handler
-    // Wenn die App in den Hintergrund geht, koennen wir nichts tun (Android killt).
-    // Aber wir stellen sicher, dass beim Zurueckkehren der State konsistent ist.
-    const subscription = AppState.addEventListener('change', (nextState) => {
+    const appStateSub = AppState.addEventListener('change', (nextState) => {
       if (nextState === 'active') {
         // App kommt zurueck in den Vordergrund – DB-Verbindung ist stabil
-        // (expo-sqlite reconnected automatisch). Nichts weiter noetig.
       }
     });
 
     return () => {
-      subscription.remove();
+      cleanupShortcut();
+      notificationResponseSub.remove();
+      appStateSub.remove();
     };
   }, []);
 
