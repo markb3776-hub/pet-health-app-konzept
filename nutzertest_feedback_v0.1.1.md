@@ -38,12 +38,13 @@
 | 40 | Notfallpass-Tipp | Hinweis: "Drucke den Pass aus und bringe ihn dort an, wo dein Tier im Notfall gefunden wird" | Neutral für alle 14 Tierarten |
 | 41 | App-Beschreibung | "Pocket-Tool für deine Liebsten" statt "Tiergesundheits-App" (Über-Dialog + Footer) | E-66 |
 | 42 | Bug-Fix: Tierverwaltung | Text vertikal statt horizontal – flex-Layout der Kacheln reparieren | E-67 |
+| 43 | Permanente Notification | Opt-in: Kleines Kreuz-Icon in Statusleiste, Tipp → Notfallpass öffnet sich. Priorität MIN (kein Sound). Standardmäßig AUS. | E-62 |
 
 ### Für nach Prototyp (Backlog)
 
 | Nr. | Feature | Beschreibung | Entscheidung |
 |:---|:---|:---|:---|
-| B-01 | Sperrbildschirm-Notification | Optionale permanente Notification für Notfallpass-Zugriff (Opt-in) | E-62 |
+| ~~B-01~~ | ~~Sperrbildschirm-Notification~~ | **HOCHGEZOGEN → v0.1.3 Nr. 43** | E-62 |
 | B-02 | Homescreen-Widget | 1×1 Kachel mit grünem Kreuz → öffnet Notfallpass | Kommt nach Prototyp |
 | B-03 | Familien-Teilen | "Mit Familie teilen"-Button (Android-Teilen-Dialog) + .simplypet Intent-Filter (Tipp auf Datei öffnet App). Nutzer wählt selbst: WhatsApp, E-Mail, Drive etc. | E-68 |
 

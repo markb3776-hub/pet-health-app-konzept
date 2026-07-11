@@ -65,7 +65,7 @@
 | E-59 | Überfällig-Karte | Karte auf HomeScreen wird antippbar → navigiert direkt zum Termine-Tab | Nutzer erwartet Interaktion |
 | E-60 | Tier-Kacheln | Kompakter gestalten (weniger Padding) → mehr Tiere auf einen Blick | Ohne Floating-Button ist mehr Platz, wichtige Infos schneller sichtbar |
 | E-61 | App-Shortcut | Lang drücken auf App-Icon → "Notfallpass" als Schnellzugriff (Android-Standard) | Sofort umsetzbar, kein Setup nötig |
-| E-62 | Sperrbildschirm-Zugriff | Optionale permanente Notification für Notfallpass-Zugriff vom Sperrbildschirm (Opt-in) | Kommt nach Prototyp |
+| E-62 | Sperrbildschirm-Zugriff | Permanente Notification (Opt-in): kleines weißes Kreuz-Icon in Statusleiste (24×24dp, monochrom). Priorität MIN/LOW (kein Sound/Vibration). Beim Herunterziehen: "simplyPet Notfallpass – Tippe für sofortigen Zugriff". Tipp → Notfallpass öffnet sich. Standardmäßig AUS, Nutzer aktiviert in Einstellungen. | Sofort-Zugriff im Notfall, dezent, nicht störend. Hochgezogen auf v0.1.3 |
 | E-63 | QR-Code statisch | QR-Code bleibt statisch (Klartext, kein Server-Link). Doktrin-konform. | Dynamischer QR bräuchte Server → widerspricht Offline-Doktrin |
 | E-64 | QR-Änderungshinweis | Nach Änderung von Notfall-relevanten Daten: Hinweis "Dein ausgedruckter Pass ist veraltet. Neu drucken?" | Nutzer vergisst sonst veralteten Ausdruck |
 | E-65 | QR-Druckdatum | PDF-Ausdruck zeigt unten: "Stand: [Datum]" | Finder/Besitzer sieht sofort ob Pass aktuell ist |
