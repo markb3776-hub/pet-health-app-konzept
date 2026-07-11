@@ -11,6 +11,8 @@
 | 3 | app.json Version auf 0.1.4, versionCode 4 | - | ✅ |
 | 4 | TypeScript-Check + Build | - | ✅ |
 | 5 | **FIX:** Notification als Foreground Service (nicht wegwischbar) | E-73 | ⏳ |
+| 6 | Hilfe-Fragezeichen (?) bei Notfallpass-Bereichen (nur in App, nicht im Export) | E-77 | ⏳ |
+| 7 | Reihenfolge Notfallpass: Allergien + Vorerkrankungen direkt untereinander | E-78 | ⏳ |
 
 ---
 

@@ -12,6 +12,11 @@
  * enthaelt die Notfalldaten als Klartext – jede Handy-Kamera liest ihn ohne
  * Server und ohne App. Die Browser-Freigabe fuer Praxen folgt nach dem
  * Prototyp (ehrlich gekennzeichnet, kein toter Knopf).
+ *
+ * E-77: Hilfe-Fragezeichen (?) bei Bereichs-Ueberschriften. Nur in App sichtbar,
+ *       nicht im PDF/QR/Browser-Export.
+ * E-78: Reihenfolge korrigiert: Allergien → Vorerkrankungen → Dauermedikation
+ *       (Allergien + Vorerkrankungen direkt untereinander, nicht durch Medikation getrennt).
  */
 import React, { useCallback, useState } from 'react';
 import {
@@ -43,6 +48,22 @@ import {
 import { formatDate } from '../time/timeModule';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
+/* ─── Hilfe-Texte fuer die (?)-Tooltips (E-77) ─── */
+const HELP_TEXTS: Record<string, string> = {
+  erkennungsmerkmale:
+    'Besondere Merkmale und Chip-Nummer bearbeitest du in der Tierakte (Stift-Symbol bei deinem Tier).',
+  allergien:
+    'Allergien bearbeitest du in der Tierakte unter Stammdaten (Stift-Symbol bei deinem Tier).',
+  vorerkrankungen:
+    'Vorerkrankungen bearbeitest du in der Tierakte unter Stammdaten (Stift-Symbol bei deinem Tier).',
+  dauermedikation:
+    'Dauermedikation wird automatisch aus deinen aktiven Medikamenten-Einträgen in der Tierakte übernommen.',
+  impfstatus:
+    'Impfungen bearbeitest du über „Erfassen → Impfung" in der Tierakte.',
+  werte:
+    'Gewicht und andere Werte erfasst du über „Erfassen → Gewicht" in der Tierakte.',
+};
+
 export default function EmergencyPassScreen() {
   // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): Systemleiste unten freihalten.
   const insets = useSafeAreaInsets();
@@ -59,6 +80,7 @@ export default function EmergencyPassScreen() {
   const [photoFull, setPhotoFull] = useState(false);
   const [qrVisible, setQrVisible] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [helpVisible, setHelpVisible] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -182,7 +204,10 @@ export default function EmergencyPassScreen() {
 
       {/* Besondere Erkennungsmerkmale: fester Abschnitt, IMMER sichtbar. */}
       <View style={styles.featureBlock}>
-        <Text style={styles.featureTitle}>Besondere Erkennungsmerkmale</Text>
+        <View style={styles.sectionTitleRow}>
+          <Text style={styles.featureTitle}>Besondere Erkennungsmerkmale</Text>
+          <HelpButton helpKey="erkennungsmerkmale" onPress={setHelpVisible} />
+        </View>
         <Text style={pet.special_features?.trim() ? styles.body : styles.bodyMuted}>
           {pet.special_features?.trim() || 'Keine besonderen Merkmale erfasst'}
         </Text>
@@ -209,10 +234,17 @@ export default function EmergencyPassScreen() {
     </View>
   );
 
-  /* Medizinischer Kernteil: feste Reihenfolge laut Design-Spez. */
+  /*
+   * Medizinischer Kernteil: Reihenfolge laut E-78:
+   * 1. Allergien und Unverträglichkeiten
+   * 2. Vorerkrankungen
+   * 3. Dauermedikation
+   * 4. Impfstatus
+   * 5. Letzte bekannte Werte
+   */
   const medicalBlocks = (
     <>
-      <Section title="Allergien und Unverträglichkeiten">
+      <Section title="Allergien und Unverträglichkeiten" helpKey="allergien" onHelp={setHelpVisible}>
         {data.allergies.length ? (
           data.allergies.map((a, i) => (
             <Text key={i} style={styles.body}>
@@ -224,7 +256,19 @@ export default function EmergencyPassScreen() {
         )}
       </Section>
 
-      <Section title="Dauermedikation">
+      <Section title="Vorerkrankungen" helpKey="vorerkrankungen" onHelp={setHelpVisible}>
+        {data.conditions.length ? (
+          data.conditions.map((c, i) => (
+            <Text key={i} style={styles.body}>
+              {c.name}
+            </Text>
+          ))
+        ) : (
+          <Text style={styles.bodyMuted}>Keine Vorerkrankungen erfasst</Text>
+        )}
+      </Section>
+
+      <Section title="Dauermedikation" helpKey="dauermedikation" onHelp={setHelpVisible}>
         {data.medications.length ? (
           data.medications.map((m, i) => (
             <Text key={i} style={styles.body}>
@@ -238,19 +282,7 @@ export default function EmergencyPassScreen() {
         )}
       </Section>
 
-      <Section title="Vorerkrankungen">
-        {data.conditions.length ? (
-          data.conditions.map((c, i) => (
-            <Text key={i} style={styles.body}>
-              {c.name}
-            </Text>
-          ))
-        ) : (
-          <Text style={styles.bodyMuted}>Keine Vorerkrankungen erfasst</Text>
-        )}
-      </Section>
-
-      <Section title="Impfstatus">
+      <Section title="Impfstatus" helpKey="impfstatus" onHelp={setHelpVisible}>
         {data.vaccinations.length ? (
           data.vaccinations.map((v, i) => (
             <Text key={i} style={styles.body}>
@@ -263,7 +295,7 @@ export default function EmergencyPassScreen() {
         )}
       </Section>
 
-      <Section title="Letzte bekannte Werte">
+      <Section title="Letzte bekannte Werte" helpKey="werte" onHelp={setHelpVisible}>
         {data.lastWeight ? (
           <Text style={styles.body}>
             Gewicht: {String(data.lastWeight.value).replace('.', ',')} {data.lastWeight.unit} (
@@ -299,7 +331,7 @@ export default function EmergencyPassScreen() {
         </Text>
         {!data.ownerPhone ? (
           <Text style={styles.hintSmall}>
-            Tipp: Hinterlege deine Telefonnummer unter „Mehr“ – im Notfall kann dich die Praxis
+            Tipp: Hinterlege deine Telefonnummer unter „Mehr" – im Notfall kann dich die Praxis
             dann direkt erreichen.
           </Text>
         ) : null}
@@ -425,14 +457,65 @@ export default function EmergencyPassScreen() {
           </View>
         </View>
       </Modal>
+
+      {/* Hilfe-Tooltip Modal (E-77): nur in App sichtbar, nicht im Export */}
+      <Modal visible={helpVisible !== null} transparent animationType="fade">
+        <Pressable
+          style={styles.helpBackdrop}
+          onPress={() => setHelpVisible(null)}
+          accessibilityLabel="Hilfe schließen"
+        >
+          <View style={styles.helpCard}>
+            <Text style={styles.helpIcon}>?</Text>
+            <Text style={styles.helpText}>
+              {helpVisible ? HELP_TEXTS[helpVisible] ?? '' : ''}
+            </Text>
+            <Text style={styles.helpDismiss}>Tippen zum Schließen</Text>
+          </View>
+        </Pressable>
+      </Modal>
     </ScrollView>
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+/* ─── Hilfe-Button Komponente (E-77) ─── */
+function HelpButton({
+  helpKey,
+  onPress,
+}: {
+  helpKey: string;
+  onPress: (key: string) => void;
+}) {
+  return (
+    <Pressable
+      style={styles.helpButton}
+      onPress={() => onPress(helpKey)}
+      accessibilityLabel="Hilfe anzeigen"
+      hitSlop={8}
+    >
+      <Text style={styles.helpButtonText}>?</Text>
+    </Pressable>
+  );
+}
+
+/* ─── Section-Komponente mit optionalem Hilfe-Button ─── */
+function Section({
+  title,
+  children,
+  helpKey,
+  onHelp,
+}: {
+  title: string;
+  children: React.ReactNode;
+  helpKey?: string;
+  onHelp?: (key: string) => void;
+}) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+      <View style={styles.sectionTitleRow}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        {helpKey && onHelp ? <HelpButton helpKey={helpKey} onPress={onHelp} /> : null}
+      </View>
       {children}
     </View>
   );
@@ -501,7 +584,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.textSecondary,
     textTransform: 'uppercase',
-    marginBottom: spacing.xs,
   },
   chipRow: {
     flexDirection: 'row',
@@ -534,12 +616,18 @@ const styles = StyleSheet.create({
     padding: spacing.m,
     marginBottom: spacing.m,
   },
+  sectionTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: spacing.s,
+  },
   sectionTitle: {
     fontSize: typography.bodySmall,
     fontWeight: '700',
     color: colors.textSecondary,
     textTransform: 'uppercase',
-    marginBottom: spacing.s,
+    flex: 1,
   },
   body: { fontSize: typography.body, color: colors.textPrimary, lineHeight: 26 },
   bodyMuted: { fontSize: typography.body, color: colors.textSecondary, lineHeight: 26 },
@@ -664,4 +752,53 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   qrCloseText: { color: '#FFFFFF', fontSize: typography.button, fontWeight: '700' },
+
+  /* E-77: Hilfe-Button (?) */
+  helpButton: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  helpButtonText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.textSecondary,
+  },
+
+  /* E-77: Hilfe-Tooltip Modal */
+  helpBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.l,
+  },
+  helpCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: spacing.l,
+    alignItems: 'center',
+    maxWidth: 340,
+    width: '100%',
+  },
+  helpIcon: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: colors.primary,
+    marginBottom: spacing.s,
+  },
+  helpText: {
+    fontSize: typography.body,
+    color: colors.textPrimary,
+    lineHeight: 24,
+    textAlign: 'center',
+    marginBottom: spacing.m,
+  },
+  helpDismiss: {
+    fontSize: typography.bodySmall,
+    color: colors.textSecondary,
+  },
 });
