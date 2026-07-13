@@ -2,7 +2,7 @@
  * simplyPet: Termine-Liste (Teilauftrag 4.2: voll funktionsfähig)
  * Quelle: Screen-Flow 2.5 + Datenmodell 2.7 (reminders).
  *
- * - Gruppen "Überfällig / Heute / Demnächst"; jede Karte zeigt Tier-Farbe
+ * - Gruppen "Überfällig / Bald fällig / Geplant" (E-82); jede Karte zeigt Tier-Farbe
  *   und Tier-Name (Mehrtier-Haushalte: keine Verwechslung).
  * - EIN-TAP-CHECKBOX: Ein Tap auf die Checkbox erledigt die Aufgabe –
  *   keine Zwischendialoge (Spez: "Erledigt-Bestätigung ist Ein-Tap").
@@ -172,8 +172,12 @@ export default function AppointmentsScreen() {
   }
 
   const overdue = open.filter((r) => r.due_date.slice(0, 10) < todayKey);
-  const today = open.filter((r) => r.due_date.slice(0, 10) === todayKey);
-  const upcoming = open.filter((r) => r.due_date.slice(0, 10) > todayKey);
+  // E-82: "Bald fällig" = heute + nächste 14 Tage; "Geplant" = > 14 Tage
+  const soonCutoff = dateKeyWithOffset(14);
+  const soonDue = open.filter(
+    (r) => r.due_date.slice(0, 10) >= todayKey && r.due_date.slice(0, 10) <= soonCutoff
+  );
+  const planned = open.filter((r) => r.due_date.slice(0, 10) > soonCutoff);
 
   return (
     <View style={[styles.flex, { paddingTop: insets.top }]}>
@@ -187,8 +191,9 @@ export default function AppointmentsScreen() {
         ) : (
           <>
             <ReminderGroup title="Überfällig" items={overdue} highlight onCheck={complete} busyId={busyId} />
-            <ReminderGroup title="Heute" items={today} onCheck={complete} busyId={busyId} />
-            <ReminderGroup title="Demnächst" items={upcoming} onCheck={complete} busyId={busyId} />
+            {/* E-82: Bald fällig (≤14 Tage) und Geplant (>14 Tage) */}
+            <ReminderGroup title="Bald fällig" items={soonDue} onCheck={complete} busyId={busyId} />
+            <ReminderGroup title="Geplant" items={planned} onCheck={complete} busyId={busyId} />
 
             {done.length > 0 ? (
               <View style={styles.group}>

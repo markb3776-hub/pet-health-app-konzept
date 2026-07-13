@@ -12,7 +12,7 @@ Der Pass ist als Karte im Hochformat gestaltet, angelehnt an die vertraute Optik
 | :--- | :--- | :--- |
 | **Tierfoto** | Vom Halter hinzugefügtes Foto | Rundes oder abgerundetes Porträtfeld links oben, wie ein Passbild. Tap auf das Foto zeigt es bildschirmfüllend. |
 | **Name und Tierart** | z. B. "Balou – Hund, Labrador-Mischling" | Große, klare Typografie direkt neben dem Foto |
-| **Signalement** | Geburtsdatum, Geschlecht, Kastrationsstatus, Rasse, Fellfarbe | Kompakte Zeilen unter dem Namen |
+| **Signalement** | Geburtsdatum, Geschlecht, Kastrationsstatus, Rasse, Fellfarbe/Hautfarbe/Gefiederfarbe (artspezifisch, E-84) | Kompakte Zeilen unter dem Namen |
 | **Besondere Erkennungsmerkmale** | Eigene Sparte: Narben, Fellzeichnungen, Ohrkerben/Tätowierungen, Fehlstände, Heterochromie (verschiedenfarbige Augen), fehlende Kralle/Zehe etc. | Fester eigener Abschnitt direkt unter dem Signalement, mit optionalen Detail-Fotos je Merkmal |
 | **Chipnummer** | 15-stellige Transponder-Nummer | Eigene, klar abgesetzte Zeile mit Kopier-Symbol – das wichtigste Identifikationsmerkmal neben dem Foto |
 | **Statusleiste** | "Zuletzt aktualisiert: TT.MM.JJJJ" | Klein, aber sichtbar – Ehrlichkeit über die Aktualität der Daten |

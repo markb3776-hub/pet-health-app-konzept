@@ -76,3 +76,28 @@ E-62 beschreibt "öffnet sich OHNE Entsperren". Dies erfordert:
 - OHNE Entsperren: NEIN (verschoben auf v0.1.5, benötigt nativen Code)
 
 Der Nutzer wird informiert dass die Notification den Notfallpass öffnet, aber das Gerät erst entsperrt werden muss. Dies ist ein akzeptabler Kompromiss für den Prototyp.
+
+---
+
+### 3. Termine-Gruppen (E-82)
+
+**Vorher:** Überfällig / Demnächst
+**Nachher:** Überfällig (rot) / Bald fällig (≤14 Tage) / Geplant (>14 Tage)
+
+### 4. Rasse statt Tierart auf HomeScreen (E-83)
+
+Unter dem Tiernamen wird die Rasse angezeigt wenn vorhanden, sonst die Tierart. Bidirektional.
+
+### 5. Artspezifisches Fellfarbe-Label (E-84)
+
+| Tierart | Label | Platzhalter |
+|:---|:---|:---|
+| Hund/Katze/Kleinsäuger | Fellfarbe / Zeichnung | z. B. schwarz-weiß, getigert, dreifarbig |
+| Reptil | Hautfarbe / Musterung | z. B. grün, gestreift, gefleckt |
+| Ziervogel | Gefiederfarbe / Zeichnung | z. B. grün-gelb, blau, gescheckt |
+| Pferd | Fellfarbe / Abzeichen | z. B. Fuchs, Blesse, Socken |
+| Aquarium | (ausgeblendet) | – |
+
+### 6. App-Icon Badge (E-85)
+
+Badge-Zahl auf dem App-Icon = Anzahl überfälliger Aufgaben. Wie Instagram. Funktioniert lokal ohne Push.

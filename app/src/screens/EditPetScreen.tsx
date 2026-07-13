@@ -88,6 +88,26 @@ interface EditPetDraft {
 const GENDER_OPTIONS = ['Männlich', 'Weiblich', 'Unbekannt'];
 const CASTRATION_OPTIONS = ['Kastriert', 'Sterilisiert', 'Nein', 'Unbekannt'];
 
+/** E-84: Artspezifisches Label für Fellfarbe/Zeichnung */
+function getCoatLabel(species: string): string {
+  switch (species) {
+    case 'reptil': return 'Hautfarbe / Musterung (optional)';
+    case 'ziervogel': return 'Gefiederfarbe / Zeichnung (optional)';
+    case 'pferd': return 'Fellfarbe / Abzeichen (optional)';
+    default: return 'Fellfarbe / Zeichnung (optional)';
+  }
+}
+
+/** E-84: Artspezifischer Platzhalter */
+function getCoatPlaceholder(species: string): string {
+  switch (species) {
+    case 'reptil': return 'z. B. grün, gestreift, gefleckt';
+    case 'ziervogel': return 'z. B. grün-gelb, blau, gescheckt';
+    case 'pferd': return 'z. B. Fuchs, Blesse, Socken';
+    default: return 'z. B. schwarz-weiß, getigert, dreifarbig';
+  }
+}
+
 function petToDraft(p: PetRow): EditPetDraft {
   return {
     name: p.name,
@@ -347,16 +367,21 @@ export default function EditPetScreen() {
                 />
                 {chipHint ? <Text style={styles.warnText}>{chipHint}</Text> : null}
 
-                <FieldLabel>Fellfarbe / Zeichnung (optional)</FieldLabel>
-                <TextInput
-                  style={styles.input}
-                  value={form.coatColor}
-                  onChangeText={(t) => update('coatColor', t)}
-                  placeholder="z. B. schwarz-weiß, getigert, dreifarbig"
-                  placeholderTextColor={colors.textSecondary}
-                  accessibilityLabel="Fellfarbe oder Zeichnung"
-                />
-                <Hint>Erscheint auf dem Notfall-Pass – hilft, dein Tier eindeutig zu erkennen.</Hint>
+                {/* E-84: Artspezifisches Label für Fellfarbe/Zeichnung; bei Aquarium ausblenden */}
+                {species !== 'aquarium' ? (
+                  <>
+                    <FieldLabel>{getCoatLabel(species)}</FieldLabel>
+                    <TextInput
+                      style={styles.input}
+                      value={form.coatColor}
+                      onChangeText={(t) => update('coatColor', t)}
+                      placeholder={getCoatPlaceholder(species)}
+                      placeholderTextColor={colors.textSecondary}
+                      accessibilityLabel={getCoatLabel(species)}
+                    />
+                    <Hint>Erscheint auf dem Notfall-Pass – hilft, dein Tier eindeutig zu erkennen.</Hint>
+                  </>
+                ) : null}
               </>
             ) : null}
           </View>

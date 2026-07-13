@@ -37,6 +37,7 @@ interface PetRow {
   id: string;
   name: string;
   species: string;
+  breed: string | null;
   color_theme: string | null;
   photo_uri: string | null;
 }
@@ -71,7 +72,7 @@ export default function HomeScreen() {
       (async () => {
         const db = await getDb();
         const rows = await db.getAllAsync<PetRow>(
-          'SELECT id, name, species, color_theme, photo_uri FROM pets WHERE archived = 0 AND deleted_at IS NULL ORDER BY created_at'
+          'SELECT id, name, species, breed, color_theme, photo_uri FROM pets WHERE archived = 0 AND deleted_at IS NULL ORDER BY created_at'
         );
         const currentMonth = parseInt(todayKey.slice(5, 7), 10);
         const seasonFilter = `(
@@ -164,8 +165,9 @@ export default function HomeScreen() {
             <Text style={styles.petName} numberOfLines={1} ellipsizeMode="tail">
               {pet.name}
             </Text>
+            {/* E-83: Rasse anzeigen wenn vorhanden, sonst Tierart */}
             <Text style={styles.petSpecies} numberOfLines={1} ellipsizeMode="tail">
-              {cfg?.label ?? pet.species}
+              {pet.breed || cfg?.label || pet.species}
             </Text>
           </View>
         </Pressable>

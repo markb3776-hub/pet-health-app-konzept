@@ -201,3 +201,20 @@
 18. NEU: src/emergency/EquinePassBlocks.tsx (E-80)
 19. src/db/database.ts (Migration 005: Pferde-Felder)
 20. src/screens/AppointmentsScreen.tsx (E-81: Redesign)
+
+---
+
+## Phase 8: UI-Verbesserungen E-82–E-85 (14.07.2026)
+
+| Nr. | Aufgabe | Datei(en) | Status |
+|:----|:--------|:----------|:-------|
+| 35 | E-82: Termine-Gruppen Überfällig/Bald fällig (≤14d)/Geplant (>14d) – kein "Demnächst" mehr | AppointmentsScreen.tsx | ✅ |
+| 36 | E-83: Rasse statt Tierart auf HomeScreen (bidirektional: Rasse vorhanden → Rasse; gelöscht → Tierart) | HomeScreen.tsx | ✅ |
+| 37 | E-84: Artspezifisches Fellfarbe-Label (Reptil: Hautfarbe/Musterung, Vogel: Gefiederfarbe/Zeichnung, Pferd: Fellfarbe/Abzeichen, Aquarium: Feld ausblenden) | EditPetScreen.tsx | ✅ |
+| 38 | E-85: App-Icon Badge-Zahl bei überfälligen Aufgaben (lokal ohne Push, wie Instagram) | NEU: services/badgeService.ts | ✅ |
+
+### Betroffene Dateien (Phase 8)
+21. src/screens/AppointmentsScreen.tsx (E-82: Gruppen-Logik + dateKeyWithOffset)
+22. src/screens/HomeScreen.tsx (E-83: breed in PetRow + SQL + Anzeige)
+23. src/screens/EditPetScreen.tsx (E-84: getCoatLabel/getCoatPlaceholder + Aquarium-Check)
+24. NEU: src/services/badgeService.ts (E-85: Badge-Count basierend auf überfälligen Reminders)

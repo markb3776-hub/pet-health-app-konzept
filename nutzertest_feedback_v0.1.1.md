@@ -157,3 +157,7 @@ Vollständige Analyse: siehe `konkurrenzanalyse_simplypet.md`
 | 35 | Notfallpass: Parasitenschutz fälschlicherweise unter Impfstatus | E-79: Eigener Block „Parasitenschutz" getrennt von Impfstatus | ✅ Implementiert |
 | 36 | Pferde haben erheblich andere Notfall-Anforderungen | E-80: Pferde-spezifischer Notfallpass-Block (EquinePassBlocks) | ✅ Implementiert |
 | 37 | Termine-Screen: Tiername geht unter, Hinweise und Termine nicht unterscheidbar | E-81: Tiername eigene Zeile, visuelle+schriftliche Trennung Hinweis/Termin, Prototyp-Hinweis | ✅ Implementiert |
+| 38 | Termine-Screen: "Demnächst" irreführend bei 6 Monaten Vorlauf | E-82: Gruppen Überfällig / Bald fällig (≤14d) / Geplant (>14d) | ✅ Implementiert |
+| 39 | HomeScreen: Unter Tiernamen steht nur "Katze"/"Hund" statt Rasse | E-83: Rasse anzeigen wenn vorhanden, sonst Tierart (bidirektional) | ✅ Implementiert |
+| 40 | EditPetScreen: "Fellfarbe" bei Reptil fachlich falsch | E-84: Artspezifisches Label (Hautfarbe/Musterung, Gefiederfarbe etc.) | ✅ Implementiert |
+| 41 | App-Icon zeigt keine Badge bei überfälligen Aufgaben | E-85: Badge-Zahl auf App-Icon (wie Instagram), lokal ohne Push | ✅ Implementiert |

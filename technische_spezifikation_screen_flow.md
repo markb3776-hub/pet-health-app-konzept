@@ -47,7 +47,7 @@ Das Onboarding beginnt mit einem Begrüßungsbildschirm, der die Doktrin der App
 
 ### 2.2. Zuhause (Startbildschirm) - *Mockup existiert*
 
-Der Startbildschirm ist in drei klare Zonen unterteilt. Die oberste Zone enthält Status-Karten, die den Nutzer über anstehende Aufgaben informieren (z. B. "Heute fällig: ..."). Ein Tap auf eine solche Karte öffnet direkt die Detail- oder Bestätigungsansicht. In der mittleren Zone befinden sich die Tier-Kacheln, die Foto, Name und einen kurzen Status des jeweiligen Tieres anzeigen. Ein Tap auf eine Kachel öffnet die zugehörige Tierakte, während eine spezielle Plus-Kachel am Ende der Liste das Anlegen eines weiteren Tieres ermöglicht. Die unterste Zone ist fest dem Notfallpass-Knopf vorbehalten, dessen Betätigung sofort den Notfallpass öffnet.
+Der Startbildschirm ist in drei klare Zonen unterteilt. Die oberste Zone enthält Status-Karten, die den Nutzer über anstehende Aufgaben informieren (z. B. "Heute fällig: ..."). Ein Tap auf eine solche Karte öffnet direkt die Detail- oder Bestätigungsansicht. In der mittleren Zone befinden sich die Tier-Kacheln, die Foto, Name und **Rasse** (wenn eingetragen, sonst Tierart, E-83) des jeweiligen Tieres anzeigen. Ein Tap auf eine Kachel öffnet die zugehörige Tierakte, während eine spezielle Plus-Kachel am Ende der Liste das Anlegen eines weiteren Tieres ermöglicht. Die unterste Zone ist fest dem Notfallpass-Knopf vorbehalten, dessen Betätigung sofort den Notfallpass öffnet.
 
 ### 2.3. Tierakte - *Mockup existiert*
 
@@ -61,7 +61,7 @@ Für den MVP-Umfang ist der Flow "Dokument scannen" wie folgt definiert: Zunäch
 
 ### 2.5. Termine (Erinnerungs-Liste)
 
-Der Bereich "Termine" bietet eine chronologische Liste aller offenen und anstehenden Aufgaben. Diese Liste ist übersichtlich in die Kategorien "Überfällig", "Heute" und "Demnächst" gruppiert. Um Verwechslungen in Mehrtier-Haushalten auszuschließen, zeigt jeder Eintrag den Tier-Namen als **eigene Zeile oberhalb** des Aufgabentexts (E-81) sowie die gewählte Tier-Farbe. Die Bestätigung einer Aufgabe erfolgt effizient über eine Checkbox direkt auf dem Listeneintrag (Ein-Tap-Bestätigung).
+Der Bereich "Termine" bietet eine chronologische Liste aller offenen und anstehenden Aufgaben. Diese Liste ist übersichtlich in die Kategorien **"Überfällig"** (rot), **"Bald fällig"** (≤14 Tage) und **"Geplant"** (>14 Tage) gruppiert (E-82). Die frühere Gruppe "Demnächst" wurde abgeschafft, da sie bei Terminen die Monate entfernt liegen irreführend war. Um Verwechslungen in Mehrtier-Haushalten auszuschließen, zeigt jeder Eintrag den Tier-Namen als **eigene Zeile oberhalb** des Aufgabentexts (E-81) sowie die gewählte Tier-Farbe. Die Bestätigung einer Aufgabe erfolgt effizient über eine Checkbox direkt auf dem Listeneintrag (Ein-Tap-Bestätigung).
 
 Zusätzlich unterscheidet der Screen visuell und schriftlich zwischen **Hinweisen** (tägliche/wiederkehrende Erinnerungen wie Medikamentengabe, Pflege) und **Terminen** (einmalige Fälligkeiten wie Impfauffrischung). Hinweise erhalten einen orangenen Seitenbalken und das Label „Hinweis“; Termine einen grünen/petrol Seitenbalken und das Label „Termin“ (E-81). Am Ende des Screens erscheint ein dezenter Prototyp-Hinweis: „Prototyp – noch keine Push-Notifications oder Kalender-Sync aktiv!“
 

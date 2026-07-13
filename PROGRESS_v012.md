@@ -29,6 +29,12 @@
 24. ✅ E-80: Pferde-spezifischer Notfallpass (EquinePassBlocks, Migration 005, PDF+QR)
 25. ✅ E-81: Termine-Screen Redesign (Tiername eigene Zeile, Hinweis vs. Termin, Prototyp-Hinweis)
 
+## Phase 8 (14.07.2026) – ERLEDIGT:
+- [x] E-82: Termine-Gruppen Überfällig / Bald fällig (≤14d) / Geplant (>14d) – kein "Demnächst" mehr
+- [x] E-83: Rasse statt Tierart auf HomeScreen (bidirektional)
+- [x] E-84: Artspezifisches Fellfarbe-Label (Reptil/Vogel/Pferd/Aquarium)
+- [x] E-85: App-Icon Badge-Zahl bei überfälligen Aufgaben (badgeService.ts)
+
 ## NOCH OFFEN:
 - [ ] HomeScreen: ScrollView → FlatList für Tier-Kacheln (RAM-Schutz Nr. 25)
 - [ ] Locale-sichere Datumsformatierung in MoreScreen (toLocaleDateString → manuelles Format)
