@@ -35,6 +35,14 @@
 - [x] E-84: Artspezifisches Fellfarbe-Label (Reptil/Vogel/Pferd/Aquarium)
 - [x] E-85: App-Icon Badge-Zahl bei überfälligen Aufgaben (badgeService.ts)
 
+## Phase 9 (14.07.2026) – ERLEDIGT:
+- [x] E-86: Migration 006 (aquarium_type, aquarium_volume_liters, setup_date)
+- [x] E-86: EditPetScreen Aquarium-Block (Beckentyp/Volumen/Eingerichtet am)
+- [x] E-86: PetFileScreen Aquarium-Ansicht (Eingerichtet am / Beckentyp / Volumen statt Geboren/Chip)
+- [x] E-87: Chip bei Kleinnagern ausgeblendet (Meerschweinchen, Chinchilla, Ratte, Maus, Degu, Hamster)
+- [x] E-87: Ziervogel: Ring-/Chip-Nummer + Hint (Fußring)
+- [x] E-87: Reptil/Pferd: artspezifische Platzhalter für Chip-Feld
+
 ## NOCH OFFEN:
 - [ ] HomeScreen: ScrollView → FlatList für Tier-Kacheln (RAM-Schutz Nr. 25)
 - [ ] Locale-sichere Datumsformatierung in MoreScreen (toLocaleDateString → manuelles Format)

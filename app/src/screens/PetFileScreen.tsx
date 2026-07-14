@@ -45,6 +45,10 @@ interface PetRow {
   special_features: string | null;
   color_theme: string | null;
   photo_uri: string | null;
+  // E-86: Aquarium-spezifisch
+  aquarium_type: string | null;
+  aquarium_volume_liters: number | null;
+  setup_date: string | null;
 }
 
 interface HealthRecordRow {
@@ -158,7 +162,8 @@ export default function PetFileScreen() {
         const db = await getDb();
         const row = await db.getFirstAsync<PetRow>(
           `SELECT id, name, species, breed, gender, birth_date, chip_number,
-                  special_features, color_theme, photo_uri
+                  special_features, color_theme, photo_uri,
+                  aquarium_type, aquarium_volume_liters, setup_date
            FROM pets WHERE id = ?`,
           [petId]
         );
@@ -445,9 +450,28 @@ export default function PetFileScreen() {
         </Pressable>
       </View>
       <View style={styles.passRows}>
-        <PassRow label="Geboren" value={pet.birth_date ? formatDate(pet.birth_date) : 'Nicht angegeben'} />
-        <PassRow label="Chip-Nummer" value={pet.chip_number ?? 'Nicht angegeben'} />
-        <PassRow label="Merkmale" value={pet.special_features ?? 'Keine besonderen Merkmale'} />
+        {/* E-86/E-87: Artspezifische Felder */}
+        {cfg?.isHabitat ? (
+          <>
+            <PassRow label="Eingerichtet am" value={pet.setup_date ? formatDate(pet.setup_date) : 'Nicht angegeben'} />
+            <PassRow label="Beckentyp" value={pet.aquarium_type ?? 'Nicht angegeben'} />
+            {pet.aquarium_volume_liters ? (
+              <PassRow label="Volumen" value={`${pet.aquarium_volume_liters} Liter`} />
+            ) : null}
+          </>
+        ) : (
+          <>
+            <PassRow label="Geboren" value={pet.birth_date ? formatDate(pet.birth_date) : 'Nicht angegeben'} />
+            {/* E-87: Chip/Ring nur bei relevanten Tierarten */}
+            {!['meerschweinchen', 'chinchilla', 'ratte', 'maus', 'degu', 'hamster'].includes(pet.species) ? (
+              <PassRow
+                label={pet.species === 'vogel' ? 'Ring-/Chip-Nr.' : 'Chip-Nummer'}
+                value={pet.chip_number ?? 'Nicht angegeben'}
+              />
+            ) : null}
+            <PassRow label="Merkmale" value={pet.special_features ?? 'Keine besonderen Merkmale'} />
+          </>
+        )}
       </View>
     </View>
   );

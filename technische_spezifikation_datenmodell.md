@@ -57,6 +57,9 @@ Dies ist die zentrale Entität. Das Feld `species` (Tierart) steuert die Logik.
 | `equine_farrier_name` | VARCHAR | Name des Hufschmieds (nur Pferd, E-80) |
 | `equine_farrier_phone` | VARCHAR | Telefon Hufschmied (nur Pferd, E-80) |
 | `equine_housing_type` | VARCHAR | Haltungsform: Box/Offenstall/Weide (nur Pferd, E-80) |
+| `aquarium_type` | VARCHAR | Süßwasser/Meerwasser/Brackwasser (nur Aquarium, E-86) |
+| `aquarium_volume_liters` | INTEGER | Beckengröße in Liter (nur Aquarium, E-86) |
+| `setup_date` | DATE | Einrichtungsdatum (nur Aquarium, E-86; ersetzt birth_date) |
 | `created_at` | TIMESTAMP | |
 | `updated_at` | TIMESTAMP | |
 

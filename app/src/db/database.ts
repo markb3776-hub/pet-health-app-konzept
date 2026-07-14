@@ -165,6 +165,13 @@ async function migrate(database: SQLite.SQLiteDatabase): Promise<void> {
   await addColumnIfMissing(database, 'pets', 'equine_housing_type', 'TEXT'); // Box/Offenstall/Weide
   // Kotprobe-Ergebnisse werden in health_records gespeichert (record_type = 'Kotprobe')
   await addColumnIfMissing(database, 'health_records', 'epg_value', 'INTEGER'); // Eier pro Gramm
+
+  // Migration 006 (E-86): Aquarium-spezifische Felder.
+  // Aquarium ist ein Behaeltnis (isHabitat=true), kein Einzeltier.
+  // Beckentyp (Suess/Meer/Brack), Volumen, Einrichtungsdatum.
+  await addColumnIfMissing(database, 'pets', 'aquarium_type', 'TEXT'); // Suesswasser/Meerwasser/Brackwasser
+  await addColumnIfMissing(database, 'pets', 'aquarium_volume_liters', 'INTEGER'); // Beckengroesse in Liter
+  await addColumnIfMissing(database, 'pets', 'setup_date', 'TEXT'); // Einrichtungsdatum (statt birth_date bei Aquarium)
 }
 
 async function addColumnIfMissing(

@@ -218,3 +218,20 @@
 22. src/screens/HomeScreen.tsx (E-83: breed in PetRow + SQL + Anzeige)
 23. src/screens/EditPetScreen.tsx (E-84: getCoatLabel/getCoatPlaceholder + Aquarium-Check)
 24. NEU: src/services/badgeService.ts (E-85: Badge-Count basierend auf überfälligen Reminders)
+
+---
+
+## Phase 9: Artspezifische Felder und Aquarium-Erweiterung (E-86/E-87)
+
+| Nr. | Aufgabe | Datei(en) | Status |
+|:----|:--------|:----------|:-------|
+| 39 | E-86: Migration 006 – aquarium_type, aquarium_volume_liters, setup_date | database.ts | ✅ |
+| 40 | E-86: Aquarium-Block im EditPetScreen (Beckentyp, Volumen, Eingerichtet am) | EditPetScreen.tsx | ✅ |
+| 41 | E-86: PetFileScreen – Eingerichtet am / Beckentyp / Volumen statt Geboren/Chip bei Aquarium | PetFileScreen.tsx | ✅ |
+| 42 | E-87: Chip-Feld bei Kleinnagern ausblenden; Vogel: Ring-/Chip-Nummer + Hint; Reptil/Pferd: Platzhalter | EditPetScreen.tsx | ✅ |
+| 43 | E-87: PetFileScreen – Chip-Zeile bei Kleinnagern ausblenden; Vogel: Ring-/Chip-Nr. Label | PetFileScreen.tsx | ✅ |
+
+### Betroffene Dateien (Phase 9)
+25. src/db/database.ts (Migration 006: Aquarium-Felder)
+26. src/screens/EditPetScreen.tsx (E-86: Aquarium-Block + E-87: Chip-Sichtbarkeit)
+27. src/screens/PetFileScreen.tsx (E-86: Aquarium-Ansicht + E-87: Chip-Sichtbarkeit)

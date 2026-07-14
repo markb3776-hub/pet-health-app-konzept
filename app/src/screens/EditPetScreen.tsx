@@ -83,6 +83,10 @@ interface EditPetDraft {
   coatColor: string;
   practiceName: string;
   practicePhone: string;
+  // E-86: Aquarium-spezifisch
+  aquariumType: string | null;
+  aquariumVolume: string;
+  setupDate: string | null;
 }
 
 const GENDER_OPTIONS = ['Männlich', 'Weiblich', 'Unbekannt'];
@@ -108,6 +112,27 @@ function getCoatPlaceholder(species: string): string {
   }
 }
 
+/** E-87: Artspezifisches Label für Chip-/Ring-Nummer */
+function getChipLabel(species: string): string {
+  switch (species) {
+    case 'ziervogel': return 'Ring-/Chip-Nummer (optional)';
+    default: return 'Chip-Nummer (optional)';
+  }
+}
+
+/** E-87: Artspezifischer Platzhalter für Chip-/Ring-Nummer */
+function getChipPlaceholder(species: string): string {
+  switch (species) {
+    case 'ziervogel': return 'Ringnummer oder Transponder-Nummer';
+    case 'reptil': return 'Optional – bei Meldepflicht empfohlen';
+    case 'pferd': return '15-stellig, steht im Equidenpass';
+    default: return '15-stellige Transponder-Nummer';
+  }
+}
+
+/** E-87: Chip-Feld bei Kleinnagern ausblenden */
+const CHIP_HIDDEN_SPECIES = ['meerschweinchen', 'chinchilla', 'ratte', 'maus', 'degu', 'hamster'];
+
 function petToDraft(p: PetRow): EditPetDraft {
   return {
     name: p.name,
@@ -127,6 +152,10 @@ function petToDraft(p: PetRow): EditPetDraft {
     coatColor: p.coat_color ?? '',
     practiceName: p.vet_practice_name ?? '',
     practicePhone: p.vet_practice_phone ?? '',
+    // E-86: Aquarium
+    aquariumType: (p as any).aquarium_type ?? null,
+    aquariumVolume: (p as any).aquarium_volume_liters?.toString() ?? '',
+    setupDate: (p as any).setup_date ?? null,
   };
 }
 
@@ -236,6 +265,7 @@ export default function EditPetScreen() {
            allergies = ?, pre_conditions = ?,
            specialist_vet_name = ?, specialist_vet_phone = ?,
            coat_color = ?, vet_practice_name = ?, vet_practice_phone = ?,
+           aquarium_type = ?, aquarium_volume_liters = ?, setup_date = ?,
            updated_at = ?, is_synced = 0
          WHERE id = ?`,
         [
@@ -258,6 +288,9 @@ export default function EditPetScreen() {
           form.coatColor.trim() || null,
           form.practiceName.trim() || null,
           form.practicePhone.trim() || null,
+          form.aquariumType || null,
+          form.aquariumVolume ? parseInt(form.aquariumVolume, 10) || null : null,
+          form.setupDate || null,
           ts,
           petId,
         ]
@@ -314,6 +347,36 @@ export default function EditPetScreen() {
               accessibilityLabel="Name"
             />
 
+            {isHabitat ? (
+              <>
+                {/* E-86: Aquarium-spezifische Felder */}
+                <FieldLabel>Beckentyp</FieldLabel>
+                <ChoiceChips
+                  options={['Süßwasser', 'Meerwasser', 'Brackwasser']}
+                  value={form.aquariumType ?? ''}
+                  onChange={(v) => update('aquariumType', v)}
+                />
+
+                <FieldLabel>Volumen (Liter)</FieldLabel>
+                <TextInput
+                  style={styles.input}
+                  value={form.aquariumVolume ?? ''}
+                  onChangeText={(t) => update('aquariumVolume', t)}
+                  placeholder="z. B. 120"
+                  placeholderTextColor={colors.textSecondary}
+                  keyboardType="number-pad"
+                  accessibilityLabel="Beckenvolumen in Liter"
+                />
+
+                <FieldLabel>Eingerichtet am</FieldLabel>
+                <DateField
+                  label="Datum des Beckenstarts"
+                  value={form.setupDate}
+                  onChange={(key) => update('setupDate', key)}
+                />
+              </>
+            ) : null}
+
             {!isHabitat ? (
               <>
                 <FieldLabel>Rasse / Art (optional)</FieldLabel>
@@ -355,17 +418,25 @@ export default function EditPetScreen() {
                   />
                 ) : null}
 
-                <FieldLabel>Chip-Nummer (optional)</FieldLabel>
-                <TextInput
-                  style={styles.input}
-                  value={form.chipNumber}
-                  onChangeText={(t) => update('chipNumber', t)}
-                  placeholder="15-stellige Transponder-Nummer"
-                  placeholderTextColor={colors.textSecondary}
-                  keyboardType="number-pad"
-                  accessibilityLabel="Chip-Nummer"
-                />
-                {chipHint ? <Text style={styles.warnText}>{chipHint}</Text> : null}
+                {/* E-87: Chip/Ring nur bei relevanten Tierarten */}
+                {!CHIP_HIDDEN_SPECIES.includes(species) ? (
+                  <>
+                    <FieldLabel>{getChipLabel(species)}</FieldLabel>
+                    <TextInput
+                      style={styles.input}
+                      value={form.chipNumber}
+                      onChangeText={(t) => update('chipNumber', t)}
+                      placeholder={getChipPlaceholder(species)}
+                      placeholderTextColor={colors.textSecondary}
+                      keyboardType={species === 'ziervogel' ? 'default' : 'number-pad'}
+                      accessibilityLabel={species === 'ziervogel' ? 'Ring- oder Chip-Nummer' : 'Chip-Nummer'}
+                    />
+                    {species === 'ziervogel' ? (
+                      <Hint>Die Ringnummer steht auf dem geschlossenen Fußring. Bei großen Papageien ggf. auch Chip.</Hint>
+                    ) : null}
+                    {chipHint ? <Text style={styles.warnText}>{chipHint}</Text> : null}
+                  </>
+                ) : null}
 
                 {/* E-84: Artspezifisches Label für Fellfarbe/Zeichnung; bei Aquarium ausblenden */}
                 {species !== 'aquarium' ? (

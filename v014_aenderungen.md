@@ -101,3 +101,24 @@ Unter dem Tiernamen wird die Rasse angezeigt wenn vorhanden, sonst die Tierart. 
 ### 6. App-Icon Badge (E-85)
 
 Badge-Zahl auf dem App-Icon = Anzahl überfälliger Aufgaben. Wie Instagram. Funktioniert lokal ohne Push.
+
+### 7. Aquarium-spezifische Felder (E-86)
+
+| Feld | Änderung |
+|:---|:---|
+| Geboren | → „Eingerichtet am" (Datum des Beckenstarts) |
+| Chip-Nummer | Ausblenden (Fische haben keine Chips) |
+| NEU: Beckentyp | Auswahl: Süßwasser / Meerwasser / Brackwasser |
+| NEU: Volumen | Zahlenfeld in Liter |
+| NEU: Besatz-Liste | Fischarten mit Anzahl (stock_list Modul implementieren) |
+
+### 8. Artspezifische Feld-Sichtbarkeit (E-87)
+
+| Tierart | Chip-Feld | Label/Platzhalter |
+|:---|:---|:---|
+| Hund, Katze, Frettchen, Kaninchen | Sichtbar | „Chip-Nummer" / „15-stellige Transponder-Nummer" |
+| Pferd | Sichtbar | „Chip-Nummer" / „15-stellig, steht im Equidenpass" |
+| Ziervogel | Sichtbar | **„Ring-/Chip-Nummer"** / „Ringnummer oder Transponder-Nummer" |
+| Reptil | Sichtbar | „Chip-Nummer" / „Optional – bei Meldepflicht empfohlen" |
+| Kleinnager (MS, Chin, Ratte, Maus, Degu, Hamster) | **Ausgeblendet** | – |
+| Aquarium | **Ausgeblendet** | – |

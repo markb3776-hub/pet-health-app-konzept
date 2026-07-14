@@ -59,6 +59,18 @@ Ein Tap auf den zentralen Plus-Knopf in der Navigation öffnet ein Overlay (Moda
 
 Für den MVP-Umfang ist der Flow "Dokument scannen" wie folgt definiert: Zunächst erscheint eine ehrliche Berechtigungs-Erklärung ("Wir brauchen die Kamera für das Foto."), gefolgt vom System-Dialog zur Kamera-Freigabe. Nach dem Auslösen im Kamera-Sucher ordnet der Nutzer das Foto einem Tier zu. Abschließend erfolgt eine Bestätigung mit dem Hinweis: "Foto gespeichert. Automatisches Auslesen kommt in einer späteren Version." Das Foto wird sicher in der Dokumenten-Ablage des Tieres gespeichert.
 
+### 2.4b. Stammdaten bearbeiten – Artspezifische Felder (E-86/E-87)
+
+**Aquarium (E-86):** Statt Rasse/Geschlecht/Geburtsdatum/Kastration/Chip/Fellfarbe zeigt der EditPetScreen: Beckentyp (Süßwasser/Meerwasser/Brackwasser als ChoiceChips), Volumen (Liter), Eingerichtet am (DateField). Die Tierakte zeigt „Eingerichtet am“ statt „Geboren“ und „Beckentyp / Volumen“ statt „Chip-Nummer“.
+
+**Chip-Nummer Sichtbarkeit (E-87):**
+- Hund, Katze, Frettchen, Kaninchen: Standard („Chip-Nummer“, 15-stellig)
+- Pferd: Platzhalter „15-stellig, steht im Equidenpass“
+- Reptil: Platzhalter „Optional – bei Meldepflicht empfohlen“
+- Ziervogel: Label „Ring-/Chip-Nummer“ + Hint „Ringnummer steht auf dem geschlossenen Fußring. Bei großen Papageien ggf. auch Chip.“
+- Meerschweinchen, Chinchilla, Ratte, Maus, Degu, Hamster: **Feld komplett ausgeblendet**
+- Aquarium: **Feld komplett ausgeblendet** (kein Chip bei Fischen)
+
 ### 2.5. Termine (Erinnerungs-Liste)
 
 Der Bereich "Termine" bietet eine chronologische Liste aller offenen und anstehenden Aufgaben. Diese Liste ist übersichtlich in die Kategorien **"Überfällig"** (rot), **"Bald fällig"** (≤14 Tage) und **"Geplant"** (>14 Tage) gruppiert (E-82). Die frühere Gruppe "Demnächst" wurde abgeschafft, da sie bei Terminen die Monate entfernt liegen irreführend war. Um Verwechslungen in Mehrtier-Haushalten auszuschließen, zeigt jeder Eintrag den Tier-Namen als **eigene Zeile oberhalb** des Aufgabentexts (E-81) sowie die gewählte Tier-Farbe. Die Bestätigung einer Aufgabe erfolgt effizient über eine Checkbox direkt auf dem Listeneintrag (Ein-Tap-Bestätigung).

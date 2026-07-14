@@ -35,7 +35,7 @@ Die Struktur (Mehrfach-Zeiten, Erinnerung, Timeline, Sitter-Zettel) passt für a
 | Ziervogel | Krallen-/Schnabelkontrolle, Käfig-/Volierenreinigung, Bade-/Sprühgelegenheit |
 | Reptil | UV-Lampen-Wechsel (Leistungsverlust nach 6–12 Monaten — klassisch vergessene Aufgabe!), Terrarienreinigung, Häutungskontrolle, Wasserbecken |
 | Pferd | Hufpflege/Hufschmied (alle 6–8 Wochen), Fellwechsel-Pflege, Weidepflege-Kontrolle, Equidenpass-Kontrolle. **Notfallpass:** Eigener Block (E-80) mit Equidenpass-Nr., Abzeichen, Brand, Kolik-Vorgeschichte, Kotprobe/EpG, geschätztes Gewicht, Stallkontakt, Hufschmied, Haltungsform |
-| Aquarium | Teilwasserwechsel (wöchentlich), Filterreinigung, Wasserwerte messen, Scheiben reinigen |
+| Aquarium | Teilwasserwechsel (wöchentlich), Filterreinigung, Wasserwerte messen, Scheiben reinigen. **Stammdaten (E-86):** Beckentyp (Süß/Meer/Brackwasser), Volumen (Liter), Einrichtungsdatum statt Geburtsdatum; kein Chip-Feld. **Besatz:** Fischarten mit Anzahl erfassbar (Modul stock_list, noch nicht implementiert). |
 
 Das Saisonfenster ist ebenfalls artübergreifend nützlich: Fliegenmaden-Kontrolle beim Kaninchen (Mai–September), Weidegang-Aufgaben beim Pferd (Saison), Winterruhe-Vorbereitung bei Landschildkröten (Reptil, Oktober), Mauser-Beobachtung beim Ziervogel.
 
