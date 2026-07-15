@@ -41,6 +41,7 @@ import ObservationEntryScreen from '../screens/entries/ObservationEntryScreen';
 import IncidentEntryScreen from '../screens/entries/IncidentEntryScreen';
 import VaccinationEntryScreen from '../screens/entries/VaccinationEntryScreen';
 import MedicationEntryScreen from '../screens/entries/MedicationEntryScreen';
+import FecalSampleEntryScreen from '../screens/entries/FecalSampleEntryScreen';
 import DocumentCaptureScreen from '../screens/entries/DocumentCaptureScreen';
 import EditPetScreen from '../screens/EditPetScreen';
 import ManagePetsScreen from '../screens/ManagePetsScreen';
@@ -60,6 +61,7 @@ export type HomeStackParamList = {
   ImpfungEintragen: { petId?: string } | undefined;
   MedikamentEintragen: { petId?: string } | undefined;
   DokumentAblegen: { petId?: string } | undefined;
+  KotprobeEintragen: { petId?: string } | undefined;
   StammdatenBearbeiten: { petId: string };
   TiereVerwalten: undefined;
   Notfallpass: { petId?: string } | undefined;
@@ -93,6 +95,7 @@ const CAPTURE_ROUTE: Record<CaptureAction, keyof HomeStackParamList> = {
   vorfall: 'VorfallEintragen',
   impfung: 'ImpfungEintragen',
   medikament: 'MedikamentEintragen',
+  kotprobe: 'KotprobeEintragen',
 };
 
 // ---------- Tab-interne Stacks ----------
@@ -136,6 +139,11 @@ function HomeStackScreen() {
         name="MedikamentEintragen"
         component={MedicationEntryScreen}
         options={{ title: 'Medikament & Pflege' }}
+      />
+      <HomeStack.Screen
+        name="KotprobeEintragen"
+        component={FecalSampleEntryScreen}
+        options={{ title: 'Kotprobe erfassen' }}
       />
       <HomeStack.Screen
         name="DokumentAblegen"

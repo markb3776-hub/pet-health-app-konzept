@@ -113,8 +113,8 @@ class EmergencyForegroundService : Service() {
     }
 
     private fun buildNotification(): Notification {
-        // Intent: Tippe auf Notification -> App oeffnet sich mit Notfallpass
-        val openIntent = Intent(this, MainActivity::class.java).apply {
+        // Intent: Tippe auf Notification -> LockScreenActivity (E-72: zeigt auch auf Sperrbildschirm)
+        val openIntent = Intent(this, LockScreenActivity::class.java).apply {
             action = "de.simplypet.app.OPEN_EMERGENCY"
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }

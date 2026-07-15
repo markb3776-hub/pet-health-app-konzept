@@ -43,14 +43,18 @@
 - [x] E-87: Ziervogel: Ring-/Chip-Nummer + Hint (Fußring)
 - [x] E-87: Reptil/Pferd: artspezifische Platzhalter für Chip-Feld
 
+## Phase 10 (15.07.2026 – v0.1.5) – ERLEDIGT:
+- [x] HomeScreen: Bereits FlatList (war schon in v0.1.2 umgebaut – bestätigt)
+- [x] Locale-sichere Datumsformatierung: backupService.ts gefixt (TT.MM.JJJJ)
+- [x] useEntryForm.ts: Auto-Backup nach Save korrekt implementiert (Zeile 114-120)
+- [x] E-72: Show-on-Lock-Screen (plugins/withShowOnLockScreen.js + ForegroundService Intent)
+- [x] E-88: EditPetScreen Pferde-Eingabefelder (Equidenpass-Nr., Haltungsform, Gewicht, Kolik, Stall, Hufschmied)
+- [x] E-89: Kotprobe-Erfassungstyp (FecalSampleEntryScreen, EpG-Wert, CaptureSheet, Navigation)
+- [x] Version bump: app.json 0.1.5 / versionCode 5
+
 ## NOCH OFFEN:
-- [ ] HomeScreen: ScrollView → FlatList für Tier-Kacheln (RAM-Schutz Nr. 25)
-- [ ] Locale-sichere Datumsformatierung in MoreScreen (toLocaleDateString → manuelles Format)
-- [ ] useEntryForm.ts: Auto-Backup nach Save prüfen (wurde in App.tsx referenziert)
-- [ ] EditPetScreen: Eingabefelder für Pferde-Felder (Equidenpass-Nr., Stallkontakt, Hufschmied etc.)
-- [ ] Kotprobe als eigener Erfassungstyp (record_type = 'Kotprobe' mit EpG-Wert)
 - [ ] Quality-Check durchführen
-- [ ] APK bauen
+- [ ] APK bauen (wartet auf Nutzer-GO)
 
 ## TESTER-FEEDBACK (eingearbeitet):
 - "Fotos aus Galerie nicht aufrufbar" → Android 13+ Fix via shared Helper

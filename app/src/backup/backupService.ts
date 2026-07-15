@@ -236,7 +236,8 @@ export async function importBackup(): Promise<boolean> {
     }
 
     return new Promise((resolve) => {
-      const dateStr = new Date(backup.created_at).toLocaleDateString('de-DE');
+      const d = new Date(backup.created_at);
+      const dateStr = `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}.${d.getFullYear()}`;
       const numStr = backup.backup_number
         ? ` (Nr. ${backup.backup_number})`
         : '';

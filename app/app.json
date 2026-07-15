@@ -2,13 +2,13 @@
   "expo": {
     "name": "simplyPet",
     "slug": "simplypet",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "android": {
       "package": "de.simplypet.app",
-      "versionCode": 4,
+      "versionCode": 5,
       "adaptiveIcon": {
         "backgroundColor": "#F7F5F0",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -63,7 +63,8 @@
       "./plugins/withAndroidShortcuts",
       "./plugins/withForegroundService",
       "./plugins/withForegroundServiceBridge",
-      "./plugins/withRegisterServicePackage"
+      "./plugins/withRegisterServicePackage",
+      "./plugins/withShowOnLockScreen"
     ]
   }
 }

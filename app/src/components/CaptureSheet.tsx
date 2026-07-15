@@ -26,7 +26,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
-export type CaptureAction = 'foto' | 'gewicht' | 'notiz' | 'vorfall' | 'impfung' | 'medikament';
+export type CaptureAction = 'foto' | 'gewicht' | 'notiz' | 'vorfall' | 'impfung' | 'medikament' | 'kotprobe';
 
 const CAPTURE_OPTIONS: { key: CaptureAction; label: string; hint: string }[] = [
   {
@@ -58,6 +58,11 @@ const CAPTURE_OPTIONS: { key: CaptureAction; label: string; hint: string }[] = [
     key: 'medikament',
     label: 'Medikament oder Pflege anlegen',
     hint: 'Dauermedikation, Pflege-Aufgaben, Vorerkrankungen und Allergien – mit Erinnerung, wenn du magst.',
+  },
+  {
+    key: 'kotprobe',
+    label: 'Kotprobe (Pferd)',
+    hint: 'EpG-Wert aus dem Laborbefund eintragen – für die selektive Entwurmung.',
   },
 ];
 

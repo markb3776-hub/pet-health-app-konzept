@@ -61,6 +61,7 @@ interface HealthRecordRow {
   photo_uri: string | null;
   created_at: string;
   updated_at?: string;
+  epg_value: number | null;
 }
 
 interface VaccinationRow {
@@ -104,6 +105,7 @@ const RECORD_TYPE_LABELS: Record<string, string> = {
   Wasserwert: 'Wasserwert',
   Vorfall: 'Vorfall',
   Medikamentengabe: 'Medikament gegeben',
+  Kotprobe: 'Kotprobe (EpG)',
 };
 
 /** Vorfall-Eintraege speichern strukturierte Angaben als JSON im notes-Feld. */
@@ -168,7 +170,7 @@ export default function PetFileScreen() {
           [petId]
         );
         const recs = await db.getAllAsync<HealthRecordRow>(
-          `SELECT id, record_type, date, value, unit, notes, photo_uri, created_at, updated_at
+          `SELECT id, record_type, date, value, unit, notes, photo_uri, created_at, updated_at, epg_value
            FROM health_records WHERE pet_id = ? AND deleted_at IS NULL`,
           [petId]
         );
@@ -584,7 +586,10 @@ export default function PetFileScreen() {
             records.map((r) => {
               const isIncident = r.record_type === 'Vorfall';
               const incident = isIncident ? parseIncidentNotes(r.notes) : null;
-              const label = `${RECORD_TYPE_LABELS[r.record_type] ?? r.record_type}${r.value != null ? `: ${String(r.value).replace('.', ',')} ${r.unit ?? ''}`.trimEnd() : ''}`;
+              const isKotprobe = r.record_type === 'Kotprobe';
+              const label = isKotprobe && r.epg_value != null
+                ? `Kotprobe: ${r.epg_value} EpG`
+                : `${RECORD_TYPE_LABELS[r.record_type] ?? r.record_type}${r.value != null ? `: ${String(r.value).replace('.', ',')} ${r.unit ?? ''}`.trimEnd() : ''}`;
               return (
                 <Pressable
                   key={r.id}

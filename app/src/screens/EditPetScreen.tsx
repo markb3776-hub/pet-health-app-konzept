@@ -63,6 +63,16 @@ interface PetRow {
   vet_practice_phone: string | null;
   allergies: string | null;
   pre_conditions: string | null;
+  // E-80: Pferde-spezifische Felder (Migration 005)
+  equine_pass_number: string | null;
+  equine_housing_type: string | null;
+  equine_colic_history: string | null;
+  equine_estimated_weight_kg: number | null;
+  equine_stable_name: string | null;
+  equine_stable_phone: string | null;
+  equine_box_number: string | null;
+  equine_farrier_name: string | null;
+  equine_farrier_phone: string | null;
 }
 
 interface EditPetDraft {
@@ -87,10 +97,21 @@ interface EditPetDraft {
   aquariumType: string | null;
   aquariumVolume: string;
   setupDate: string | null;
+  // E-80: Pferde-spezifisch
+  equinePassNumber: string;
+  equineHousingType: string | null;
+  equineColicHistory: string;
+  equineEstimatedWeight: string;
+  equineStableName: string;
+  equineStablePhone: string;
+  equineBoxNumber: string;
+  equineFarrierName: string;
+  equineFarrierPhone: string;
 }
 
 const GENDER_OPTIONS = ['Männlich', 'Weiblich', 'Unbekannt'];
 const CASTRATION_OPTIONS = ['Kastriert', 'Sterilisiert', 'Nein', 'Unbekannt'];
+const EQUINE_HOUSING_OPTIONS = ['Box', 'Offenstall', 'Weide', 'Paddock'];
 
 /** E-84: Artspezifisches Label für Fellfarbe/Zeichnung */
 function getCoatLabel(species: string): string {
@@ -156,6 +177,16 @@ function petToDraft(p: PetRow): EditPetDraft {
     aquariumType: (p as any).aquarium_type ?? null,
     aquariumVolume: (p as any).aquarium_volume_liters?.toString() ?? '',
     setupDate: (p as any).setup_date ?? null,
+    // E-80: Pferde
+    equinePassNumber: p.equine_pass_number ?? '',
+    equineHousingType: p.equine_housing_type ?? null,
+    equineColicHistory: p.equine_colic_history ?? '',
+    equineEstimatedWeight: p.equine_estimated_weight_kg?.toString() ?? '',
+    equineStableName: p.equine_stable_name ?? '',
+    equineStablePhone: p.equine_stable_phone ?? '',
+    equineBoxNumber: p.equine_box_number ?? '',
+    equineFarrierName: p.equine_farrier_name ?? '',
+    equineFarrierPhone: p.equine_farrier_phone ?? '',
   };
 }
 
@@ -266,6 +297,10 @@ export default function EditPetScreen() {
            specialist_vet_name = ?, specialist_vet_phone = ?,
            coat_color = ?, vet_practice_name = ?, vet_practice_phone = ?,
            aquarium_type = ?, aquarium_volume_liters = ?, setup_date = ?,
+           equine_pass_number = ?, equine_housing_type = ?,
+           equine_colic_history = ?, equine_estimated_weight_kg = ?,
+           equine_stable_name = ?, equine_stable_phone = ?,
+           equine_box_number = ?, equine_farrier_name = ?, equine_farrier_phone = ?,
            updated_at = ?, is_synced = 0
          WHERE id = ?`,
         [
@@ -291,6 +326,15 @@ export default function EditPetScreen() {
           form.aquariumType || null,
           form.aquariumVolume ? parseInt(form.aquariumVolume, 10) || null : null,
           form.setupDate || null,
+          form.equinePassNumber.trim() || null,
+          form.equineHousingType || null,
+          form.equineColicHistory.trim() || null,
+          form.equineEstimatedWeight ? parseFloat(form.equineEstimatedWeight) || null : null,
+          form.equineStableName.trim() || null,
+          form.equineStablePhone.trim() || null,
+          form.equineBoxNumber.trim() || null,
+          form.equineFarrierName.trim() || null,
+          form.equineFarrierPhone.trim() || null,
           ts,
           petId,
         ]
@@ -452,6 +496,103 @@ export default function EditPetScreen() {
                     />
                     <Hint>Erscheint auf dem Notfall-Pass – hilft, dein Tier eindeutig zu erkennen.</Hint>
                   </>
+                ) : null}
+
+                {/* E-80: Pferde-spezifische Felder */}
+                {species === 'pferd' ? (
+                  <View style={styles.equineSection}>
+                    <Text style={styles.healthSectionTitle}>Pferde-Daten</Text>
+
+                    <FieldLabel>Equidenpass-Nr. (optional)</FieldLabel>
+                    <TextInput
+                      style={styles.input}
+                      value={form.equinePassNumber}
+                      onChangeText={(t) => update('equinePassNumber', t)}
+                      placeholder="Nummer aus dem Equidenpass (EU-Pflichtdokument)"
+                      placeholderTextColor={colors.textSecondary}
+                      accessibilityLabel="Equidenpass-Nummer"
+                    />
+                    <Hint>Steht auf der ersten Seite des Equidenpasses (EU-Verordnung 2015/262).</Hint>
+
+                    <FieldLabel>Haltungsform</FieldLabel>
+                    <ChoiceChips
+                      options={EQUINE_HOUSING_OPTIONS}
+                      value={form.equineHousingType}
+                      onChange={(v) => update('equineHousingType', v)}
+                    />
+
+                    <FieldLabel>Geschätztes Gewicht (kg, optional)</FieldLabel>
+                    <TextInput
+                      style={styles.input}
+                      value={form.equineEstimatedWeight}
+                      onChangeText={(t) => update('equineEstimatedWeight', t)}
+                      placeholder="z. B. 520"
+                      placeholderTextColor={colors.textSecondary}
+                      keyboardType="number-pad"
+                      accessibilityLabel="Geschätztes Gewicht in Kilogramm"
+                    />
+                    <Hint>Per Maßband geschätzt – wichtig für die Dosierung von Wurmkuren und Medikamenten.</Hint>
+
+                    <FieldLabel>Kolik-Vorgeschichte (optional)</FieldLabel>
+                    <TextInput
+                      style={[styles.input, styles.multiline]}
+                      value={form.equineColicHistory}
+                      onChangeText={(t) => update('equineColicHistory', t)}
+                      placeholder="z. B. Kolik 2023, OP nötig – oder „keine“"
+                      placeholderTextColor={colors.textSecondary}
+                      multiline
+                      accessibilityLabel="Kolik-Vorgeschichte"
+                    />
+                    <Hint>Erscheint auf dem Notfall-Pass – für den Tierarzt im Notfall entscheidend.</Hint>
+
+                    <FieldLabel>Stallkontakt (optional)</FieldLabel>
+                    <TextInput
+                      style={styles.input}
+                      value={form.equineStableName}
+                      onChangeText={(t) => update('equineStableName', t)}
+                      placeholder="Name des Stalls / Pensionsbetrieb"
+                      placeholderTextColor={colors.textSecondary}
+                      accessibilityLabel="Stallname"
+                    />
+                    <TextInput
+                      style={[styles.input, { marginTop: spacing.s }]}
+                      value={form.equineStablePhone}
+                      onChangeText={(t) => update('equineStablePhone', t)}
+                      placeholder="Telefonnummer Stall"
+                      placeholderTextColor={colors.textSecondary}
+                      keyboardType="phone-pad"
+                      accessibilityLabel="Stall-Telefonnummer"
+                    />
+                    <TextInput
+                      style={[styles.input, { marginTop: spacing.s }]}
+                      value={form.equineBoxNumber}
+                      onChangeText={(t) => update('equineBoxNumber', t)}
+                      placeholder="Box-/Paddock-Nummer (optional)"
+                      placeholderTextColor={colors.textSecondary}
+                      accessibilityLabel="Box-Nummer"
+                    />
+                    <Hint>Erscheint auf dem Notfall-Pass – damit Helfer dein Pferd im Stall finden.</Hint>
+
+                    <FieldLabel>Hufschmied (optional)</FieldLabel>
+                    <TextInput
+                      style={styles.input}
+                      value={form.equineFarrierName}
+                      onChangeText={(t) => update('equineFarrierName', t)}
+                      placeholder="Name des Hufschmieds"
+                      placeholderTextColor={colors.textSecondary}
+                      accessibilityLabel="Hufschmied-Name"
+                    />
+                    <TextInput
+                      style={[styles.input, { marginTop: spacing.s }]}
+                      value={form.equineFarrierPhone}
+                      onChangeText={(t) => update('equineFarrierPhone', t)}
+                      placeholder="Telefonnummer Hufschmied"
+                      placeholderTextColor={colors.textSecondary}
+                      keyboardType="phone-pad"
+                      accessibilityLabel="Hufschmied-Telefonnummer"
+                    />
+                    <Hint>Erscheint auf dem Notfall-Pass – bei Hufproblemen oder Verletzungen hilfreich.</Hint>
+                  </View>
                 ) : null}
               </>
             ) : null}
@@ -653,6 +794,12 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   healthSection: {
+    marginTop: spacing.l,
+    paddingTop: spacing.m,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  equineSection: {
     marginTop: spacing.l,
     paddingTop: spacing.m,
     borderTopWidth: 1,
