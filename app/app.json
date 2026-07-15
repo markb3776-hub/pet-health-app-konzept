@@ -64,7 +64,8 @@
       "./plugins/withForegroundService",
       "./plugins/withForegroundServiceBridge",
       "./plugins/withRegisterServicePackage",
-      "./plugins/withShowOnLockScreen"
+      "./plugins/withShowOnLockScreen",
+      "./plugins/withApkName"
     ]
   }
 }
