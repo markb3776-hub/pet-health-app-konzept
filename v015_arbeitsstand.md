@@ -35,10 +35,10 @@
 
 ### Bugfix: Notification-Icon Fragezeichen (E-90):
 - Ursache: EmergencyForegroundService.kt verwendete `android.R.drawable.ic_menu_help` → Android zeigt generisches "?" in Statusleiste
-- Fix: Eigenes VectorDrawable `ic_notification.xml` erstellt (weißes Kreuz-Symbol auf transparentem Grund)
+- Fix: Monochrome-PNG des simplyPet-Logos (Pfote+Kreuz Silhouette) als ic_notification.png in alle DPI-Ordner
 - Plugin `withForegroundService.js` generiert das Drawable automatisch bei jedem Prebuild
 - EmergencyForegroundService.kt referenziert jetzt `R.drawable.ic_notification`
-- Geänderte Dateien: plugins/withForegroundService.js, android/app/src/main/res/drawable/ic_notification.xml, android/app/src/main/java/.../EmergencyForegroundService.kt
+- Geänderte Dateien: plugins/withForegroundService.js, android/app/src/main/res/drawable-*/ic_notification.png, android/app/src/main/java/.../EmergencyForegroundService.kt
 
 ### Version:
 - app.json: version "0.1.5", versionCode 5
