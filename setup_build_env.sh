@@ -7,6 +7,12 @@ set -e
 
 echo "=== simplyPet Build-Umgebung Setup ==="
 
+# 0. JDK sicherstellen (javac muss vorhanden sein)
+if [ ! -f "/usr/lib/jvm/java-21-openjdk-amd64/bin/javac" ]; then
+  echo "JDK installieren (javac fehlt)..."
+  sudo apt-get update -qq && sudo apt-get install -y openjdk-21-jdk-headless 2>&1 | tail -3
+fi
+
 # 1. JDK 17 installieren (falls nicht vorhanden)
 if [ ! -d "/usr/lib/jvm/java-17-openjdk-amd64" ] && [ ! -d "/usr/lib/jvm/jdk-17.0.11+9" ]; then
   echo "JDK 17 nicht gefunden – verwende JDK 21 als Fallback..."
