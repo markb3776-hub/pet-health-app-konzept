@@ -51,7 +51,8 @@
 - [x] E-88: EditPetScreen Pferde-Eingabefelder (Equidenpass-Nr., Haltungsform, Gewicht, Kolik, Stall, Hufschmied)
 - [x] E-89: Kotprobe-Erfassungstyp (FecalSampleEntryScreen, EpG-Wert, CaptureSheet, Navigation)
 - [x] Version bump: app.json 0.1.5 / versionCode 5
-- [x] E-90: Bugfix Notification-Icon Fragezeichen → eigenes ic_notification.xml (Kreuz-Symbol)
+- [x] E-90: Bugfix Notification-Icon → simplyPet-Pfote (Monochrome-PNG)
+- [x] E-91: Konsistenter APK-Dateiname simplyPet_v{version}.apk
 - [x] Quality-Check durchgeführt (8 Prüfpunkte bestanden)
 - [x] APK gebaut und ausgeliefert (15.07.2026)
 

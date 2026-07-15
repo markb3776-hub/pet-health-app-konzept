@@ -56,3 +56,4 @@
 | src/screens/PetFileScreen.tsx | HealthRecordRow + epg_value, SELECT + epg_value, RECORD_TYPE_LABELS + Kotprobe, Anzeige-Logik |
 | app.json | version 0.1.5, versionCode 5 |
 | plugins/withForegroundService.js | Icon-Fix: kopiert android-icon-monochrome.png als ic_notification.png in DPI-Ordner, referenziert R.drawable.ic_notification |
+| plugins/withApkName.js | **NEU** – setzt APK-Dateiname auf simplyPet_v{versionName}.apk |
