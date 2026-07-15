@@ -159,9 +159,9 @@ class EmergencyForegroundService : Service() {
       );
 
       // Notification Small-Icon: simplyPet-Pfote als PNG in alle DPI-Ordner kopieren
-      // Quelle: assets/android-icon-monochrome.png (weisse Silhouette auf transparent)
+      // Quelle: assets/notification-icon.png (zugeschnitten, ohne Adaptive-Icon-Padding)
       const sharp = (() => { try { return require('sharp'); } catch { return null; } })();
-      const srcIcon = path.join(cfg.modRequest.projectRoot, 'assets', 'android-icon-monochrome.png');
+      const srcIcon = path.join(cfg.modRequest.projectRoot, 'assets', 'notification-icon.png');
       const resBase = path.join(cfg.modRequest.platformProjectRoot, 'app', 'src', 'main', 'res');
       const dpiSizes = [
         ['drawable-mdpi', 24],
