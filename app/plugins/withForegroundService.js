@@ -158,10 +158,9 @@ class EmergencyForegroundService : Service() {
         'utf-8'
       );
 
-      // Notification Small-Icon: simplyPet-Pfote als PNG in alle DPI-Ordner kopieren
-      // Quelle: assets/notification-icon.png (zugeschnitten, ohne Adaptive-Icon-Padding)
-      const sharp = (() => { try { return require('sharp'); } catch { return null; } })();
-      const srcIcon = path.join(cfg.modRequest.projectRoot, 'assets', 'notification-icon.png');
+      // Notification Small-Icon: Vorskalierte DPI-PNGs aus assets/notification-icons/ kopieren
+      // Korrekte Größen: mdpi=24, hdpi=36, xhdpi=48, xxhdpi=72, xxxhdpi=96
+      const iconsDir = path.join(cfg.modRequest.projectRoot, 'assets', 'notification-icons');
       const resBase = path.join(cfg.modRequest.platformProjectRoot, 'app', 'src', 'main', 'res');
       const dpiSizes = [
         ['drawable-mdpi', 24],
@@ -170,12 +169,12 @@ class EmergencyForegroundService : Service() {
         ['drawable-xxhdpi', 72],
         ['drawable-xxxhdpi', 96],
       ];
-      if (fs.existsSync(srcIcon)) {
-        for (const [folder, size] of dpiSizes) {
-          const dir = path.join(resBase, folder);
-          if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-          // Fallback: Kopiere das 512px Original – Android skaliert es selbst herunter
-          fs.copyFileSync(srcIcon, path.join(dir, 'ic_notification.png'));
+      for (const [folder, size] of dpiSizes) {
+        const src = path.join(iconsDir, `ic_notification_${size}.png`);
+        const dir = path.join(resBase, folder);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        if (fs.existsSync(src)) {
+          fs.copyFileSync(src, path.join(dir, 'ic_notification.png'));
         }
       }
 
