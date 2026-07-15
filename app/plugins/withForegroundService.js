@@ -136,7 +136,7 @@ class EmergencyForegroundService : Service() {
         return builder
             .setContentTitle("simplyPet Notfallpass")
             .setContentText("Tippe f\\u00fcr sofortigen Zugriff auf den Notfallpass.")
-            .setSmallIcon(android.R.drawable.ic_menu_help)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(pendingIntent)
             .setOngoing(true)       // NICHT wegwischbar
             .setAutoCancel(false)   // Bleibt nach Antippen stehen
@@ -155,6 +155,35 @@ class EmergencyForegroundService : Service() {
       fs.writeFileSync(
         path.join(packagePath, 'EmergencyForegroundService.kt'),
         serviceCode,
+        'utf-8'
+      );
+
+      // Notification Small-Icon als Vector Drawable erstellen (weisses Kreuz auf transparentem Grund)
+      const drawablePath = path.join(
+        cfg.modRequest.platformProjectRoot,
+        'app',
+        'src',
+        'main',
+        'res',
+        'drawable'
+      );
+      if (!fs.existsSync(drawablePath)) {
+        fs.mkdirSync(drawablePath, { recursive: true });
+      }
+      const iconXml = `<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M19,3H5C3.9,3 3,3.9 3,5v14c0,1.1 0.9,2 2,2h14c1.1,0 2,-0.9 2,-2V5C21,3.9 20.1,3 19,3zM17,13h-4v4h-2v-4H7v-2h4V7h2v4h4V13z"/>
+</vector>
+`;
+      fs.writeFileSync(
+        path.join(drawablePath, 'ic_notification.xml'),
+        iconXml,
         'utf-8'
       );
 
