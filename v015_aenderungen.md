@@ -41,6 +41,7 @@
 
 ## Fixes
 - backupService.ts: Locale-Datumsformatierung gefixt (TT.MM.JJJJ statt toLocaleDateString)
+- **E-90: Notification-Icon Fragezeichen in Statusleiste** – `EmergencyForegroundService.kt` verwendete `android.R.drawable.ic_menu_help` (Androids generisches "?"-Symbol). Ersetzt durch eigenes VectorDrawable `ic_notification.xml` (weißes Kreuz auf transparentem Grund). Plugin `withForegroundService.js` generiert das Icon automatisch bei Prebuild.
 
 ## Version
 - app.json: version "0.1.5", versionCode 5
@@ -54,3 +55,4 @@
 | src/navigation/AppNavigator.tsx | Import FecalSampleEntryScreen, Route KotprobeEintragen, CAPTURE_ROUTE + kotprobe |
 | src/screens/PetFileScreen.tsx | HealthRecordRow + epg_value, SELECT + epg_value, RECORD_TYPE_LABELS + Kotprobe, Anzeige-Logik |
 | app.json | version 0.1.5, versionCode 5 |
+| plugins/withForegroundService.js | Icon-Fix: generiert ic_notification.xml, referenziert R.drawable.ic_notification statt android.R.drawable.ic_menu_help |

@@ -12,6 +12,7 @@
 7. ✅ Auto-Backup nach Save: useEntryForm.ts Zeile 114-120 korrekt implementiert
 8. ✅ EditPetScreen Pferde-Felder: Equidenpass-Nr., Haltungsform (Box/Offenstall/Weide/Paddock), geschätztes Gewicht (kg), Kolik-Vorgeschichte, Stallkontakt (Name/Tel/Box), Hufschmied (Name/Tel) – nur bei species === 'pferd' sichtbar
 9. ✅ Kotprobe-Erfassungstyp: FecalSampleEntryScreen.tsx (NEU), record_type = 'Kotprobe', EpG-Wert als Zahlenfeld, nur für Pferde, im CaptureSheet als Option, in Navigation registriert, PetFileScreen zeigt EpG-Wert an
+10. ✅ Bugfix E-90: Notification-Icon in Statusleiste war Fragezeichen → eigenes ic_notification.xml (Kreuz-Symbol)
 
 ## TECHNISCHE DETAILS:
 
@@ -31,6 +32,13 @@
 - RECORD_TYPE_LABELS: Kotprobe → 'Kotprobe (EpG)'
 - Nur Pferde im PetPicker (horsePets Filter)
 - Draft-System: draftKey 'entry_fecal_sample'
+
+### Bugfix: Notification-Icon Fragezeichen (E-90):
+- Ursache: EmergencyForegroundService.kt verwendete `android.R.drawable.ic_menu_help` → Android zeigt generisches "?" in Statusleiste
+- Fix: Eigenes VectorDrawable `ic_notification.xml` erstellt (weißes Kreuz-Symbol auf transparentem Grund)
+- Plugin `withForegroundService.js` generiert das Drawable automatisch bei jedem Prebuild
+- EmergencyForegroundService.kt referenziert jetzt `R.drawable.ic_notification`
+- Geänderte Dateien: plugins/withForegroundService.js, android/app/src/main/res/drawable/ic_notification.xml, android/app/src/main/java/.../EmergencyForegroundService.kt
 
 ### Version:
 - app.json: version "0.1.5", versionCode 5

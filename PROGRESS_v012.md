@@ -51,10 +51,12 @@
 - [x] E-88: EditPetScreen Pferde-Eingabefelder (Equidenpass-Nr., Haltungsform, Gewicht, Kolik, Stall, Hufschmied)
 - [x] E-89: Kotprobe-Erfassungstyp (FecalSampleEntryScreen, EpG-Wert, CaptureSheet, Navigation)
 - [x] Version bump: app.json 0.1.5 / versionCode 5
+- [x] E-90: Bugfix Notification-Icon Fragezeichen → eigenes ic_notification.xml (Kreuz-Symbol)
+- [x] Quality-Check durchgeführt (8 Prüfpunkte bestanden)
+- [x] APK gebaut und ausgeliefert (15.07.2026)
 
 ## NOCH OFFEN:
-- [ ] Quality-Check durchführen
-- [ ] APK bauen (wartet auf Nutzer-GO)
+- [ ] Tester-Feedback auswerten (Testpersonen gesucht)
 
 ## TESTER-FEEDBACK (eingearbeitet):
 - "Fotos aus Galerie nicht aufrufbar" → Android 13+ Fix via shared Helper
