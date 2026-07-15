@@ -12,7 +12,7 @@
 7. ✅ Auto-Backup nach Save: useEntryForm.ts Zeile 114-120 korrekt implementiert
 8. ✅ EditPetScreen Pferde-Felder: Equidenpass-Nr., Haltungsform (Box/Offenstall/Weide/Paddock), geschätztes Gewicht (kg), Kolik-Vorgeschichte, Stallkontakt (Name/Tel/Box), Hufschmied (Name/Tel) – nur bei species === 'pferd' sichtbar
 9. ✅ Kotprobe-Erfassungstyp: FecalSampleEntryScreen.tsx (NEU), record_type = 'Kotprobe', EpG-Wert als Zahlenfeld, nur für Pferde, im CaptureSheet als Option, in Navigation registriert, PetFileScreen zeigt EpG-Wert an
-10. ✅ Bugfix E-90: Notification-Icon in Statusleiste war Fragezeichen → simplyPet-Pfote (Monochrome-PNG)
+10. ✅ Bugfix E-90: Notification-Icon in Statusleiste war Fragezeichen → simplyPet-Pfote (korrekt skalierte DPI-PNGs 24-96px)
 11. ✅ E-91: Konsistenter APK-Dateiname: simplyPet_v{version}.apk (Plugin withApkName.js)
 
 ## TECHNISCHE DETAILS:
