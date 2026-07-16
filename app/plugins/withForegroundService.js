@@ -136,7 +136,8 @@ class EmergencyForegroundService : Service() {
         return builder
             .setContentTitle("simplyPet Notfallpass")
             .setContentText("Tippe f\\u00fcr sofortigen Zugriff auf den Notfallpass.")
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(0xFF2E9E83.toInt())
             .setContentIntent(pendingIntent)
             .setOngoing(true)       // NICHT wegwischbar
             .setAutoCancel(false)   // Bleibt nach Antippen stehen
