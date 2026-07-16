@@ -42,6 +42,7 @@
 ## Fixes
 - backupService.ts: Locale-Datumsformatierung gefixt (TT.MM.JJJJ statt toLocaleDateString)
 - **E-90: Notification-Icon Fragezeichen in Statusleiste** – `EmergencyForegroundService.kt` verwendete `android.R.drawable.ic_menu_help` (Androids generisches "?"-Symbol). Ersetzt durch Monochrome-PNG des simplyPet-Logos (Pfote+Kreuz Silhouette) als ic_notification.png in alle DPI-Ordner. Plugin `withForegroundService.js` generiert das Icon automatisch bei Prebuild.
+- **E-92: Notification-Icon korrekte Lösung** – `R.drawable.ic_notification` (Monochrome-Pfote) + `setColor(0xFF2E9E83)`. Samsung OneUI 8.5 (Android 16) zeigt grüne Pfote, Stock-Android 15 (ZTE/Tablet) zeigt weiße Silhouette. Siehe TESTGERAETE_MATRIX.md für Details.
 
 ## Version
 - app.json: version "0.1.5", versionCode 5
@@ -55,5 +56,7 @@
 | src/navigation/AppNavigator.tsx | Import FecalSampleEntryScreen, Route KotprobeEintragen, CAPTURE_ROUTE + kotprobe |
 | src/screens/PetFileScreen.tsx | HealthRecordRow + epg_value, SELECT + epg_value, RECORD_TYPE_LABELS + Kotprobe, Anzeige-Logik |
 | app.json | version 0.1.5, versionCode 5 |
-| plugins/withForegroundService.js | Icon-Fix: kopiert android-icon-monochrome.png als ic_notification.png in DPI-Ordner, referenziert R.drawable.ic_notification |
+| plugins/withForegroundService.js | E-92: setSmallIcon(R.drawable.ic_notification) + setColor(0xFF2E9E83), DPI-skalierte PNGs aus assets/notification-icons/ |
+| assets/notification-icons/*.png | **NEU** – Vorskalierte Notification-Icons (24/36/48/72/96px) |
+| TESTGERAETE_MATRIX.md | **NEU** – Geräte, OS-Versionen, Notification-Icon-Verhalten dokumentiert |
 | plugins/withApkName.js | **NEU** – setzt APK-Dateiname auf simplyPet_v{versionName}.apk |
