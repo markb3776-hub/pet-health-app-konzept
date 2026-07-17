@@ -1,66 +1,97 @@
 # Arbeitsanweisung: App-Bau / Update-Prozess
 
-> **PFLICHT** – Diese Anweisung gilt für JEDE Session, in der Code geändert oder eine APK gebaut wird.  
-> Erstellt: 11.07.2026 | Quelle: Nutzer-Ablaufplan (Samsung Notes)
+> **PFLICHT** – Diese Anweisung gilt für JEDE Session. Keine Ausnahmen.  
+> Erstellt: 11.07.2026 | Überarbeitet: 17.07.2026  
+> Grund der Überarbeitung: Credits-Verschwendung durch vergessenen Kontext verhindern.
 
 ---
 
-## Ablauf (strikt einzuhalten)
+## PHASE 0: SESSION-START (VOR ALLEM ANDEREN)
 
-### Phase 1: Rückmeldung & Besprechung
+> **DIESE PHASE IST NICHT OPTIONAL. SIE WIRD IMMER ZUERST AUSGEFÜHRT.**
 
-1. Nutzer gibt Feedback (Tester-Rückmeldung, eigene Beobachtungen, neue Wünsche)
-2. Gemeinsame Besprechung: Was wird umgesetzt? Was wird verworfen?
-3. **Kein Code ohne GO vom Nutzer.**
+1. **Repository klonen:** `gh repo clone markb3776-hub/pet-health-app-konzept simplypet_workspace`
+2. **Diese Datei lesen** (ARBEITSANWEISUNG_UPDATE_PROZESS.md)
+3. **INFRASTRUKTUR_UND_KONTEXT.md lesen** – enthält alles was bereits existiert, eingerichtet ist, funktioniert
+4. **ENTSCHEIDUNGSREGISTER.md lesen** – alle bisherigen Entscheidungen
+5. **v0XX_arbeitsstand.md lesen** – aktueller Stand, was offen ist
+6. **PROGRESS_v012.md lesen** – was in welcher Phase erledigt wurde
 
-### Phase 2: Dokumentation aktualisieren
+### VERBOTEN in Phase 0:
+- Code anfassen
+- Etwas vorschlagen was bereits existiert
+- Etwas bauen was schon eingerichtet ist
+- Irgendwas tun bevor alle oben genannten Dateien gelesen wurden
 
-4. Entscheidungsregister aktualisieren (neuer Eintrag mit Begründung + Datum)
-5. Änderungsdokument erstellen/aktualisieren (vXX_aenderungen.md)
-6. Auf GitHub speichern (Dokumentation VOR Code)
+---
 
-### Phase 3: Code aktualisieren
+## Phase 1: Rückmeldung & Besprechung
 
-7. **Frischer Clone aus GitHub** (sauberer Ausgangszustand)
-8. `npm install` (Abhängigkeiten sicherstellen)
-9. Code-Änderungen durchführen
-10. TypeScript-Check (`npx tsc --noEmit` – muss 0 Fehler haben)
-11. **Sofort auf GitHub speichern** (Sicherung – geht bei Absturz nichts verloren)
+7. Nutzer gibt Feedback (Tester-Rückmeldung, eigene Beobachtungen, neue Wünsche)
+8. Gemeinsame Besprechung: Was wird umgesetzt? Was wird verworfen?
+9. **Kein Code ohne GO vom Nutzer.**
 
-### Phase 4: GO abwarten
+---
 
-12. **GO vom Nutzer abwarten** – NICHT eigenständig mit dem Build beginnen
-13. Nutzer bestätigt explizit dass gebaut werden soll
+## Phase 2: Dokumentation aktualisieren
 
-### Phase 5: APK bauen
+10. Entscheidungsregister aktualisieren (neuer Eintrag mit Begründung + Datum)
+11. Änderungsdokument erstellen/aktualisieren (vXX_aenderungen.md)
+12. Auf GitHub speichern (Dokumentation VOR Code)
 
-14. Erst NACH dem GO wird gebaut
-15. `npx expo prebuild --platform android --no-install`
-16. `./gradlew assembleRelease`
-17. APK dem Nutzer übergeben
+---
+
+## Phase 3: Code aktualisieren
+
+13. Code-Änderungen durchführen
+14. TypeScript-Check (`./node_modules/.bin/tsc --noEmit` – muss 0 Fehler haben)
+15. **Sofort auf GitHub pushen** (Sicherung)
+
+---
+
+## Phase 4: GO abwarten
+
+16. **GO vom Nutzer abwarten** – NICHT eigenständig mit dem Build beginnen
+17. Nutzer bestätigt explizit dass gebaut werden soll
+
+---
+
+## Phase 5: APK bauen
+
+18. **APK wird über GitHub Actions gebaut** – NICHT in der Sandbox
+19. Push auf `main` triggert automatisch `.github/workflows/build-apk.yml`
+20. APK liegt als Artifact im GitHub Actions Run (30 Tage verfügbar)
+21. Alternativ: `gh workflow run build-apk.yml` für manuellen Trigger
+
+### NIEMALS in der Sandbox bauen:
+- Die Sandbox hat nicht genug RAM für Gradle (~2 GB vs. benötigte ~4 GB)
+- GitHub Actions hat 7 GB RAM – dort funktioniert es immer
+- Jeder Sandbox-Build-Versuch ist reine Credits-Verschwendung
 
 ---
 
 ## Verbote
 
+- **NIEMALS** APK in der Sandbox bauen (GitHub Actions existiert dafür)
 - **NIEMALS** APK bauen bevor Code auf GitHub liegt
 - **NIEMALS** APK bauen ohne explizites GO vom Nutzer
-- **NIEMALS** `rm -rf android` ohne vorher zu prüfen ob Code gesichert ist
 - **NIEMALS** Code ändern ohne vorherige Besprechung/GO
+- **NIEMALS** etwas vorschlagen was laut INFRASTRUKTUR_UND_KONTEXT.md bereits existiert
 - **NIEMALS** von Null anfangen wenn 80% schon existieren
+- **NIEMALS** Phase 0 überspringen
 
 ---
 
 ## Reihenfolge in einem Satz
 
-> **Besprechen → Dokumentieren → Aus GitHub holen → Ändern → Auf GitHub speichern → GO für Build abwarten → Dann erst bauen.**
+> **Kontext lesen → Besprechen → Dokumentieren → Ändern → Pushen → GO abwarten → GitHub Actions baut.**
 
 ---
 
 ## Hinweise für die Sandbox
 
-- Nach Sandbox-Reset: Alles aus GitHub holen (`gh repo clone`)
-- `node_modules` muss neu installiert werden (`npm install --legacy-peer-deps`)
-- Android SDK liegt unter `/home/ubuntu/android-sdk` (Setup-Script: `scripts/setup_build_env.sh`)
-- Java: `/usr/lib/jvm/jdk-17.0.11+9`
-- compileSdk: 36, targetSdk: 36, minSdk: 29
+- Nach Sandbox-Reset: `gh repo clone markb3776-hub/pet-health-app-konzept simplypet_workspace`
+- `node_modules`: `cd app && npm install`
+- TypeScript-Check: `cd app && ./node_modules/.bin/tsc --noEmit`
+- APK-Build: **GitHub Actions** (nicht lokal!)
+- Android SDK: nur für `expo prebuild` nötig, NICHT für den eigentlichen Build
