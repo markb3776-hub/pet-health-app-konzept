@@ -61,5 +61,5 @@
 | TESTGERAETE_MATRIX.md | **NEU** – Geräte, OS-Versionen, Notification-Icon-Verhalten dokumentiert |
 | plugins/withApkName.js | **NEU** – setzt APK-Dateiname auf simplyPet_v{versionName}.apk |
 
-64	## Offen (In Bearbeitung)
-65	- **E-93:** Backup-System Analyse und Lösungsfindung für "Noch keine Sicherung erstellt"-Bug und lokales Speichern unter "Dateien" (SAF). Warten auf GO).
+## Offen (In Bearbeitung)
+- **E-93:** Backup-System komplett überarbeiten (autoBackup überall, AsyncStorage-Status, SAF lokales Speichern, Import-Erweiterung).

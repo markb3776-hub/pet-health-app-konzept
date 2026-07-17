@@ -16,9 +16,7 @@
 11. ✅ E-91: Konsistenter APK-Dateiname: simplyPet_v{version}.apk (Plugin withApkName.js)
 
 ## OFFEN (E-93 Backup-Fixes):
-- ⏳ **Problemanalyse durchgeführt:** Ursachen für Backup-Bugs gefunden (siehe `E-93_Backup_Analyse.md`).
-- ⏳ **Lösungsvorschläge erarbeitet:** SAF & AsyncStorage als beste Lösung vorgeschlagen.
-- ⏳ **Warten auf Freigabe** durch den Nutzer, bevor der Code in `backupService.ts` und `MoreScreen.tsx` angepasst wird.
+- ⏳ **Code-Implementierung ausstehend:** autoBackup bei jeder Änderung, AsyncStorage-Status, SAF lokales Speichern, Import-Erweiterung.
 
 ## TECHNISCHE DETAILS:
 

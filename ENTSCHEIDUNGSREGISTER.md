@@ -146,9 +146,8 @@ Diese Punkte sind NICHT verhandelbar:
 - **Ergebnis:** Samsung OneUI → grüne Pfote, Stock-Android → weiße Pfoten-Silhouette
 - **Dokumentation:** TESTGERAETE_MATRIX.md mit allen Geräten, OS-Versionen und Verhalten erstellt
 
-149	### E-93: Backup-System Analyse und Lokales Speichern (17.07.2026)
-150	- **Problem 1:** Anzeige "Noch keine Sicherung erstellt" obwohl manuelles Backup auf Drive geteilt wurde. Ursache: Anzeige prüft nur `simplypet_auto_backup.simplypet`, manueller Export nutzt Datum-Namen und triggert kein Auto-Backup.
-151	- **Problem 2:** Backup-Anzeige verschwindet nach App-Update. Ursache: App-Updates (via APK) können in Expo den `documentDirectory` Cache/Speicher leeren, worin die Auto-Backup-Datei liegt.
-152	- **Feature-Wunsch:** Lokales Speichern unter "Dateien" auf dem Handy. Ursache: Bisher nur Share-Intent (Google Drive), kein nativer Dateipicker.
-153	- **Lösungsvorschlag 1 (Empfohlen):** Status in `AsyncStorage` speichern (überlebt Updates). Storage Access Framework (`expo-file-system/StorageAccessFramework`) für echtes lokales Speichern nutzen.
-154	- **Status:** Warten auf Freigabe durch Nutzer.
+### E-93: Backup-System komplett überarbeiten (17.07.2026)
+- **Problem 1:** Anzeige "Noch keine Sicherung erstellt" trotz Export. **Lösung:** `autoBackup()` wird ab sofort bei JEDER Datenänderung getriggert (Tier anlegen/bearbeiten/löschen, Einträge anlegen/bearbeiten/löschen). Nicht nur im shared Form-Hook.
+- **Problem 2:** Backup-Anzeige verschwindet nach App-Update (weil `documentDirectory` geleert wird). **Lösung:** Das Datum des letzten Backups wird persistent in `AsyncStorage` gespeichert (Key: `simplypet.last_backup_date`), was App-Updates überlebt.
+- **Problem 3:** Lokales Speichern unter "Dateien" auf dem Handy fehlte. **Lösung:** Der Export-Dialog bietet nun ZWEI Optionen: (1) Share-Intent (WhatsApp, Drive etc.) und (2) Lokal speichern via Storage Access Framework (`expo-file-system/StorageAccessFramework`), was den nativen Android "Speichern unter..."-Dialog öffnet.
+- **Problem 4:** Import-Button wusste nichts von lokalen Backups. **Lösung:** Import greift auf `DocumentPicker` zurück, der direkt lokale Dateien (auch aus dem SAF-Speicherort) findet und anbietet.
