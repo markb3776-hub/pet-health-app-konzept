@@ -145,3 +145,10 @@ Diese Punkte sind NICHT verhandelbar:
 - **Lösung:** `R.drawable.ic_notification` (dedizierte Monochrome-Pfote ohne Hintergrund) + `setColor(0xFF2E9E83)` für Akzentfarbe
 - **Ergebnis:** Samsung OneUI → grüne Pfote, Stock-Android → weiße Pfoten-Silhouette
 - **Dokumentation:** TESTGERAETE_MATRIX.md mit allen Geräten, OS-Versionen und Verhalten erstellt
+
+149	### E-93: Backup-System Analyse und Lokales Speichern (17.07.2026)
+150	- **Problem 1:** Anzeige "Noch keine Sicherung erstellt" obwohl manuelles Backup auf Drive geteilt wurde. Ursache: Anzeige prüft nur `simplypet_auto_backup.simplypet`, manueller Export nutzt Datum-Namen und triggert kein Auto-Backup.
+151	- **Problem 2:** Backup-Anzeige verschwindet nach App-Update. Ursache: App-Updates (via APK) können in Expo den `documentDirectory` Cache/Speicher leeren, worin die Auto-Backup-Datei liegt.
+152	- **Feature-Wunsch:** Lokales Speichern unter "Dateien" auf dem Handy. Ursache: Bisher nur Share-Intent (Google Drive), kein nativer Dateipicker.
+153	- **Lösungsvorschlag 1 (Empfohlen):** Status in `AsyncStorage` speichern (überlebt Updates). Storage Access Framework (`expo-file-system/StorageAccessFramework`) für echtes lokales Speichern nutzen.
+154	- **Status:** Warten auf Freigabe durch Nutzer.

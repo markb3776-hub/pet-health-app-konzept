@@ -1,8 +1,8 @@
-# v0.1.5 Arbeitsstand (15.07.2026)
+# v0.1.5 Arbeitsstand (17.07.2026)
 
-## STATUS: ✅ FERTIG – alle Aufgaben implementiert, TypeScript 0 Fehler, gepusht.
+## STATUS: ⚠️ IN BEARBEITUNG – Warten auf GO für E-93 (Backup-Fixes)
 
-## IMPLEMENTIERT:
+## IMPLEMENTIERT (Bisher):
 1. ✅ E-29/E-30/E-76: Tierakte-Einträge bearbeiten + löschen
 2. ✅ E-52: Low-Memory-Handling (registerLowMemoryHandler in App.tsx)
 3. ✅ E-72: Show-on-Lock-Screen (plugins/withShowOnLockScreen.js + ForegroundService Intent umgeleitet)
@@ -12,8 +12,13 @@
 7. ✅ Auto-Backup nach Save: useEntryForm.ts Zeile 114-120 korrekt implementiert
 8. ✅ EditPetScreen Pferde-Felder: Equidenpass-Nr., Haltungsform (Box/Offenstall/Weide/Paddock), geschätztes Gewicht (kg), Kolik-Vorgeschichte, Stallkontakt (Name/Tel/Box), Hufschmied (Name/Tel) – nur bei species === 'pferd' sichtbar
 9. ✅ Kotprobe-Erfassungstyp: FecalSampleEntryScreen.tsx (NEU), record_type = 'Kotprobe', EpG-Wert als Zahlenfeld, nur für Pferde, im CaptureSheet als Option, in Navigation registriert, PetFileScreen zeigt EpG-Wert an
-10. ✅ Bugfix E-90: Notification-Icon in Statusleiste war Fragezeichen → simplyPet-Pfote (korrekt skalierte DPI-PNGs 24-96px)
+10. ✅ Bugfix E-90/E-92: Notification-Icon in Statusleiste war Fragezeichen → simplyPet-Pfote (korrekt skalierte DPI-PNGs 24-96px + setColor(0xFF2E9E83))
 11. ✅ E-91: Konsistenter APK-Dateiname: simplyPet_v{version}.apk (Plugin withApkName.js)
+
+## OFFEN (E-93 Backup-Fixes):
+- ⏳ **Problemanalyse durchgeführt:** Ursachen für Backup-Bugs gefunden (siehe `E-93_Backup_Analyse.md`).
+- ⏳ **Lösungsvorschläge erarbeitet:** SAF & AsyncStorage als beste Lösung vorgeschlagen.
+- ⏳ **Warten auf Freigabe** durch den Nutzer, bevor der Code in `backupService.ts` und `MoreScreen.tsx` angepasst wird.
 
 ## TECHNISCHE DETAILS:
 
@@ -34,12 +39,10 @@
 - Nur Pferde im PetPicker (horsePets Filter)
 - Draft-System: draftKey 'entry_fecal_sample'
 
-### Bugfix: Notification-Icon Fragezeichen (E-90):
-- Ursache: EmergencyForegroundService.kt verwendete `android.R.drawable.ic_menu_help` → Android zeigt generisches "?" in Statusleiste
-- Fix: Monochrome-PNG des simplyPet-Logos (Pfote+Kreuz Silhouette) als ic_notification.png in alle DPI-Ordner
-- Plugin `withForegroundService.js` generiert das Drawable automatisch bei jedem Prebuild
-- EmergencyForegroundService.kt referenziert jetzt `R.drawable.ic_notification`
-- Geänderte Dateien: plugins/withForegroundService.js, android/app/src/main/res/drawable-*/ic_notification.png, android/app/src/main/java/.../EmergencyForegroundService.kt
+### Bugfix: Notification-Icon (E-90 / E-92):
+- Ursache: `android.R.drawable.ic_menu_help` und fehlende Hintergrund-Maske
+- Fix: `R.drawable.ic_notification` (Monochrome-Pfote ohne Hintergrund) + `setColor(0xFF2E9E83)` (simplyPet-Grün)
+- Dokumentiert in `TESTGERAETE_MATRIX.md`
 
 ### Version:
 - app.json: version "0.1.5", versionCode 5
