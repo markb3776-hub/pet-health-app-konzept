@@ -342,6 +342,8 @@ export default function EditPetScreen() {
       setSaved(true);
       setOriginal(form);
       await clearDraft(draftKey);
+      // E-93: Auto-Backup nach jeder Datenaenderung
+      try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
       Alert.alert('Gespeichert', `Die Stammdaten von ${form.name.trim()} sind aktualisiert.`, [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);

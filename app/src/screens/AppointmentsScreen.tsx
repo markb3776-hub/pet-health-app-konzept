@@ -145,6 +145,8 @@ export default function AppointmentsScreen() {
           );
         }
       });
+      // E-93: Auto-Backup nach jeder Datenaenderung
+      try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
       await reload();
     } catch {
       // Fehler: Zustand unveraendert, naechster Tap versucht es erneut.
@@ -163,6 +165,8 @@ export default function AppointmentsScreen() {
         `UPDATE reminders SET status = 'Offen', done_at = NULL, updated_at = ?, is_synced = 0 WHERE id = ?`,
         [nowUtcIso(), r.id]
       );
+      // E-93: Auto-Backup nach jeder Datenaenderung
+      try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
       await reload();
     } catch {
       // unveraendert

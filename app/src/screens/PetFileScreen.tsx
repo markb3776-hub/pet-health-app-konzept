@@ -223,6 +223,8 @@ export default function PetFileScreen() {
          VALUES (?, ?, 'Medikamentengabe', ?, ?, ?, ?, ?, 0)`,
         [uuid(), petId, todayKey(), `${med.name}${med.dosage ? ` (${med.dosage})` : ''}`, med.id, ts, ts]
       );
+      // E-93: Auto-Backup nach jeder Datenaenderung
+      try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
       setReloadToken((t) => t + 1);
       Alert.alert('Gabe festgehalten', `${med.name} ist für heute im Verlauf protokolliert.`);
     } catch {
@@ -249,6 +251,8 @@ export default function PetFileScreen() {
                 `UPDATE health_records SET deleted_at = ? WHERE id = ?`,
                 [nowUtcIso(), id]
               );
+              // E-93: Auto-Backup nach jeder Datenaenderung
+              try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
               setReloadToken((t) => t + 1);
             } catch {
               Alert.alert('Fehler', 'Der Eintrag konnte nicht gelöscht werden.');
@@ -285,6 +289,8 @@ export default function PetFileScreen() {
                         `UPDATE vaccinations SET deleted_at = ? WHERE id = ?`,
                         [nowUtcIso(), id]
                       );
+                      // E-93: Auto-Backup nach jeder Datenaenderung
+                      try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
                       setReloadToken((t) => t + 1);
                     } catch {
                       Alert.alert('Fehler', 'Die Impfung konnte nicht gelöscht werden.');
@@ -363,6 +369,8 @@ export default function PetFileScreen() {
         params.push(id);
         await db.runAsync(`UPDATE vaccinations SET ${sets.join(', ')} WHERE id = ?`, params);
       }
+      // E-93: Auto-Backup nach jeder Datenaenderung
+      try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
       setReloadToken((t) => t + 1);
       setEditModalVisible(false);
     } catch {

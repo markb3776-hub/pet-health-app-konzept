@@ -75,6 +75,8 @@ export default function ManagePetsScreen() {
                 `UPDATE pets SET archived = 1, updated_at = ?, is_synced = 0 WHERE id = ?`,
                 [nowUtcIso(), pet.id]
               );
+              // E-93: Auto-Backup nach jeder Datenaenderung
+              try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
               await reload();
             } catch {
               Alert.alert('Nicht möglich', 'Das Archivieren hat nicht geklappt. Bitte versuche es erneut.');
@@ -92,6 +94,8 @@ export default function ManagePetsScreen() {
         `UPDATE pets SET archived = 0, updated_at = ?, is_synced = 0 WHERE id = ?`,
         [nowUtcIso(), pet.id]
       );
+      // E-93: Auto-Backup nach jeder Datenaenderung
+      try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
       await reload();
       Alert.alert('Zurückgeholt', `${pet.name} ist wieder auf deiner Startseite.`);
     } catch {

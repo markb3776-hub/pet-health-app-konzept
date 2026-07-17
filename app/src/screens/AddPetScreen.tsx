@@ -170,6 +170,8 @@ export default function AddPetScreen() {
       );
       setSaved(true);
       await clearDraft(DRAFT_KEY);
+      // E-93: Auto-Backup nach jeder Datenaenderung
+      try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
       // Sichtbare Bestaetigung (Baupflicht 3): Der Nutzer raetselt nie, ob es geklappt hat.
       Alert.alert(
         'Gespeichert',

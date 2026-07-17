@@ -1,7 +1,9 @@
 /**
- * simplyPet: Datensicherung (v0.1.4)
+ * simplyPet: Datensicherung (v0.1.5 – E-93)
  * Entscheidung E-31/E-32/E-33: Automatisches lokales Backup + manueller Export/Import.
  * E-74: Dateiname mit fortlaufender Nummer + Datum (Backup_001_2026-07-11.simplypet)
+ * E-93: autoBackup bei JEDER Datenänderung, AsyncStorage-Status (überlebt Updates),
+ *        SAF lokales Speichern, Import erkennt lokale Backups.
  *
  * Doktrin:
  * - Kein Internet, kein Server, kein Account.
@@ -14,12 +16,13 @@
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getDb } from '../db/database';
 
 const BACKUP_VERSION = 1;
 const KEY_BACKUP_COUNTER = 'simplypet.backup_counter';
+const KEY_LAST_BACKUP_DATE = 'simplypet.last_backup_date';
 
 /**
  * Fortlaufende Backup-Nummer holen und um 1 erhoehen.
@@ -113,7 +116,7 @@ export async function createBackup(isAutoBackup = false): Promise<string | null>
     const backup: BackupData = {
       version: BACKUP_VERSION,
       created_at: new Date().toISOString(),
-      app_version: '0.1.4',
+      app_version: '0.1.5',
       backup_number: backupNumber,
       pets: pets as any[],
       vaccinations: vaccinations as any[],
@@ -148,6 +151,9 @@ export async function createBackup(isAutoBackup = false): Promise<string | null>
       encoding: FileSystem.EncodingType.UTF8,
     });
 
+    // E-93: Backup-Datum in AsyncStorage speichern (ueberlebt App-Updates)
+    await AsyncStorage.setItem(KEY_LAST_BACKUP_DATE, new Date().toISOString());
+
     return backupPath;
   } catch (error) {
     if (!isAutoBackup) {
@@ -171,12 +177,98 @@ export async function autoBackup(): Promise<void> {
 }
 
 /**
- * Export: Erstellt Backup mit fortlaufender Nummer und oeffnet den Android-Teilen-Dialog.
+ * Export: Erstellt Backup mit fortlaufender Nummer und bietet dem Nutzer
+ * die Wahl zwischen "Lokal speichern" (SAF) und "Teilen" (Share-Intent).
  */
 export async function exportBackup(): Promise<void> {
   const backupPath = await createBackup(false);
   if (!backupPath) return;
 
+  // Nutzer-Auswahl: Lokal speichern oder Teilen
+  return new Promise<void>((resolve) => {
+    Alert.alert(
+      'Sicherung erstellt',
+      'Wo möchtest du die Sicherung speichern?',
+      [
+        {
+          text: 'Lokal speichern',
+          onPress: async () => {
+            await saveLocally(backupPath);
+            resolve();
+          },
+        },
+        {
+          text: 'Teilen (Drive, WhatsApp…)',
+          onPress: async () => {
+            await shareBackup(backupPath);
+            resolve();
+          },
+        },
+        {
+          text: 'Abbrechen',
+          style: 'cancel',
+          onPress: () => resolve(),
+        },
+      ]
+    );
+  });
+}
+
+/**
+ * E-93: Lokal speichern via Storage Access Framework (SAF).
+ * Oeffnet den nativen Android "Speichern unter..."-Dialog.
+ */
+async function saveLocally(backupPath: string): Promise<void> {
+  try {
+    if (Platform.OS !== 'android') {
+      // Fallback fuer nicht-Android: Share-Dialog
+      await shareBackup(backupPath);
+      return;
+    }
+
+    const SAF = FileSystem.StorageAccessFramework;
+
+    // Nutzer waehlt Zielordner
+    const permissions = await SAF.requestDirectoryPermissionsAsync();
+    if (!permissions.granted) {
+      // Nutzer hat abgebrochen – kein Fehler
+      return;
+    }
+
+    // Dateiname aus Pfad extrahieren
+    const filename = backupPath.split('/').pop() ?? 'backup.simplypet';
+
+    // Datei im gewaehlten Ordner erstellen
+    const newFileUri = await SAF.createFileAsync(
+      permissions.directoryUri,
+      filename,
+      'application/octet-stream'
+    );
+
+    // Inhalt der Backup-Datei lesen und in die SAF-Datei schreiben
+    const content = await FileSystem.readAsStringAsync(backupPath, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    await FileSystem.writeAsStringAsync(newFileUri, content, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+
+    Alert.alert(
+      'Gespeichert',
+      `Die Sicherung "${filename}" wurde im gewählten Ordner gespeichert.`
+    );
+  } catch (error) {
+    Alert.alert(
+      'Speichern fehlgeschlagen',
+      'Die Datei konnte nicht lokal gespeichert werden. Versuche es über "Teilen".'
+    );
+  }
+}
+
+/**
+ * Teilen via Share-Intent (WhatsApp, Drive, E-Mail etc.)
+ */
+async function shareBackup(backupPath: string): Promise<void> {
   const canShare = await Sharing.isAvailableAsync();
   if (!canShare) {
     Alert.alert(
@@ -253,6 +345,8 @@ export async function importBackup(): Promise<boolean> {
             onPress: async () => {
               try {
                 await restoreBackup(backup);
+                // E-93: Nach Import auch den Backup-Status aktualisieren
+                await AsyncStorage.setItem(KEY_LAST_BACKUP_DATE, new Date().toISOString());
                 Alert.alert('Wiederhergestellt', 'Alle Daten wurden erfolgreich importiert.');
                 resolve(true);
               } catch {
@@ -352,14 +446,29 @@ async function restoreBackup(backup: BackupData): Promise<void> {
 }
 
 /**
- * Gibt das Datum des letzten Auto-Backups zurueck (oder null).
+ * E-93: Gibt das Datum des letzten Backups zurueck.
+ * Primaer aus AsyncStorage (ueberlebt App-Updates), Fallback auf Datei-Existenz.
  */
 export async function getLastBackupDate(): Promise<string | null> {
+  try {
+    // Primaer: AsyncStorage (ueberlebt App-Updates)
+    const storedDate = await AsyncStorage.getItem(KEY_LAST_BACKUP_DATE);
+    if (storedDate) {
+      return storedDate;
+    }
+  } catch {
+    // Fallthrough zu Datei-Check
+  }
+
+  // Fallback: Auto-Backup-Datei pruefen
   try {
     const backupPath = `${FileSystem.documentDirectory}simplypet_auto_backup.simplypet`;
     const info = await FileSystem.getInfoAsync(backupPath);
     if (info.exists && !info.isDirectory) {
-      return new Date(info.modificationTime! * 1000).toISOString();
+      const date = new Date(info.modificationTime! * 1000).toISOString();
+      // Datum auch in AsyncStorage nachholen fuer Zukunft
+      await AsyncStorage.setItem(KEY_LAST_BACKUP_DATE, date);
+      return date;
     }
   } catch {
     // Kein Backup vorhanden
