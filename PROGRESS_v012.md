@@ -56,10 +56,13 @@
 - [x] Quality-Check durchgeführt (8 Prüfpunkte bestanden)
 - [x] APK gebaut und ausgeliefert (15.07.2026)
 
-## Phase 11 (17.07.2026) – IN BEARBEITUNG:
+## Phase 11 (17.07.2026) – ERLEDIGT:
 - [x] E-93: Backup-System Analyse durchgeführt
-- [ ] E-93: Backup-Status in AsyncStorage sichern
-- [ ] E-93: Storage Access Framework für lokales Speichern implementieren
+- [x] E-93: Backup-Status in AsyncStorage sichern (KEY_LAST_BACKUP_DATE)
+- [x] E-93: Storage Access Framework für lokales Speichern implementiert
+- [x] E-93: autoBackup bei JEDER Datenänderung (6 Screens)
+- [x] E-93: Export-Dialog mit Auswahl (Lokal / Teilen)
+- [x] TypeScript 0 Fehler, Code gepusht
 
 ## NOCH OFFEN:
 - [ ] Tester-Feedback auswerten (Testpersonen gesucht)

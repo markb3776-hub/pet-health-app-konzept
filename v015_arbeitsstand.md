@@ -15,8 +15,12 @@
 10. ✅ Bugfix E-90/E-92: Notification-Icon in Statusleiste war Fragezeichen → simplyPet-Pfote (korrekt skalierte DPI-PNGs 24-96px + setColor(0xFF2E9E83))
 11. ✅ E-91: Konsistenter APK-Dateiname: simplyPet_v{version}.apk (Plugin withApkName.js)
 
-## OFFEN (E-93 Backup-Fixes):
-- ⏳ **Code-Implementierung ausstehend:** autoBackup bei jeder Änderung, AsyncStorage-Status, SAF lokales Speichern, Import-Erweiterung.
+## IMPLEMENTIERT (E-93 Backup-Fixes):
+12. ✅ E-93: autoBackup bei JEDER Datenänderung (AddPet, EditPet, ManagePets, PetFile, Appointments)
+13. ✅ E-93: Backup-Status in AsyncStorage (KEY_LAST_BACKUP_DATE, überlebt App-Updates)
+14. ✅ E-93: Export bietet "Lokal speichern" (SAF) + "Teilen" (Share-Intent)
+15. ✅ E-93: getLastBackupDate() prüft AsyncStorage zuerst, Fallback auf Datei
+16. ✅ TypeScript 0 Fehler
 
 ## TECHNISCHE DETAILS:
 

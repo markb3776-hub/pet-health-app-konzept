@@ -61,5 +61,28 @@
 | TESTGERAETE_MATRIX.md | **NEU** – Geräte, OS-Versionen, Notification-Icon-Verhalten dokumentiert |
 | plugins/withApkName.js | **NEU** – setzt APK-Dateiname auf simplyPet_v{versionName}.apk |
 
-## Offen (In Bearbeitung)
-- **E-93:** Backup-System komplett überarbeiten (autoBackup überall, AsyncStorage-Status, SAF lokales Speichern, Import-Erweiterung).
+## E-93: Backup-System komplett überarbeitet (17.07.2026)
+
+### Fixes:
+- **Backup-Anzeige:** `getLastBackupDate()` liest jetzt primär aus `AsyncStorage` (Key: `simplypet.last_backup_date`). Überlebt App-Updates zuverlässig. Fallback auf Datei-Existenz.
+- **autoBackup überall:** Wird jetzt nach JEDER Datenänderung getriggert (nicht nur in useEntryForm):
+  - AddPetScreen (Tier anlegen)
+  - EditPetScreen (Stammdaten speichern)
+  - ManagePetsScreen (Archivieren / Reaktivieren)
+  - PetFileScreen (Gabe protokollieren, Eintrag löschen, Impfung löschen, Eintrag bearbeiten)
+  - AppointmentsScreen (Aufgabe erledigen / rückgängig)
+
+### Neues Feature:
+- **Lokal speichern (SAF):** Export-Button bietet jetzt ZWEI Optionen:
+  1. "Lokal speichern" – öffnet nativen Android "Speichern unter..."-Dialog (Storage Access Framework). Nutzer wählt Ordner (Downloads, Dokumente etc.).
+  2. "Teilen (Drive, WhatsApp…)" – bisheriger Share-Intent bleibt erhalten.
+
+### Geänderte Dateien:
+| Datei | Änderung |
+|:---|:---|
+| src/backup/backupService.ts | AsyncStorage-Status, SAF saveLocally(), exportBackup() mit Auswahl-Dialog |
+| src/screens/AddPetScreen.tsx | +autoBackup() nach Save |
+| src/screens/EditPetScreen.tsx | +autoBackup() nach Save |
+| src/screens/ManagePetsScreen.tsx | +autoBackup() nach Archivieren/Reaktivieren |
+| src/screens/PetFileScreen.tsx | +autoBackup() nach logDose, deleteRecord, deleteVaccination, handleEditSave |
+| src/screens/AppointmentsScreen.tsx | +autoBackup() nach complete/undo |
