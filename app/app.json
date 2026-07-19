@@ -2,13 +2,13 @@
   "expo": {
     "name": "simplyPet",
     "slug": "simplypet",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "android": {
       "package": "de.simplypet.app",
-      "versionCode": 5,
+      "versionCode": 6,
       "adaptiveIcon": {
         "backgroundColor": "#F7F5F0",
         "foregroundImage": "./assets/android-icon-foreground.png",

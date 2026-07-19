@@ -18,6 +18,7 @@ import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
 import { Alert, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 import { getDb } from '../db/database';
 
 const BACKUP_VERSION = 1;
@@ -116,7 +117,7 @@ export async function createBackup(isAutoBackup = false): Promise<string | null>
     const backup: BackupData = {
       version: BACKUP_VERSION,
       created_at: new Date().toISOString(),
-      app_version: '0.1.5',
+      app_version: Constants.expoConfig?.version ?? '0.0.0',
       backup_number: backupNumber,
       pets: pets as any[],
       vaccinations: vaccinations as any[],
