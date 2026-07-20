@@ -14,7 +14,7 @@
  * - Portrait-Sperre (Praevention Nr. 8, via app.json orientation)
  */
 import React, { useEffect } from 'react';
-import { AppState, Platform } from 'react-native';
+import { Alert, AppState, BackHandler, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Notifications from 'expo-notifications';
@@ -35,8 +35,29 @@ Notifications.setNotificationHandler({
   }),
 });
 
+// Testversion: Ablaufdatum 90 Tage nach Build
+const BUILD_DATE = new Date('2026-07-20');
+const EXPIRY_DAYS = 90;
+
+function checkExpiry(): boolean {
+  const now = new Date();
+  const diffMs = now.getTime() - BUILD_DATE.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  return diffDays > EXPIRY_DAYS;
+}
+
 export default function App() {
   useEffect(() => {
+    // Testversion: 90-Tage-Ablaufprüfung
+    if (checkExpiry()) {
+      Alert.alert(
+        'Testversion abgelaufen',
+        'Diese Testversion von simplyPet ist nach 90 Tagen abgelaufen. Bitte wende dich an den Entwickler f\u00fcr eine aktualisierte Version.',
+        [{ text: 'OK', onPress: () => BackHandler.exitApp() }],
+        { cancelable: false }
+      );
+      return;
+    }
     // Praevention Nr. 23: Notification-Permission aktiv anfragen (Android 13+)
     async function requestNotificationPermission() {
       if (Platform.OS === 'android') {

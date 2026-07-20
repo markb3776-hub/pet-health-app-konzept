@@ -1,3 +1,30 @@
+# v0.1.6 Änderungen (20.07.2026)
+
+## Neue Features (v0.1.6)
+
+### 90-Tage-Ablauf-Timer für Tester
+- **Zweck:** Testversionen laufen automatisch ab, damit keine veralteten Builds im Umlauf bleiben
+- **Implementierung:** App.tsx prüft beim Start, ob BUILD_DATE + EXPIRY_DAYS überschritten
+- **BUILD_DATE:** 2026-07-20
+- **EXPIRY_DAYS:** 90 (Ablauf ca. 18. Oktober 2026)
+- **Verhalten:** Alert „Testversion abgelaufen“ + App beendet sich (BackHandler.exitApp())
+- **Nicht umgehbar:** cancelable: false
+
+### Backup-System: app_version dynamisch
+- backupService.ts liest Version jetzt aus `Constants.expoConfig?.version` statt Hardcoded
+- Backup-JSON enthält immer die aktuelle App-Version
+
+## Geänderte Dateien (v0.1.6)
+| Datei | Änderung |
+|:---|:---|
+| App.tsx | +checkExpiry(), +BUILD_DATE/EXPIRY_DAYS, +Alert/BackHandler Imports |
+| app.json | version 0.1.6, versionCode 6 |
+| src/backup/backupService.ts | app_version dynamisch via Constants |
+| tester/Feedback_ToDo_Tester.md | 90-Tage-Hinweis + Backup-Sektion (F) hinzugefügt |
+| tester/Feedback_ToDo_Tester.pdf | Neu generiert |
+
+---
+
 # v0.1.5 Änderungen (15.07.2026)
 
 ## Neue Features

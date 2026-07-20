@@ -1,6 +1,19 @@
 # simplyPet – Feedback-Checkliste für Tester
 
+**Version:** 0.1.6 | **Testphase:** 90 Tage (bis ca. Oktober 2026)
+
+> **Hinweis:** Diese Testversion läuft 90 Tage nach Erhalt automatisch ab. Danach startet die App nicht mehr. Falls du nach Ablauf weiter testen möchtest, melde dich einfach – du bekommst eine neue Version.
+
 Bitte geh die folgenden Punkte durch und notiere kurz deine Eindrücke. Kein Roman nötig – Stichworte reichen. Screenshots sind Gold wert.
+
+---
+
+## Dein Gerät
+
+- Handy-Modell: _______________
+- Android-Version: _______________
+
+*(Findest du unter Einstellungen → Über das Telefon)*
 
 ---
 
@@ -47,7 +60,16 @@ Bitte geh die folgenden Punkte durch und notiere kurz deine Eindrücke. Kein Rom
 
 ---
 
-## F) Allgemeines Gefühl
+## F) Backup & Datensicherung (NEU in v0.1.6)
+
+- [ ] Gehe zu Einstellungen → Backup
+- [ ] Tippe auf „Backup exportieren“ – funktioniert der Download?
+- [ ] Ist der Hinweis zum automatischen Backup verständlich?
+- [ ] Falls du magst: Backup importieren testen (vorher exportiertes File wählen)
+
+---
+
+## G) Allgemeines Gefühl
 
 - [ ] Gab es irgendwo einen Absturz oder Fehler?
 - [ ] Gab es etwas, das dich genervt oder verwirrt hat?

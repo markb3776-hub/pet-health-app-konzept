@@ -1,50 +1,41 @@
-# v0.1.5 Arbeitsstand (17.07.2026)
+# v0.1.6 Arbeitsstand (20.07.2026)
 
-## STATUS: ⚠️ IN BEARBEITUNG – Warten auf GO für E-93 (Backup-Fixes)
+## STATUS: ✅ RELEASE – Tester-APK mit 90-Tage-Timer
 
-## IMPLEMENTIERT (Bisher):
-1. ✅ E-29/E-30/E-76: Tierakte-Einträge bearbeiten + löschen
-2. ✅ E-52: Low-Memory-Handling (registerLowMemoryHandler in App.tsx)
-3. ✅ E-72: Show-on-Lock-Screen (plugins/withShowOnLockScreen.js + ForegroundService Intent umgeleitet)
-4. ✅ E-77 bis E-87: Alle Session-Änderungen aus v0.1.4
-5. ✅ HomeScreen: Bereits FlatList (war schon in v0.1.2 umgebaut)
-6. ✅ Locale-Datumsformatierung: backupService.ts gefixt (TT.MM.JJJJ)
-7. ✅ Auto-Backup nach Save: useEntryForm.ts Zeile 114-120 korrekt implementiert
-8. ✅ EditPetScreen Pferde-Felder: Equidenpass-Nr., Haltungsform (Box/Offenstall/Weide/Paddock), geschätztes Gewicht (kg), Kolik-Vorgeschichte, Stallkontakt (Name/Tel/Box), Hufschmied (Name/Tel) – nur bei species === 'pferd' sichtbar
-9. ✅ Kotprobe-Erfassungstyp: FecalSampleEntryScreen.tsx (NEU), record_type = 'Kotprobe', EpG-Wert als Zahlenfeld, nur für Pferde, im CaptureSheet als Option, in Navigation registriert, PetFileScreen zeigt EpG-Wert an
-10. ✅ Bugfix E-90/E-92: Notification-Icon in Statusleiste war Fragezeichen → simplyPet-Pfote (korrekt skalierte DPI-PNGs 24-96px + setColor(0xFF2E9E83))
-11. ✅ E-91: Konsistenter APK-Dateiname: simplyPet_v{version}.apk (Plugin withApkName.js)
+## IMPLEMENTIERT (v0.1.5 → v0.1.6):
+1. ✅ E-93: Backup-System vollständig (autoBackup bei jeder Datenänderung, SAF Export, DocumentPicker Import)
+2. ✅ E-93: AsyncStorage-Status (KEY_LAST_BACKUP_DATE, überlebt App-Updates)
+3. ✅ E-93: app_version dynamisch via Constants.expoConfig?.version
+4. ✅ 90-Tage-Ablauf-Timer für Tester (BUILD_DATE=2026-07-20, EXPIRY_DAYS=90)
+5. ✅ Feedback-PDF aktualisiert (90-Tage-Hinweis + Backup-Sektion)
+6. ✅ TypeScript 0 Fehler
 
-## IMPLEMENTIERT (E-93 Backup-Fixes):
-12. ✅ E-93: autoBackup bei JEDER Datenänderung (AddPet, EditPet, ManagePets, PetFile, Appointments)
-13. ✅ E-93: Backup-Status in AsyncStorage (KEY_LAST_BACKUP_DATE, überlebt App-Updates)
-14. ✅ E-93: Export bietet "Lokal speichern" (SAF) + "Teilen" (Share-Intent)
-15. ✅ E-93: getLastBackupDate() prüft AsyncStorage zuerst, Fallback auf Datei
-16. ✅ TypeScript 0 Fehler
+## MITGENOMMEN AUS v0.1.5:
+7. ✅ E-29/E-30/E-76: Tierakte-Einträge bearbeiten + löschen
+8. ✅ E-52: Low-Memory-Handling
+9. ✅ E-72: Show-on-Lock-Screen
+10. ✅ E-77 bis E-87: Alle Session-Änderungen aus v0.1.4
+11. ✅ EditPetScreen Pferde-Felder (9 equine_* Felder)
+12. ✅ Kotprobe-Erfassungstyp (FecalSampleEntryScreen, EpG-Wert)
+13. ✅ Bugfix E-90/E-92: Notification-Icon (simplyPet-Pfote)
+14. ✅ E-91: Konsistenter APK-Dateiname
 
 ## TECHNISCHE DETAILS:
 
-### EditPetScreen Pferde-Felder:
-- PetRow Interface: +9 equine_* Felder
-- EditPetDraft Interface: +9 equine* Felder (camelCase)
-- petToDraft(): Mapping equine DB-Felder → Draft
-- SQL UPDATE: +9 equine_* Spalten
-- UI: Eigene Sektion "Pferde-Daten" mit Trennlinie, nur bei species === 'pferd'
-- EQUINE_HOUSING_OPTIONS: ['Box', 'Offenstall', 'Weide', 'Paddock']
+### 90-Tage-Timer (App.tsx):
+- BUILD_DATE = new Date('2026-07-20')
+- EXPIRY_DAYS = 90
+- checkExpiry() prüft beim App-Start
+- Alert mit "Testversion abgelaufen" + BackHandler.exitApp()
+- Ablauf: ca. 18. Oktober 2026
 
-### Kotprobe (FecalSampleEntryScreen):
-- Neuer Screen: src/screens/entries/FecalSampleEntryScreen.tsx
-- CaptureSheet: CaptureAction um 'kotprobe' erweitert
-- AppNavigator: KotprobeEintragen Route + Screen registriert
-- PetFileScreen: HealthRecordRow um epg_value, SELECT um epg_value, Anzeige "Kotprobe: X EpG"
-- RECORD_TYPE_LABELS: Kotprobe → 'Kotprobe (EpG)'
-- Nur Pferde im PetPicker (horsePets Filter)
-- Draft-System: draftKey 'entry_fecal_sample'
-
-### Bugfix: Notification-Icon (E-90 / E-92):
-- Ursache: `android.R.drawable.ic_menu_help` und fehlende Hintergrund-Maske
-- Fix: `R.drawable.ic_notification` (Monochrome-Pfote ohne Hintergrund) + `setColor(0xFF2E9E83)` (simplyPet-Grün)
-- Dokumentiert in `TESTGERAETE_MATRIX.md`
+### Backup-System (E-93):
+- autoBackup bei: AddPet, EditPet, ManagePets, PetFile, Appointments, CaptureSheet
+- Export: SAF (lokaler Speicher) + Share-Intent
+- Import: DocumentPicker → JSON-Validierung → DB-Restore
+- Status: AsyncStorage KEY_LAST_BACKUP_DATE
+- app_version: dynamisch aus Constants.expoConfig?.version
 
 ### Version:
-- app.json: version "0.1.5", versionCode 5
+- app.json: version "0.1.6", versionCode 6
+- APK-Name: simplyPet_v0.1.6.apk
