@@ -1,14 +1,22 @@
 # v0.1.6 Arbeitsstand (20.07.2026)
 
-## STATUS: ✅ RELEASE – Tester-APK mit 90-Tage-Timer
+## STATUS: ✅ RELEASE – v0.1.7 mit erweiterten Impfpass-Feldern
 
-## IMPLEMENTIERT (v0.1.5 → v0.1.6):
-1. ✅ E-93: Backup-System vollständig (autoBackup bei jeder Datenänderung, SAF Export, DocumentPicker Import)
-2. ✅ E-93: AsyncStorage-Status (KEY_LAST_BACKUP_DATE, überlebt App-Updates)
-3. ✅ E-93: app_version dynamisch via Constants.expoConfig?.version
-4. ✅ 90-Tage-Ablauf-Timer für Tester (BUILD_DATE=2026-07-20, EXPIRY_DAYS=90)
-5. ✅ Feedback-PDF aktualisiert (90-Tage-Hinweis + Backup-Sektion)
-6. ✅ TypeScript 0 Fehler
+## IMPLEMENTIERT (v0.1.6 → v0.1.7):
+1. ✅ E-94: Chip-Implantationsdaten (Datum + Stelle) in Stammdaten
+2. ✅ E-95: Tätowierungsnummer + Datum + Stelle (Hund/Katze/Kaninchen)
+3. ✅ E-96: Impfungen erweitert (Chargen-Nr., Gültig-ab, Hersteller/Impfstoff)
+4. ✅ E-97 Phase 1: Dokumentenscan (war bereits implementiert – Kamera + Galerie + Tier-Zuordnung)
+5. ✅ E-98: Alphabetische + Gruppen-Sortierung Tiere auf HomeScreen (Toggle-Button)
+6. ✅ E-99: Untersuchungsergebnis als neuer Erfassungstyp (Blutbild, Röntgen etc.)
+7. ✅ E-100: EU-Heimtierausweis-Nummer in Stammdaten (Hund/Katze/Frettchen)
+8. ✅ DB-Migration 007: Neue Spalten für alle Features
+9. ✅ TypeScript 0 Fehler
+
+## MITGENOMMEN AUS v0.1.6:
+- ✅ E-93: Backup-System vollständig
+- ✅ 90-Tage-Ablauf-Timer für Tester
+- ✅ Feedback-PDF mit Geräte-Info-Feldern
 
 ## MITGENOMMEN AUS v0.1.5:
 7. ✅ E-29/E-30/E-76: Tierakte-Einträge bearbeiten + löschen

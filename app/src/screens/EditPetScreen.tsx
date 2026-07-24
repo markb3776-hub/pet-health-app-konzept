@@ -73,6 +73,15 @@ interface PetRow {
   equine_box_number: string | null;
   equine_farrier_name: string | null;
   equine_farrier_phone: string | null;
+  // E-94: Chip-Implantationsdaten (Migration 007)
+  chip_implant_date: string | null;
+  chip_implant_location: string | null;
+  // E-95: Taetowierung (Migration 007)
+  tattoo_number: string | null;
+  tattoo_date: string | null;
+  tattoo_location: string | null;
+  // E-100: EU-Heimtierausweis (Migration 007)
+  eu_pet_passport_number: string | null;
 }
 
 interface EditPetDraft {
@@ -107,6 +116,15 @@ interface EditPetDraft {
   equineBoxNumber: string;
   equineFarrierName: string;
   equineFarrierPhone: string;
+  // E-94: Chip-Implantation
+  chipImplantDate: string | null;
+  chipImplantLocation: string;
+  // E-95: Taetowierung
+  tattooNumber: string;
+  tattooDate: string | null;
+  tattooLocation: string;
+  // E-100: EU-Heimtierausweis
+  euPetPassportNumber: string;
 }
 
 const GENDER_OPTIONS = ['Männlich', 'Weiblich', 'Unbekannt'];
@@ -187,6 +205,15 @@ function petToDraft(p: PetRow): EditPetDraft {
     equineBoxNumber: p.equine_box_number ?? '',
     equineFarrierName: p.equine_farrier_name ?? '',
     equineFarrierPhone: p.equine_farrier_phone ?? '',
+    // E-94: Chip-Implantation
+    chipImplantDate: p.chip_implant_date ?? null,
+    chipImplantLocation: p.chip_implant_location ?? '',
+    // E-95: Taetowierung
+    tattooNumber: p.tattoo_number ?? '',
+    tattooDate: p.tattoo_date ?? null,
+    tattooLocation: p.tattoo_location ?? '',
+    // E-100: EU-Heimtierausweis
+    euPetPassportNumber: p.eu_pet_passport_number ?? '',
   };
 }
 
@@ -301,6 +328,9 @@ export default function EditPetScreen() {
            equine_colic_history = ?, equine_estimated_weight_kg = ?,
            equine_stable_name = ?, equine_stable_phone = ?,
            equine_box_number = ?, equine_farrier_name = ?, equine_farrier_phone = ?,
+           chip_implant_date = ?, chip_implant_location = ?,
+           tattoo_number = ?, tattoo_date = ?, tattoo_location = ?,
+           eu_pet_passport_number = ?,
            updated_at = ?, is_synced = 0
          WHERE id = ?`,
         [
@@ -335,6 +365,12 @@ export default function EditPetScreen() {
           form.equineBoxNumber.trim() || null,
           form.equineFarrierName.trim() || null,
           form.equineFarrierPhone.trim() || null,
+          form.chipImplantDate || null,
+          form.chipImplantLocation.trim() || null,
+          form.tattooNumber.trim() || null,
+          form.tattooDate || null,
+          form.tattooLocation.trim() || null,
+          form.euPetPassportNumber.trim() || null,
           ts,
           petId,
         ]
@@ -481,6 +517,67 @@ export default function EditPetScreen() {
                       <Hint>Die Ringnummer steht auf dem geschlossenen Fußring. Bei großen Papageien ggf. auch Chip.</Hint>
                     ) : null}
                     {chipHint ? <Text style={styles.warnText}>{chipHint}</Text> : null}
+
+                    {/* E-94: Chip-Implantationsdaten */}
+                    <DateField
+                      label="Datum der Implantation (optional)"
+                      value={form.chipImplantDate}
+                      onChange={(key) => update('chipImplantDate', key)}
+                    />
+                    <TextInput
+                      style={[styles.input, { marginTop: spacing.s }]}
+                      value={form.chipImplantLocation}
+                      onChangeText={(t) => update('chipImplantLocation', t)}
+                      placeholder="z. B. linke Halsseite"
+                      placeholderTextColor={colors.textSecondary}
+                      accessibilityLabel="Implantationsstelle"
+                    />
+                    <Hint>Implantationsstelle – steht im Impfpass unter Kennzeichnung.</Hint>
+                  </>
+                ) : null}
+
+                {/* E-95: Tätowierung (nur Hund/Katze/Kaninchen) */}
+                {['hund', 'katze', 'kaninchen'].includes(species) ? (
+                  <>
+                    <FieldLabel>Tätowierungsnummer (optional)</FieldLabel>
+                    <TextInput
+                      style={styles.input}
+                      value={form.tattooNumber}
+                      onChangeText={(t) => update('tattooNumber', t)}
+                      placeholder="Alphanumerische Tätowierungsnummer"
+                      placeholderTextColor={colors.textSecondary}
+                      accessibilityLabel="Tätowierungsnummer"
+                    />
+                    <DateField
+                      label="Datum der Tätowierung (optional)"
+                      value={form.tattooDate}
+                      onChange={(key) => update('tattooDate', key)}
+                    />
+                    <TextInput
+                      style={[styles.input, { marginTop: spacing.s }]}
+                      value={form.tattooLocation}
+                      onChangeText={(t) => update('tattooLocation', t)}
+                      placeholder="z. B. linkes Ohr, Innenschenkel"
+                      placeholderTextColor={colors.textSecondary}
+                      accessibilityLabel="Tätowierungsstelle"
+                    />
+                    <Hint>Ältere Tiere haben oft eine Tätowierung statt oder zusätzlich zum Chip.</Hint>
+                  </>
+                ) : null}
+
+                {/* E-100: EU-Heimtierausweis (nur Hund/Katze/Frettchen) */}
+                {['hund', 'katze', 'frettchen'].includes(species) ? (
+                  <>
+                    <FieldLabel>EU-Heimtierausweis-Nr. (optional)</FieldLabel>
+                    <TextInput
+                      style={styles.input}
+                      value={form.euPetPassportNumber}
+                      onChangeText={(t) => update('euPetPassportNumber', t)}
+                      placeholder="Nummer steht auf dem blauen EU-Pass"
+                      placeholderTextColor={colors.textSecondary}
+                      accessibilityLabel="EU-Heimtierausweis-Nummer"
+                    />
+                    <Hint>Für Reisen ins Ausland benötigt – enthält Impfnachweise und Chip-Nummer.</Hint>
                   </>
                 ) : null}
 

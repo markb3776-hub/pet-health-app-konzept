@@ -12,7 +12,7 @@
  * - Kleine Foto-Dimensionen (Thumbnail-Effekt, Nr. 26)
  * - flexShrink auf Texte (Nr. 18)
  */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -115,9 +115,26 @@ export default function HomeScreen() {
 
   const hasPets = pets.length > 0;
 
+  // E-98: Sortierung (alphabetisch oder nach Tierart gruppiert)
+  const [sortMode, setSortMode] = useState<'alpha' | 'group'>('alpha');
+  const sortedPets = useMemo(() => {
+    const sorted = [...pets];
+    if (sortMode === 'alpha') {
+      sorted.sort((a, b) => a.name.localeCompare(b.name, 'de'));
+    } else {
+      // Gruppiert: erst nach Tierart, dann innerhalb alphabetisch
+      sorted.sort((a, b) => {
+        const speciesCompare = a.species.localeCompare(b.species, 'de');
+        if (speciesCompare !== 0) return speciesCompare;
+        return a.name.localeCompare(b.name, 'de');
+      });
+    }
+    return sorted;
+  }, [pets, sortMode]);
+
   // FlatList-Daten: Tiere + Add-Kachel am Ende
   const tileData: TileItem[] = hasPets
-    ? [...pets, { id: ADD_TILE_ID }]
+    ? [...sortedPets, { id: ADD_TILE_ID }]
     : [];
 
   const renderTile = useCallback(
@@ -228,12 +245,23 @@ export default function HomeScreen() {
                 <Text style={styles.statusCardTitle}>Alles versorgt – heute ist nichts fällig.</Text>
               </View>
             ) : null}
-            <Text style={styles.sectionTitle}>Meine Tiere</Text>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Meine Tiere</Text>
+              {pets.length > 1 ? (
+                <Pressable
+                  style={styles.sortToggle}
+                  onPress={() => setSortMode((m) => m === 'alpha' ? 'group' : 'alpha')}
+                  accessibilityLabel={sortMode === 'alpha' ? 'Nach Tierart gruppieren' : 'Alphabetisch sortieren'}
+                >
+                  <Text style={styles.sortToggleText}>{sortMode === 'alpha' ? 'A-Z' : '▤'}</Text>
+                </Pressable>
+              ) : null}
+            </View>
           </>
         )}
       </View>
     ),
-    [ownerName, hasPets, overdue, dueToday, navigation]
+    [ownerName, hasPets, overdue, dueToday, navigation, pets.length, sortMode]
   );
 
   return (
@@ -313,12 +341,32 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginTop: spacing.xs,
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: spacing.m,
+    marginBottom: spacing.m,
+  },
   sectionTitle: {
     fontSize: typography.title,
     color: colors.textPrimary,
     fontWeight: '600',
-    marginTop: spacing.m,
-    marginBottom: spacing.m,
+  },
+  sortToggle: {
+    minWidth: 36,
+    minHeight: 36,
+    borderRadius: 8,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sortToggleText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.primary,
   },
   petTilePortrait: { marginBottom: spacing.m },
   petTileLandscape: { flexBasis: '47%', flexGrow: 1, marginBottom: spacing.m },

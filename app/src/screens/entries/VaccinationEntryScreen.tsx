@@ -43,6 +43,10 @@ interface VaccinationDraft {
   dateGiven: string;
   validUntil: string | null;
   reminderDaysBefore: number;
+  // E-96: Erweiterte Impfdaten
+  batchNumber: string;
+  validFrom: string | null;
+  manufacturer: string;
 }
 
 export default function VaccinationEntryScreen() {
@@ -69,6 +73,10 @@ export default function VaccinationEntryScreen() {
       dateGiven: todayKey(),
       validUntil: null,
       reminderDaysBefore: 7,
+      // E-96
+      batchNumber: '',
+      validFrom: null,
+      manufacturer: '',
     }),
     [presetPetId]
   );
@@ -77,7 +85,7 @@ export default function VaccinationEntryScreen() {
     draftKey: 'entry_vaccination',
     emptyForm,
     resumeDescription: 'Du hattest einen Impf-Eintrag begonnen',
-    isDirty: (f) => f.disease.trim().length > 0 || f.productName.trim().length > 0 || f.validUntil !== null,
+    isDirty: (f) => f.disease.trim().length > 0 || f.productName.trim().length > 0 || f.validUntil !== null || f.batchNumber.trim().length > 0,
   });
 
   const effectivePetId =
@@ -97,8 +105,8 @@ export default function VaccinationEntryScreen() {
         // ATOMAR: Impfung + automatische Erinnerung in EINER Transaktion.
         await db.withTransactionAsync(async () => {
           await db.runAsync(
-            `INSERT INTO vaccinations (id, pet_id, type, disease, product_name, date_given, valid_until, created_at, updated_at, is_synced)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`,
+            `INSERT INTO vaccinations (id, pet_id, type, disease, product_name, date_given, valid_until, batch_number, valid_from, manufacturer, created_at, updated_at, is_synced)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)`,
             [
               vaccId,
               effectivePetId,
@@ -107,6 +115,9 @@ export default function VaccinationEntryScreen() {
               form.productName.trim() || null,
               form.dateGiven,
               form.validUntil,
+              form.batchNumber.trim() || null,
+              form.validFrom,
+              form.manufacturer.trim() || null,
               ts,
               ts,
             ]
@@ -189,6 +200,29 @@ export default function VaccinationEntryScreen() {
               accessibilityLabel="Name des Präparats"
             />
             <Hint>Du findest den Namen im Impfpass oder auf der Rechnung – er ist aber keine Pflicht.</Hint>
+
+            {/* E-96: Chargen-Nummer */}
+            <FieldLabel>Chargen-Nr. (optional)</FieldLabel>
+            <TextInput
+              style={styles.input}
+              value={form.batchNumber}
+              onChangeText={(t) => update('batchNumber', t)}
+              placeholder="z. B. A502A02"
+              placeholderTextColor={colors.textSecondary}
+              accessibilityLabel="Chargen-Nummer"
+            />
+            <Hint>Steht auf dem Aufkleber im Impfpass – wichtig bei Rückrufen.</Hint>
+
+            {/* E-96: Hersteller/Impfstoff */}
+            <FieldLabel>Hersteller / Impfstoff (optional)</FieldLabel>
+            <TextInput
+              style={styles.input}
+              value={form.manufacturer}
+              onChangeText={(t) => update('manufacturer', t)}
+              placeholder="z. B. Nobivac T, Purevax RCP"
+              placeholderTextColor={colors.textSecondary}
+              accessibilityLabel="Hersteller oder Impfstoff-Name"
+            />
           </View>
 
           <View style={isLandscape ? styles.landscapeColumn : undefined}>
@@ -198,6 +232,15 @@ export default function VaccinationEntryScreen() {
               value={form.dateGiven}
               onChange={(key) => update('dateGiven', key)}
               hint="Auch alte Einträge aus dem Impfpass kannst du hier übertragen."
+            />
+
+            {/* E-96: Gültig ab */}
+            <FieldLabel>Gültig ab (optional)</FieldLabel>
+            <DateField
+              label="Wirksamkeitsbeginn"
+              value={form.validFrom}
+              onChange={(key) => update('validFrom', key)}
+              hint="Steht im Impfpass – oft identisch mit dem Impfdatum."
             />
 
             <FieldLabel>Gültig bis / nächste Fälligkeit (optional)</FieldLabel>

@@ -172,6 +172,21 @@ async function migrate(database: SQLite.SQLiteDatabase): Promise<void> {
   await addColumnIfMissing(database, 'pets', 'aquarium_type', 'TEXT'); // Suesswasser/Meerwasser/Brackwasser
   await addColumnIfMissing(database, 'pets', 'aquarium_volume_liters', 'INTEGER'); // Beckengroesse in Liter
   await addColumnIfMissing(database, 'pets', 'setup_date', 'TEXT'); // Einrichtungsdatum (statt birth_date bei Aquarium)
+
+  // Migration 007 (E-94/E-95/E-96/E-100): Kennzeichnung + Impf-Erweiterung + EU-Pass
+  // E-94: Chip-Implantationsdaten
+  await addColumnIfMissing(database, 'pets', 'chip_implant_date', 'TEXT'); // Datum der Implantation
+  await addColumnIfMissing(database, 'pets', 'chip_implant_location', 'TEXT'); // Implantationsstelle
+  // E-95: Taetowierung
+  await addColumnIfMissing(database, 'pets', 'tattoo_number', 'TEXT'); // Taetowierungsnummer
+  await addColumnIfMissing(database, 'pets', 'tattoo_date', 'TEXT'); // Datum der Taetowierung
+  await addColumnIfMissing(database, 'pets', 'tattoo_location', 'TEXT'); // Taetowierungsstelle (z.B. linkes Ohr)
+  // E-100: EU-Heimtierausweis
+  await addColumnIfMissing(database, 'pets', 'eu_pet_passport_number', 'TEXT'); // EU-Heimtierausweis-Nr.
+  // E-96: Impfungen erweitern (Chargen-Nr., Gueltig-ab)
+  await addColumnIfMissing(database, 'vaccinations', 'batch_number', 'TEXT'); // Chargen-Nummer
+  await addColumnIfMissing(database, 'vaccinations', 'valid_from', 'TEXT'); // Gueltig ab
+  await addColumnIfMissing(database, 'vaccinations', 'manufacturer', 'TEXT'); // Hersteller/Impfstoff-Name
 }
 
 async function addColumnIfMissing(
