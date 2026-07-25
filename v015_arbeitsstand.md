@@ -2,13 +2,14 @@
 
 ## STATUS: ✅ BUILD ERFOLGREICH – APKs verfügbar
 
-## AKTUELLE SITUATION (25.07.2026):
+## AKTUELLE SITUATION (26.07.2026):
 - App-Code ist auf v0.1.8 (app.json: version "0.1.8", versionCode 6)
 - GitHub Actions Build **ERFOLGREICH** abgeschlossen
 - **APKs verfügbar als GitHub Artifacts (30 Tage):**
   - `simplyPet_v0.1.8_TESTER` (51.8 MB, mit 90-Tage-Timer)
   - `simplyPet_v0.1.8_DEV` (51.8 MB, ohne Timer)
 - Workflow-Fix (find statt hardcoded Pfad) wurde vom Nutzer manuell committed
+- ✅ Sitter-Modus (E-105) spezifiziert und tierarten-spezifische Informationen in `SITTER_MODUS_SPEZIFIKATION.md` dokumentiert
 
 ## GOOGLE PLAY STORE – ACCOUNT EINGERICHTET:
 - **Developer Account:** Simply DevApps
@@ -37,6 +38,7 @@
 |:---|:---|:---|
 | BUG-5 | QR-Code enthielt nicht alle Notfall-Pass-Daten | ✅ Geschlecht, Kastration, Fellfarbe, Impfstatus, Gewicht hinzugefügt |
 | E-104 | PDF-Dateiname war kryptisch (UUID) | ✅ Jetzt `Notfallpass_{Tiername}_{Datum}.pdf` |
+| E-105 | Sitter-Modus Recherche & Spezifikation | ✅ Alle 7 Tiergruppen recherchiert und in `SITTER_MODUS_SPEZIFIKATION.md` dokumentiert |
 
 ## NÄCHSTE SCHRITTE (Reihenfolge):
 1. ~~BUG-5 fixen (QR-Code alle Felder)~~ ✅ ERLEDIGT
