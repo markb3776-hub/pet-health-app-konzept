@@ -55,10 +55,11 @@ jobs:
         working-directory: app
         run: echo "version=$(node -p "require('./app.json').expo.version")" >> $GITHUB_OUTPUT
 
-      - name: Rename APK
+      - name: Find and Rename APK
         run: |
-          cp app/android/app/build/outputs/apk/release/app-release.apk \
-             simplyPet_v${{ steps.version.outputs.version }}.apk
+          APK_FILE=$(find app/android/app/build/outputs -name "*.apk" -type f | head -1)
+          echo "Found APK: $APK_FILE"
+          cp "$APK_FILE" simplyPet_v${{ steps.version.outputs.version }}.apk
 
       - name: Upload Tester APK
         uses: actions/upload-artifact@v4
@@ -108,10 +109,11 @@ jobs:
         working-directory: app
         run: echo "version=$(node -p "require('./app.json').expo.version")" >> $GITHUB_OUTPUT
 
-      - name: Rename APK
+      - name: Find and Rename APK
         run: |
-          cp app/android/app/build/outputs/apk/release/app-release.apk \
-             simplyPet_v${{ steps.version.outputs.version }}_DEV.apk
+          APK_FILE=$(find app/android/app/build/outputs -name "*.apk" -type f | head -1)
+          echo "Found APK: $APK_FILE"
+          cp "$APK_FILE" simplyPet_v${{ steps.version.outputs.version }}_DEV.apk
 
       - name: Upload DEV APK
         uses: actions/upload-artifact@v4
