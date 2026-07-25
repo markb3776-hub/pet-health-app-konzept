@@ -37,7 +37,7 @@ Notifications.setNotificationHandler({
 
 // Testversion: Ablaufdatum 90 Tage nach Build
 const BUILD_DATE = new Date('2026-07-20');
-const EXPIRY_DAYS = 90;
+const EXPIRY_DAYS = 9999;
 
 function checkExpiry(): boolean {
   const now = new Date();
