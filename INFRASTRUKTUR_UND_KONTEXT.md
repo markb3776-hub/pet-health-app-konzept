@@ -115,7 +115,9 @@
 
 - GitHub-Connector einrichten (existiert seit ~03.07.2026)
 - Build-Scripts schreiben (existieren)
-- GitHub Actions Workflow erstellen (existiert seit 25.07.2026, manueller Fix für APK-Pfad ausstehend)
+- GitHub Actions Workflow erstellen (existiert seit 25.07.2026, APK-Pfad-Fix committed ✅)
+- Google Play Developer Account einrichten (Simply DevApps, 25.07.2026 ✅)
+- Markenrecherche "SimplyPet" durchführen (25.07.2026 ✅, Name ist frei)
 - Backup-System implementieren (E-93, erledigt 17.07.2026)
 - Notification-Icon fixen (E-90/E-92, erledigt 15.07.2026)
 - APK-Namenskonvention (E-91, erledigt 15.07.2026)
@@ -133,4 +135,26 @@
 | Kontext geht zwischen Sessions verloren | DIESE DATEI zu Beginn lesen |
 | GitHub Actions Workflow kann nicht gepusht werden | Manus-Connector hat keine `workflows`-Permission. Nutzer muss Workflow-Änderungen manuell auf GitHub committen. |
 | Cloud Computer hat nur 1 GB RAM | Nur für Git-Ops und leichte Tasks. Builds in GitHub Actions oder Sandbox. |
-| APK-Pfad nach Expo-Build nicht vorhersagbar | Workflow muss `find` statt hardcoded Pfad verwenden (Fix vorbereitet, muss manuell committed werden) |
+| APK-Pfad nach Expo-Build nicht vorhersagbar | Workflow verwendet `find` statt hardcoded Pfad (✅ gefixt 25.07.2026) |
+
+---
+
+## Google Play Store
+
+| Eigenschaft | Wert |
+|:---|:---|
+| Developer Account | Simply DevApps |
+| E-Mail | simplypet.app@gmail.com |
+| Konto-ID | 7410284957463056128 |
+| Kontotyp | Privates Konto (Einzelperson) |
+| Servicegebühr | 15 % (bis 1 Mio USD/Jahr) |
+| Preismodell App | Einmalkauf 2,99 € |
+| Identitätsprüfung | Eingereicht 25.07.2026, wartet auf Bestätigung |
+| Werbetext | Simple apps for everyone. Keep your data and information on your device and decide what you're willing to share. |
+
+### Play Store Assets:
+| Datei | Zweck | Größe |
+|:---|:---|:---|
+| `simply_devapps_logo_v2.png` | Logo Original | 1920x1920 |
+| `simply_devapps_icon_512x512.jpg` | Entwicklersymbol (hochgeladen) | 512x512 |
+| `simply_devapps_banner_4096x2304.jpg` | Kopfzeilenbild (hochgeladen) | 4096x2304 |

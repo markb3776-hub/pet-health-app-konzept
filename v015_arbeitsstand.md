@@ -1,20 +1,56 @@
 # v0.1.8 Arbeitsstand (25.07.2026)
 
-## STATUS: 🔧 BUILD AUSSTEHEND – Workflow-Fix nötig
+## STATUS: ✅ BUILD ERFOLGREICH – APKs verfügbar
 
 ## AKTUELLE SITUATION (25.07.2026):
 - App-Code ist auf v0.1.8 (app.json: version "0.1.8", versionCode 6)
-- GitHub Actions Workflow `build-apk.yml` existiert und wurde manuell getriggert
-- **Build-Ergebnis:** Kompilierung ERFOLGREICH (30 Min), aber Rename-Schritt fehlgeschlagen
-- **Fehler:** `cp: cannot stat 'app/android/app/build/outputs/apk/release/app-release.apk': No such file or directory`
-- **Ursache:** Expo/React Native erzeugt die APK unter einem anderen Dateinamen als erwartet (nicht `app-release.apk`)
-- **Fix:** `find`-Befehl statt hardcoded Pfad (bereits vorbereitet, muss manuell auf GitHub committed werden)
-- **Blocker:** Manus-Token hat keine `workflows`-Permission → Workflow-Dateien können NICHT automatisch gepusht werden
+- GitHub Actions Build **ERFOLGREICH** abgeschlossen
+- **APKs verfügbar als GitHub Artifacts (30 Tage):**
+  - `simplyPet_v0.1.8_TESTER` (51.8 MB, mit 90-Tage-Timer)
+  - `simplyPet_v0.1.8_DEV` (51.8 MB, ohne Timer)
+- Workflow-Fix (find statt hardcoded Pfad) wurde vom Nutzer manuell committed
 
-## OFFENE AKTION (Nutzer muss manuell erledigen):
-1. GitHub → `.github/workflows/build-apk.yml` → Edit
-2. Beide `Rename APK`-Schritte ersetzen durch `Find and Rename APK` mit `find`-Befehl
-3. Commit → Build manuell triggern (Actions → Run workflow)
+## GOOGLE PLAY STORE – ACCOUNT EINGERICHTET:
+- **Developer Account:** Simply DevApps
+- **E-Mail:** simplypet.app@gmail.com
+- **Konto-ID:** 7410284957463056128
+- **Kontotyp:** Privates Konto (Einzelperson)
+- **Servicegebühr:** 15 % (statt 30 %, bis 1 Mio USD/Jahr)
+- **Preismodell:** Einmalkauf 2,99 €
+- **Entwicklersymbol:** Simply DevApps Logo (CRT-Monitor, Patina) – hochgeladen
+- **Kopfzeilenbild:** Banner (3 CRT-Monitore, Werkbank) – hochgeladen
+- **Werbetext:** "Simple apps for everyone. Keep your data and information on your device and decide what you're willing to share."
+- **Identitätsbestätigung:** Eingereicht, wartet auf Google-Prüfung (2-7 Tage)
+- **Kontakttelefonnummer:** Noch nicht bestätigt (erst nach Identitätsprüfung möglich)
+- **Logo-Dateien im Repo:**
+  - `simply_devapps_logo_v2.png` (1920x1920, Original)
+  - `simply_devapps_icon_512x512.jpg` (512x512, für Play Store)
+  - `simply_devapps_banner_4096x2304.jpg` (4096x2304, Kopfzeilenbild)
+
+## OFFENE BUGS / VERBESSERUNGEN:
+| ID | Beschreibung | Priorität |
+|:---|:---|:---|
+| BUG-5 | QR-Code enthält nicht alle Notfall-Pass-Daten (Impfstatus, Gewicht, Geschlecht, Fellfarbe fehlen) | Hoch |
+| E-104 | PDF-Dateiname kryptisch (UUID) → soll `Notfallpass_{Tiername}_{Datum}.pdf` heißen | Mittel |
+
+## NÄCHSTE SCHRITTE (Reihenfolge):
+1. BUG-5 fixen (QR-Code alle Felder)
+2. E-104 fixen (PDF-Dateiname)
+3. Tester-Feedback mit v0.1.8 sammeln (3 Personen, 5 Geräte)
+4. Onboarding-Screen für Erstnutzer erstellen
+5. Datenschutzerklärung erstellen + hosten
+6. AAB (Android App Bundle) statt APK für Play Store
+7. Geschlossener Test im Play Store starten (20 Tester, 14 Tage)
+8. Domain sichern (simplypet.de / .app)
+
+## PLAY STORE ANFORDERUNGEN (vor Produktion):
+- 20 Tester müssen App 14 Tage lang über geschlossenen Test nutzen
+- Datenschutzerklärung (öffentliche URL)
+- AAB-Format (nicht APK)
+- Altersfreigabe-Fragebogen
+- Store Listing (Screenshots, Beschreibung)
+- Timer entfernen für Release-Version
+- Version auf 1.0.0 hochsetzen
 
 ## IMPLEMENTIERT (v0.1.7 → v0.1.8):
 1. ✅ BUG-3: Tägliche Checkbox resettet um 00:00 Uhr
@@ -54,8 +90,10 @@
 - Trigger: Push in `app/`-Ordner ODER manuell via `workflow_dispatch`
 - Zwei Jobs: `build-tester` (mit 90-Tage-Timer) + `build-dev` (Timer deaktiviert)
 - APK-Benennung: `simplyPet_v{version}.apk` (Tester) / `simplyPet_v{version}_DEV.apk`
+- APK-Suche: `find app/android/app/build/outputs -name "*.apk"` (dynamisch, nicht hardcoded)
 - Artifacts: 30 Tage Aufbewahrung
-- **WICHTIG:** Manus kann Workflow-Dateien NICHT pushen (fehlende `workflows`-Permission)
+- Build-Dauer: ca. 30 Min (erster Lauf), danach schneller durch Caching
+- **WICHTIG:** Manus kann Workflow-Dateien NICHT pushen (fehlende `workflows`-Permission der GitHub App)
 
 ### Backup-System (E-93):
 - autoBackup bei: AddPet, EditPet, ManagePets, PetFile, Appointments, CaptureSheet
@@ -72,4 +110,4 @@
 
 ### Version:
 - app.json: version "0.1.8", versionCode 6
-- APK-Name: simplyPet_v0.1.8.apk (sobald Build läuft)
+- APK-Name: simplyPet_v0.1.8.apk / simplyPet_v0.1.8_DEV.apk
