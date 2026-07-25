@@ -55,10 +55,11 @@
 
 | Eigenschaft | Wert |
 |:---|:---|
-| **APK-Build** | **Sandbox mit Swap** (funktioniert, ~20-30 Min) |
+| **APK-Build** | **GitHub Actions** (bevorzugt, ~30 Min erster Lauf, danach schneller) |
 | APK-Dateiname | `simplyPet_v{version}.apk` (Plugin: `withApkName.js`) |
-| **Cloud Computer** | `Mark B.s Cloud-Computer 1` – für schnellere Builds (5-10 Min), aktuell noch nicht eingerichtet |
-| **GitHub Actions** | Workflow-Datei kann NICHT via Manus-Connector gepusht werden (fehlende `workflows`-Permission). Nutzer müsste sie manuell anlegen. |
+| **Cloud Computer** | `Mark B.s Cloud-Computer` – 1 GB RAM, nur für Git-Ops geeignet, NICHT für Builds |
+| **GitHub Actions** | Workflow existiert (`.github/workflows/build-apk.yml`). Manus kann Workflow-Dateien NICHT pushen (fehlende `workflows`-Permission). App-Code-Pushes triggern den Build automatisch. |
+| **Sandbox** | Fallback für lokale Builds mit Swap (3.8 GB RAM + 6 GB Swap, ~20-30 Min) |
 
 ### Build-Ablauf (Sandbox mit Swap):
 1. `bash setup_build_env.sh` (JDK + Android SDK)
@@ -114,7 +115,7 @@
 
 - GitHub-Connector einrichten (existiert seit ~03.07.2026)
 - Build-Scripts schreiben (existieren)
-- GitHub Actions Workflow erstellen (existiert seit 17.07.2026)
+- GitHub Actions Workflow erstellen (existiert seit 25.07.2026, manueller Fix für APK-Pfad ausstehend)
 - Backup-System implementieren (E-93, erledigt 17.07.2026)
 - Notification-Icon fixen (E-90/E-92, erledigt 15.07.2026)
 - APK-Namenskonvention (E-91, erledigt 15.07.2026)
@@ -130,5 +131,6 @@
 | Sandbox hat nur ~3.8 GB RAM | APK mit 6 GB Swap bauen (funktioniert, dauert ~20-30 Min) |
 | Sandbox wird nach Inaktivität resettet | Alles liegt auf GitHub, einfach neu klonen |
 | Kontext geht zwischen Sessions verloren | DIESE DATEI zu Beginn lesen |
-| GitHub Actions Workflow kann nicht gepusht werden | Manus-Connector hat keine `workflows`-Permission |
-| Cloud Computer 1 hängt in "Wird initialisiert" | Manus-Support kontaktieren oder warten |
+| GitHub Actions Workflow kann nicht gepusht werden | Manus-Connector hat keine `workflows`-Permission. Nutzer muss Workflow-Änderungen manuell auf GitHub committen. |
+| Cloud Computer hat nur 1 GB RAM | Nur für Git-Ops und leichte Tasks. Builds in GitHub Actions oder Sandbox. |
+| APK-Pfad nach Expo-Build nicht vorhersagbar | Workflow muss `find` statt hardcoded Pfad verwenden (Fix vorbereitet, muss manuell committed werden) |
