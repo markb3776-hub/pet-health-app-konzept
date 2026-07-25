@@ -2,7 +2,7 @@
 
 ## Was du bekommst
 
-Du erhältst eine APK-Datei (z. B. `simplypet_v015.apk`). Das ist die App als Installationsdatei – sie ist noch nicht im Play Store, deshalb muss dein Handy sie direkt installieren.
+Du erhältst eine APK-Datei (z. B. `simplyPet_v0.1.8.apk`). Das ist die App als Installationsdatei – sie ist noch nicht im Play Store, deshalb muss dein Handy sie direkt installieren.
 
 ---
 

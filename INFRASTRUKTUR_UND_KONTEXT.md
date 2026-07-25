@@ -26,7 +26,7 @@
 | Datenbank | SQLite (expo-sqlite) – lokal, kein Server |
 | Navigation | React Navigation (Native Stack) |
 | Package-Name | `de.simplypet.app` |
-| Aktuelle Version | 0.1.6 (versionCode 6) |
+| Aktuelle Version | 0.1.8 (versionCode 6) |
 | Min SDK | 29 (Android 10) |
 | Target/Compile SDK | 36 |
 
@@ -39,8 +39,8 @@
 | Stelle | Wann hochzählen | Beispiel |
 |:--|:--|:--|
 | **MAJOR** (0 → 1) | App ist Release-ready für den Store | 1.0.0 |
-| **MINOR** (0.1 → 0.2) | Neues Feature oder größere Funktionserweiterung | 0.1.5 → 0.1.6 |
-| **PATCH** (0.1.6 → 0.1.6.1) | Bugfix, kleine Korrekturen ohne neue Funktion | Icon-Fix, Crash-Fix |
+| **MINOR** (0.1 → 0.2) | Neues Feature oder größere Funktionserweiterung | 0.1.7 → 0.1.8 |
+| **PATCH** (0.1.8 → 0.1.8.1) | Bugfix, kleine Korrekturen ohne neue Funktion | Icon-Fix, Crash-Fix |
 
 **Regeln:**
 - `versionCode` zählt bei JEDEM Build hoch (egal ob Feature oder Fix)

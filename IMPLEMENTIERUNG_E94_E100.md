@@ -1,17 +1,17 @@
 # Implementierungsplan E-94 bis E-100 (v0.1.7)
 
-## Status: IN ARBEIT
+## Status: ERLEDIGT (ausgeliefert in v0.1.7, Build v0.1.8 verfügbar seit 25.07.2026)
 
-## Bereits erledigt:
+## Alle Punkte erledigt:
 - ✅ Migration 007 in database.ts (E-94/E-95/E-96/E-100 Spalten)
 - ✅ E-97 im Entscheidungsregister auf Phase 1/2 aufgeteilt
-- ⏳ EditPetScreen: Neue UI-Felder (E-94, E-95, E-100)
-- ⏳ EditPetScreen: PetRow + EditPetDraft + petToDraft + SQL UPDATE erweitern
-- ⏳ Impf-Screen: E-96 Felder (Charge, Gültig-ab, Impfstoff/Hersteller)
-- ⏳ Dokumentenscan-Screen: E-97 Phase 1 (Kamera → Tier zuordnen → documents-Tabelle)
-- ⏳ HomeScreen: E-98 Sortierung (alphabetisch + Gruppen)
-- ⏳ Untersuchungsergebnis-Screen: E-99 (neuer CaptureSheet-Typ)
-- ⏳ TypeScript-Check + APK v0.1.7 Build
+- ✅ EditPetScreen: Neue UI-Felder (E-94, E-95, E-100)
+- ✅ EditPetScreen: PetRow + EditPetDraft + petToDraft + SQL UPDATE erweitern
+- ✅ Impf-Screen: E-96 Felder (Charge, Gültig-ab, Impfstoff/Hersteller)
+- ✅ Dokumentenscan-Screen: E-97 Phase 1 (Kamera → Tier zuordnen → documents-Tabelle)
+- ✅ HomeScreen: E-98 Sortierung (alphabetisch + Gruppen)
+- ✅ Untersuchungsergebnis-Screen: E-99 (neuer CaptureSheet-Typ)
+- ✅ TypeScript-Check + APK v0.1.8 Build (GitHub Actions)
 
 ## DB-Spalten (Migration 007):
 ### pets-Tabelle:
@@ -55,6 +55,6 @@
 - Impf-Erfassungsscreen (E-96: neue Felder)
 
 ## Build-Infos:
-- Version: 0.1.7, versionCode 7
-- Build-Befehl: Sandbox mit Swap (6 GB), Java 17, gradle assembleRelease
-- APK-Name: simplyPet_v0.1.7.apk
+- Version: 0.1.8, versionCode 6
+- Build: GitHub Actions (`.github/workflows/build-apk.yml`)
+- APK-Name: simplyPet_v0.1.8.apk (Tester) / simplyPet_v0.1.8_DEV.apk

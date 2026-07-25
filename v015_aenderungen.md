@@ -1,27 +1,100 @@
+# v0.1.8 Änderungen (25.07.2026)
+
+## Neue Features / Fixes (v0.1.7 → v0.1.8)
+
+### BUG-3: Tägliche Checkbox resettet um 00:00 Uhr
+- Tägliche Erinnerungen (z.B. "Ohren eincremen") werden beim App-Start automatisch auf "unerledigt" zurückgesetzt wenn das Erledigungsdatum < heute ist
+- Scheduler-Logik prüft beim App-Start und bei Datumswechsel
+
+### BUG-4: Routine-Erledigungen nicht mehr im Verlauf
+- Tägliche Routine-Erledigungen erzeugen keinen Eintrag mehr in der Tierakte/Verlauf
+- Verlauf zeigt nur noch essentielle Informationsänderungen: Gewicht, Impfungen, TA-Besuche, Diagnosen, Untersuchungsergebnisse, Medikamentenänderungen
+
+### E-101: Farben pro Tiergruppe
+- Farbliche Kennzeichnung von individuell-pro-Tier auf pro-Tiergruppe umgestellt
+- Hunde = Teal (#008080), Katzen = Orange (#E67E22), Reptilien = Grün (#27AE60), Fische = Gold (#D4AC0D), Pferde = Braun (#8B4513), Vögel = Blau (#2980B9), Kaninchen/Nager = Lila (#8E44AD)
+
+### E-102: Gruppen-Icons im Header
+- Tier-Icons im Gruppen-Header (neben Gruppennamen)
+- Einzel-Avatar bleibt Großbuchstabe oder eigenes Foto
+- Icons als SVG/Vektor, weiß auf Gruppenfarbe
+
+### E-103: HomeScreen Variante C – Gruppen-Accordion
+- Tiere nach Tiergruppe gruppiert mit einklappbaren Headern
+- Chevron zum Ein-/Ausklappen
+- Kompakte Zeilen: Buchstaben-Avatar + Name + Rasse
+- Gruppen und Tiere alphabetisch sortiert
+
+### GitHub Actions Workflow
+- `.github/workflows/build-apk.yml` erstellt
+- Zwei Jobs: `build-tester` (mit 90-Tage-Timer) + `build-dev` (Timer deaktiviert)
+- Trigger: Push in `app/`-Ordner oder manuell via `workflow_dispatch`
+- Artifacts: 30 Tage Aufbewahrung
+- APK-Benennung: `simplyPet_v{version}.apk` / `simplyPet_v{version}_DEV.apk`
+
+## Version
+- app.json: version "0.1.8", versionCode 6
+
+---
+
+# v0.1.7 Änderungen (20.07.2026)
+
+## Neue Features (v0.1.6 → v0.1.7)
+
+### E-94: Chip-Implantationsdaten
+- Datum + Stelle in Stammdaten (EditPetScreen)
+- Nur bei Hund/Katze/Pferd/Kaninchen sichtbar
+
+### E-95: Tätowierungsnummer
+- Nummer + Datum + Stelle (Hund/Katze/Kaninchen)
+- Optionale Felder in Stammdaten
+
+### E-96: Impfungen erweitert
+- Chargen-Nr. (Freitext)
+- Gültig-ab (Datum)
+- Hersteller/Impfstoff (Freitext)
+- Alle Felder optional
+
+### E-97 Phase 1: Dokumentenscan
+- Kamera oder Galerie → Tier-Zuordnung → Speicherung in Tierakte
+- Kein OCR in Phase 1
+
+### E-98: Alphabetische + Gruppen-Sortierung
+- Toggle-Button auf HomeScreen (A-Z / Gruppen)
+- Innerhalb Gruppen alphabetisch
+
+### E-99: Untersuchungsergebnis als Erfassungstyp
+- Art der Untersuchung (Freitext)
+- Ergebnis/Befund (multiline)
+- Optional: Foto/Scan anhängen
+
+### E-100: EU-Heimtierausweis-Nummer
+- Optionales Feld in Stammdaten
+- Nur bei Hund/Katze/Frettchen sichtbar
+
+### DB-Migration 007
+- Neue Spalten für alle E-94 bis E-100 Features
+
+## Version
+- app.json: version "0.1.7", versionCode 6
+
+---
+
 # v0.1.6 Änderungen (20.07.2026)
 
 ## Neue Features (v0.1.6)
 
 ### 90-Tage-Ablauf-Timer für Tester
-- **Zweck:** Testversionen laufen automatisch ab, damit keine veralteten Builds im Umlauf bleiben
-- **Implementierung:** App.tsx prüft beim Start, ob BUILD_DATE + EXPIRY_DAYS überschritten
-- **BUILD_DATE:** 2026-07-20
-- **EXPIRY_DAYS:** 90 (Ablauf ca. 18. Oktober 2026)
-- **Verhalten:** Alert „Testversion abgelaufen“ + App beendet sich (BackHandler.exitApp())
-- **Nicht umgehbar:** cancelable: false
+- App.tsx prüft beim Start, ob BUILD_DATE + EXPIRY_DAYS überschritten
+- BUILD_DATE: 2026-07-20
+- EXPIRY_DAYS: 90 (Ablauf ca. 18. Oktober 2026)
+- Alert „Testversion abgelaufen" + App beendet sich
 
 ### Backup-System: app_version dynamisch
-- backupService.ts liest Version jetzt aus `Constants.expoConfig?.version` statt Hardcoded
-- Backup-JSON enthält immer die aktuelle App-Version
+- backupService.ts liest Version aus `Constants.expoConfig?.version`
 
-## Geänderte Dateien (v0.1.6)
-| Datei | Änderung |
-|:---|:---|
-| App.tsx | +checkExpiry(), +BUILD_DATE/EXPIRY_DAYS, +Alert/BackHandler Imports |
-| app.json | version 0.1.6, versionCode 6 |
-| src/backup/backupService.ts | app_version dynamisch via Constants |
-| tester/Feedback_ToDo_Tester.md | 90-Tage-Hinweis + Backup-Sektion (F) hinzugefügt |
-| tester/Feedback_ToDo_Tester.pdf | Neu generiert |
+## Version
+- app.json: version "0.1.6", versionCode 6
 
 ---
 
@@ -30,86 +103,23 @@
 ## Neue Features
 
 ### E-88: EditPetScreen – Pferde-Eingabefelder
-- **Nur bei Tierart Pferd sichtbar** (species === 'pferd')
-- Eigene Sektion "Pferde-Daten" mit visueller Trennlinie
-- Felder:
-  - Equidenpass-Nr. (Freitext, Hint: EU-Verordnung 2015/262)
-  - Haltungsform (ChoiceChips: Box / Offenstall / Weide / Paddock)
-  - Geschätztes Gewicht (kg, Zahlenfeld, Hint: Maßband-Schätzung)
-  - Kolik-Vorgeschichte (Freitext, multiline)
-  - Stallkontakt: Name / Telefon / Box-Nummer
-  - Hufschmied: Name / Telefon
-- Alle Felder optional
-- Daten fließen in den Notfallpass (EquinePassBlocks)
-- DB-Felder aus Migration 005 (equine_*)
-- PetRow + EditPetDraft Interface erweitert
-- SQL UPDATE erweitert (+9 Spalten)
+- 9 equine_* Felder (Equidenpass-Nr., Haltungsform, Gewicht, Kolik-Vorgeschichte, Stallkontakt, Hufschmied)
+- Nur bei Tierart Pferd sichtbar
 
 ### E-89: Kotprobe als eigener Erfassungstyp
-- **Neuer Screen:** `FecalSampleEntryScreen.tsx`
-- **CaptureSheet:** Neue Option "Kotprobe (Pferd)" mit Hint
-- **Navigation:** Route 'KotprobeEintragen' registriert
-- **Nur für Pferde:** PetPicker filtert auf species === 'pferd'
-- Felder:
-  - EpG-Wert (Eier pro Gramm) – Pflichtfeld, Zahlenfeld
-  - Notiz (optional, z. B. Labor, Befund)
-  - Datum der Probenentnahme
-- record_type = 'Kotprobe' in health_records
-- epg_value als INTEGER in DB (Migration 005)
-- **PetFileScreen:** Anzeige "Kotprobe: X EpG" im Verlauf
-- **Keine medizinischen Warnhinweise** (Doktrin)
-- Draft-System: draftKey 'entry_fecal_sample'
+- FecalSampleEntryScreen.tsx
+- EpG-Wert, Datum, Notiz
+- Nur für Pferde
 
-## Bestätigte vorhandene Features (kein Code-Change nötig)
-- E-52: Low-Memory-Handling (registerLowMemoryHandler in App.tsx)
-- E-72: Show-on-Lock-Screen (plugins/withShowOnLockScreen.js)
-- HomeScreen: FlatList (seit v0.1.2)
-- Auto-Backup nach Save (useEntryForm.ts Zeile 114-120)
+### E-93: Backup-System komplett überarbeitet (17.07.2026)
+- autoBackup bei jeder Datenänderung (6 Screens)
+- Export: SAF (lokaler Speicher) + Share-Intent
+- Import: DocumentPicker → JSON-Validierung → DB-Restore
+- AsyncStorage für Backup-Status
 
 ## Fixes
-- backupService.ts: Locale-Datumsformatierung gefixt (TT.MM.JJJJ statt toLocaleDateString)
-- **E-90: Notification-Icon Fragezeichen in Statusleiste** – `EmergencyForegroundService.kt` verwendete `android.R.drawable.ic_menu_help` (Androids generisches "?"-Symbol). Ersetzt durch Monochrome-PNG des simplyPet-Logos (Pfote+Kreuz Silhouette) als ic_notification.png in alle DPI-Ordner. Plugin `withForegroundService.js` generiert das Icon automatisch bei Prebuild.
-- **E-92: Notification-Icon korrekte Lösung** – `R.drawable.ic_notification` (Monochrome-Pfote) + `setColor(0xFF2E9E83)`. Samsung OneUI 8.5 (Android 16) zeigt grüne Pfote, Stock-Android 15 (ZTE/Tablet) zeigt weiße Silhouette. Siehe TESTGERAETE_MATRIX.md für Details.
+- E-90/E-92: Notification-Icon (simplyPet-Pfote, DPI-skaliert)
+- E-91: Konsistenter APK-Dateiname (withApkName.js Plugin)
 
 ## Version
 - app.json: version "0.1.5", versionCode 5
-
-## Geänderte Dateien
-| Datei | Änderung |
-|:---|:---|
-| src/screens/EditPetScreen.tsx | PetRow +9 equine_* Felder, EditPetDraft +9 Felder, petToDraft erweitert, SQL UPDATE +9 Spalten, UI-Sektion "Pferde-Daten" |
-| src/screens/entries/FecalSampleEntryScreen.tsx | **NEU** – Kotprobe-Erfassungsscreen |
-| src/components/CaptureSheet.tsx | CaptureAction + 'kotprobe', neue Option im Sheet |
-| src/navigation/AppNavigator.tsx | Import FecalSampleEntryScreen, Route KotprobeEintragen, CAPTURE_ROUTE + kotprobe |
-| src/screens/PetFileScreen.tsx | HealthRecordRow + epg_value, SELECT + epg_value, RECORD_TYPE_LABELS + Kotprobe, Anzeige-Logik |
-| app.json | version 0.1.5, versionCode 5 |
-| plugins/withForegroundService.js | E-92: setSmallIcon(R.drawable.ic_notification) + setColor(0xFF2E9E83), DPI-skalierte PNGs aus assets/notification-icons/ |
-| assets/notification-icons/*.png | **NEU** – Vorskalierte Notification-Icons (24/36/48/72/96px) |
-| TESTGERAETE_MATRIX.md | **NEU** – Geräte, OS-Versionen, Notification-Icon-Verhalten dokumentiert |
-| plugins/withApkName.js | **NEU** – setzt APK-Dateiname auf simplyPet_v{versionName}.apk |
-
-## E-93: Backup-System komplett überarbeitet (17.07.2026)
-
-### Fixes:
-- **Backup-Anzeige:** `getLastBackupDate()` liest jetzt primär aus `AsyncStorage` (Key: `simplypet.last_backup_date`). Überlebt App-Updates zuverlässig. Fallback auf Datei-Existenz.
-- **autoBackup überall:** Wird jetzt nach JEDER Datenänderung getriggert (nicht nur in useEntryForm):
-  - AddPetScreen (Tier anlegen)
-  - EditPetScreen (Stammdaten speichern)
-  - ManagePetsScreen (Archivieren / Reaktivieren)
-  - PetFileScreen (Gabe protokollieren, Eintrag löschen, Impfung löschen, Eintrag bearbeiten)
-  - AppointmentsScreen (Aufgabe erledigen / rückgängig)
-
-### Neues Feature:
-- **Lokal speichern (SAF):** Export-Button bietet jetzt ZWEI Optionen:
-  1. "Lokal speichern" – öffnet nativen Android "Speichern unter..."-Dialog (Storage Access Framework). Nutzer wählt Ordner (Downloads, Dokumente etc.).
-  2. "Teilen (Drive, WhatsApp…)" – bisheriger Share-Intent bleibt erhalten.
-
-### Geänderte Dateien:
-| Datei | Änderung |
-|:---|:---|
-| src/backup/backupService.ts | AsyncStorage-Status, SAF saveLocally(), exportBackup() mit Auswahl-Dialog |
-| src/screens/AddPetScreen.tsx | +autoBackup() nach Save |
-| src/screens/EditPetScreen.tsx | +autoBackup() nach Save |
-| src/screens/ManagePetsScreen.tsx | +autoBackup() nach Archivieren/Reaktivieren |
-| src/screens/PetFileScreen.tsx | +autoBackup() nach logDose, deleteRecord, deleteVaccination, handleEditSave |
-| src/screens/AppointmentsScreen.tsx | +autoBackup() nach complete/undo |
