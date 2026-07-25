@@ -1,27 +1,27 @@
 /**
- * simplyPet: Startbildschirm ("Mein Zuhause") – v0.1.2
+ * simplyPet: Startbildschirm ("Mein Zuhause") – v0.1.8
  * Quelle: technische_spezifikation_screen_flow.md (2.2)
  *
  * Zone 1: Status-Karten ("Heute fällig: …") – Tap oeffnet die Terminliste.
- * Zone 2: Tier-Kacheln (Foto, Name, Status) + Plus-Kachel am Ende.
- * Zone 3: fester Notfallpass-Knopf (Zwei-Tap-Regel).
- * Leerer Zustand: freundliche Anleitungskarte statt leerer Kacheln.
+ * Zone 2: Gruppen-Accordion (E-103) mit Gruppen-Farben (E-101) und Icons (E-102).
+ * Zone 3: fester Notfallpass-Knopf (Zwei-Tap-Regel, jetzt 5. Tab).
  *
- * v0.1.2 Aenderungen:
- * - FlatList statt ScrollView+map fuer Tier-Kacheln (RAM-Schutz Nr. 25)
- * - Kleine Foto-Dimensionen (Thumbnail-Effekt, Nr. 26)
- * - flexShrink auf Texte (Nr. 18)
+ * v0.1.8 Aenderungen:
+ * - E-101: Farben pro Tiergruppe statt pro Tier
+ * - E-102: Gruppen-Icons im Accordion-Header
+ * - E-103: Gruppen-Accordion statt flacher Liste
  */
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   View,
   Text,
-  FlatList,
+  ScrollView,
   Pressable,
   Image,
   StyleSheet,
-  useWindowDimensions,
-  ListRenderItemInfo,
+  LayoutAnimation,
+  Platform,
+  UIManager,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -32,6 +32,11 @@ import { getSpeciesConfig } from '../config/species';
 import { getOwnerName } from '../profile/profileStore';
 import { useTodayKey } from '../time/timeModule';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
+
+// LayoutAnimation fuer Android aktivieren
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 interface PetRow {
   id: string;
@@ -50,14 +55,75 @@ interface ReminderRow {
   pet_name: string;
 }
 
-// Spezieller Eintrag fuer die "+Tier hinzufuegen"-Kachel am Ende der FlatList
-const ADD_TILE_ID = '__add_tile__';
-type TileItem = PetRow | { id: typeof ADD_TILE_ID };
+// ─── E-101: Gruppen-Farben ───
+const GROUP_COLORS: Record<string, string> = {
+  hund: '#008080',
+  katze: '#E67E22',
+  reptil: '#27AE60',
+  aquarium: '#D4AC0D',
+  pferd: '#8B4513',
+  vogel: '#2980B9',
+  frettchen: '#008080',
+  // Kleintiere (Nager)
+  kaninchen: '#8E44AD',
+  meerschweinchen: '#8E44AD',
+  chinchilla: '#8E44AD',
+  ratte: '#8E44AD',
+  maus: '#8E44AD',
+  degu: '#8E44AD',
+  hamster: '#8E44AD',
+};
+
+function getGroupColor(species: string): string {
+  return GROUP_COLORS[species] ?? colors.primary;
+}
+
+// ─── E-102: Gruppen-Icons ───
+const GROUP_ICONS: Record<string, string> = {
+  Hunde: '🐕',
+  Katzen: '🐈',
+  Kleintiere: '🐇',
+  Reptilien: '🦎',
+  Aquarien: '🐟',
+  Pferde: '🐴',
+  'Vögel': '🐦',
+  Frettchen: '🐾',
+};
+
+// ─── E-103: Species → Gruppenname Mapping ───
+function getGroupName(species: string): string {
+  switch (species) {
+    case 'hund': return 'Hunde';
+    case 'katze': return 'Katzen';
+    case 'kaninchen':
+    case 'meerschweinchen':
+    case 'chinchilla':
+    case 'ratte':
+    case 'maus':
+    case 'degu':
+    case 'hamster':
+      return 'Kleintiere';
+    case 'frettchen': return 'Frettchen';
+    case 'vogel': return 'Vögel';
+    case 'reptil': return 'Reptilien';
+    case 'pferd': return 'Pferde';
+    case 'aquarium': return 'Aquarien';
+    default: return 'Sonstige';
+  }
+}
+
+// Gruppen-Reihenfolge (feste Sortierung)
+const GROUP_ORDER = ['Hunde', 'Katzen', 'Kleintiere', 'Frettchen', 'Vögel', 'Reptilien', 'Pferde', 'Aquarien', 'Sonstige'];
+
+interface PetGroup {
+  name: string;
+  color: string;
+  icon: string;
+  pets: PetRow[];
+}
 
 export default function HomeScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const { width, height } = useWindowDimensions();
-  const isLandscape = width > height;
   const todayKey = useTodayKey();
   const insets = useSafeAreaInsets();
 
@@ -65,6 +131,7 @@ export default function HomeScreen() {
   const [dueToday, setDueToday] = useState<ReminderRow[]>([]);
   const [overdue, setOverdue] = useState<number>(0);
   const [ownerName, setOwnerNameState] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
   useFocusEffect(
     useCallback(() => {
@@ -115,90 +182,41 @@ export default function HomeScreen() {
 
   const hasPets = pets.length > 0;
 
-  // E-98: Sortierung (alphabetisch oder nach Tierart gruppiert)
-  const [sortMode, setSortMode] = useState<'alpha' | 'group'>('alpha');
-  const sortedPets = useMemo(() => {
-    const sorted = [...pets];
-    if (sortMode === 'alpha') {
-      sorted.sort((a, b) => a.name.localeCompare(b.name, 'de'));
-    } else {
-      // Gruppiert: erst nach Tierart, dann innerhalb alphabetisch
-      sorted.sort((a, b) => {
-        const speciesCompare = a.species.localeCompare(b.species, 'de');
-        if (speciesCompare !== 0) return speciesCompare;
-        return a.name.localeCompare(b.name, 'de');
-      });
+  // E-103: Tiere in Gruppen aufteilen
+  const groups: PetGroup[] = useMemo(() => {
+    const groupMap: Record<string, PetRow[]> = {};
+    for (const pet of pets) {
+      const gName = getGroupName(pet.species);
+      if (!groupMap[gName]) groupMap[gName] = [];
+      groupMap[gName].push(pet);
     }
-    return sorted;
-  }, [pets, sortMode]);
+    // Alphabetisch innerhalb jeder Gruppe sortieren
+    for (const key of Object.keys(groupMap)) {
+      groupMap[key].sort((a, b) => a.name.localeCompare(b.name, 'de'));
+    }
+    // Gruppen in fester Reihenfolge
+    return GROUP_ORDER
+      .filter((name) => groupMap[name] && groupMap[name].length > 0)
+      .map((name) => ({
+        name,
+        color: getGroupColor(groupMap[name][0].species),
+        icon: GROUP_ICONS[name] ?? '🐾',
+        pets: groupMap[name],
+      }));
+  }, [pets]);
 
-  // FlatList-Daten: Tiere + Add-Kachel am Ende
-  const tileData: TileItem[] = hasPets
-    ? [...sortedPets, { id: ADD_TILE_ID }]
-    : [];
+  function toggleGroup(groupName: string) {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setCollapsed((prev) => ({ ...prev, [groupName]: !prev[groupName] }));
+  }
 
-  const renderTile = useCallback(
-    ({ item }: ListRenderItemInfo<TileItem>) => {
-      if (item.id === ADD_TILE_ID) {
-        return (
-          <Pressable
-            style={[
-              styles.addTile,
-              isLandscape ? styles.petTileLandscape : styles.petTilePortrait,
-            ]}
-            onPress={() => navigation.navigate('TierAnlegen')}
-            accessibilityLabel="Weiteres Tier hinzufügen"
-          >
-            <Text style={styles.addTileText}>＋ Tier hinzufügen</Text>
-          </Pressable>
-        );
-      }
-      const pet = item as PetRow;
-      const cfg = getSpeciesConfig(pet.species);
-      return (
-        <Pressable
-          style={[
-            styles.petTile,
-            isLandscape ? styles.petTileLandscape : styles.petTilePortrait,
-            { borderLeftColor: pet.color_theme ?? colors.border },
-          ]}
-          onPress={() => navigation.navigate('Tierakte', { petId: pet.id })}
-          accessibilityLabel={`Tierakte von ${pet.name} öffnen`}
-        >
-          {pet.photo_uri ? (
-            <Image
-              source={{ uri: pet.photo_uri }}
-              style={styles.petPhoto}
-              resizeMode="cover"
-            />
-          ) : (
-            <View style={[styles.petPhoto, styles.petPhotoPlaceholder]}>
-              <Text style={styles.petPhotoInitial}>
-                {pet.name.charAt(0).toUpperCase()}
-              </Text>
-            </View>
-          )}
-          <View style={styles.petTileBody}>
-            <Text style={styles.petName} numberOfLines={1} ellipsizeMode="tail">
-              {pet.name}
-            </Text>
-            {/* E-83: Rasse anzeigen wenn vorhanden, sonst Tierart */}
-            <Text style={styles.petSpecies} numberOfLines={1} ellipsizeMode="tail">
-              {pet.breed || cfg?.label || pet.species}
-            </Text>
-          </View>
-        </Pressable>
-      );
-    },
-    [isLandscape, navigation]
-  );
-
-  const keyExtractor = useCallback((item: TileItem) => item.id, []);
-
-  // Header-Komponente fuer FlatList (Greeting + Status-Karten + Sectiontitle)
-  const ListHeader = useCallback(
-    () => (
-      <View>
+  return (
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Greeting */}
         <Text style={styles.greeting}>
           {ownerName ? `Hallo ${ownerName}!` : 'Hallo!'}
         </Text>
@@ -220,6 +238,7 @@ export default function HomeScreen() {
           </View>
         ) : (
           <>
+            {/* Status-Karten */}
             {overdue > 0 ? (
               <Pressable
                 style={[styles.statusCard, styles.statusCardOverdue]}
@@ -245,42 +264,77 @@ export default function HomeScreen() {
                 <Text style={styles.statusCardTitle}>Alles versorgt – heute ist nichts fällig.</Text>
               </View>
             ) : null}
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Meine Tiere</Text>
-              {pets.length > 1 ? (
-                <Pressable
-                  style={styles.sortToggle}
-                  onPress={() => setSortMode((m) => m === 'alpha' ? 'group' : 'alpha')}
-                  accessibilityLabel={sortMode === 'alpha' ? 'Nach Tierart gruppieren' : 'Alphabetisch sortieren'}
-                >
-                  <Text style={styles.sortToggleText}>{sortMode === 'alpha' ? 'A-Z' : '▤'}</Text>
-                </Pressable>
-              ) : null}
-            </View>
+
+            {/* Meine Tiere Header */}
+            <Text style={styles.sectionTitle}>Meine Tiere</Text>
+
+            {/* E-103: Gruppen-Accordion */}
+            {groups.map((group) => {
+              const isCollapsed = collapsed[group.name] ?? false;
+              return (
+                <View key={group.name} style={styles.groupContainer}>
+                  {/* Gruppen-Header */}
+                  <Pressable
+                    style={[styles.groupHeader, { backgroundColor: group.color }]}
+                    onPress={() => toggleGroup(group.name)}
+                    accessibilityLabel={`${group.name} ${isCollapsed ? 'aufklappen' : 'zuklappen'}`}
+                  >
+                    <Text style={styles.groupIcon}>{group.icon}</Text>
+                    <Text style={styles.groupName}>{group.name}</Text>
+                    <Text style={styles.groupChevron}>{isCollapsed ? '▼' : '▲'}</Text>
+                  </Pressable>
+
+                  {/* Tier-Zeilen (wenn nicht eingeklappt) */}
+                  {!isCollapsed && (
+                    <View style={[styles.groupBody, { borderColor: group.color }]}>
+                      {group.pets.map((pet) => {
+                        const cfg = getSpeciesConfig(pet.species);
+                        return (
+                          <Pressable
+                            key={pet.id}
+                            style={styles.petRow}
+                            onPress={() => navigation.navigate('Tierakte', { petId: pet.id })}
+                            accessibilityLabel={`Tierakte von ${pet.name} öffnen`}
+                          >
+                            {pet.photo_uri ? (
+                              <Image
+                                source={{ uri: pet.photo_uri }}
+                                style={styles.petPhoto}
+                                resizeMode="cover"
+                              />
+                            ) : (
+                              <View style={[styles.petPhoto, styles.petPhotoPlaceholder]}>
+                                <Text style={styles.petPhotoInitial}>
+                                  {pet.name.charAt(0).toUpperCase()}
+                                </Text>
+                              </View>
+                            )}
+                            <Text style={styles.petName} numberOfLines={1} ellipsizeMode="tail">
+                              {pet.name}
+                            </Text>
+                            <Text style={styles.petBreed} numberOfLines={1} ellipsizeMode="tail">
+                              {pet.breed || cfg?.label || pet.species}
+                            </Text>
+                          </Pressable>
+                        );
+                      })}
+                    </View>
+                  )}
+                </View>
+              );
+            })}
+
+            {/* + Tier hinzufügen */}
+            <Pressable
+              style={styles.addTile}
+              onPress={() => navigation.navigate('TierAnlegen')}
+              accessibilityLabel="Weiteres Tier hinzufügen"
+            >
+              <Text style={styles.addTileText}>＋ Tier hinzufügen</Text>
+            </Pressable>
           </>
         )}
-      </View>
-    ),
-    [ownerName, hasPets, overdue, dueToday, navigation, pets.length, sortMode]
-  );
-
-  return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <FlatList
-        data={tileData}
-        renderItem={renderTile}
-        keyExtractor={keyExtractor}
-        ListHeaderComponent={ListHeader}
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={false}
-        removeClippedSubviews={true}
-        initialNumToRender={5}
-        maxToRenderPerBatch={5}
-        windowSize={3}
-      />
-
-      {/* Zone 3 entfernt: Notfall ist jetzt 5. Tab (E-58). Zwei-Tap-Regel
-          weiterhin erfuellt: Tab 1x antippen = Notfallpass. */}
+      </ScrollView>
     </View>
   );
 }
@@ -341,52 +395,74 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     marginTop: spacing.xs,
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: spacing.m,
-    marginBottom: spacing.m,
-  },
   sectionTitle: {
     fontSize: typography.title,
     color: colors.textPrimary,
     fontWeight: '600',
+    marginTop: spacing.l,
+    marginBottom: spacing.m,
   },
-  sortToggle: {
-    minWidth: 36,
-    minHeight: 36,
-    borderRadius: 8,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  sortToggleText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.primary,
-  },
-  petTilePortrait: { marginBottom: spacing.m },
-  petTileLandscape: { flexBasis: '47%', flexGrow: 1, marginBottom: spacing.m },
-  petTile: {
-    backgroundColor: colors.surface,
+  // ─── Gruppen-Accordion ───
+  groupContainer: {
+    marginBottom: spacing.m,
     borderRadius: 12,
-    borderLeftWidth: 6,
-    padding: spacing.s,
-    paddingHorizontal: spacing.m,
-    minHeight: minTouchTarget,
+    overflow: 'hidden',
+  },
+  groupHeader: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: spacing.m,
+    borderRadius: 12,
+    minHeight: minTouchTarget,
+  },
+  groupIcon: {
+    fontSize: 20,
+    marginRight: spacing.s,
+  },
+  groupName: {
+    flex: 1,
+    fontSize: typography.title,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  groupChevron: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    opacity: 0.8,
+  },
+  groupBody: {
+    borderWidth: 1,
+    borderTopWidth: 0,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    backgroundColor: colors.surface,
+  },
+  petRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: spacing.m,
+    minHeight: minTouchTarget,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
     gap: spacing.s,
   },
-  petPhoto: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.border },
+  petPhoto: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.border },
   petPhotoPlaceholder: { alignItems: 'center', justifyContent: 'center' },
-  petPhotoInitial: { fontSize: typography.title, fontWeight: '700', color: colors.textSecondary },
-  petTileBody: { flex: 1, flexShrink: 1 },
-  petName: { fontSize: typography.title, color: colors.textPrimary, fontWeight: '600' },
-  petSpecies: { fontSize: typography.bodySmall, color: colors.textSecondary },
+  petPhotoInitial: { fontSize: typography.body, fontWeight: '700', color: colors.textSecondary },
+  petName: {
+    fontSize: typography.body,
+    color: colors.textPrimary,
+    fontWeight: '600',
+    flexShrink: 0,
+  },
+  petBreed: {
+    fontSize: typography.bodySmall,
+    color: colors.textSecondary,
+    flexShrink: 1,
+    marginLeft: spacing.s,
+  },
   addTile: {
     borderWidth: 1,
     borderColor: colors.border,
@@ -396,7 +472,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minHeight: minTouchTarget,
     justifyContent: 'center',
+    marginTop: spacing.s,
   },
   addTileText: { fontSize: typography.body, color: colors.textSecondary },
-
 });

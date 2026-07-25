@@ -171,7 +171,8 @@ export default function PetFileScreen() {
         );
         const recs = await db.getAllAsync<HealthRecordRow>(
           `SELECT id, record_type, date, value, unit, notes, photo_uri, created_at, updated_at, epg_value
-           FROM health_records WHERE pet_id = ? AND deleted_at IS NULL`,
+           FROM health_records WHERE pet_id = ? AND deleted_at IS NULL
+             AND record_type != 'Medikamentengabe'`,
           [petId]
         );
         const vaccs = await db.getAllAsync<VaccinationRow>(

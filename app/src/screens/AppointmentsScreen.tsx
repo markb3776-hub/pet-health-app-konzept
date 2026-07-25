@@ -79,6 +79,14 @@ export default function AppointmentsScreen() {
 
   const reload = useCallback(async () => {
     const db = await getDb();
+    // BUG-3 FIX: Tägliche Erinnerungen die in der Vergangenheit liegen auf heute setzen
+    // (Catch-up nach Mitternacht oder wenn App einen Tag nicht geöffnet wurde)
+    await db.runAsync(
+      `UPDATE reminders SET due_date = ?, updated_at = datetime('now'), is_synced = 0
+       WHERE repeat_rule = 'taeglich' AND status = 'Offen' AND deleted_at IS NULL
+         AND substr(due_date, 1, 10) < ?`,
+      [todayKey, todayKey]
+    );
     const openRows = await db.getAllAsync<ReminderRow>(
       `SELECT r.*, p.id AS pet_id, p.name AS pet_name, p.species AS pet_species, p.color_theme AS pet_color
        FROM reminders r JOIN pets p ON p.id = r.pet_id
@@ -126,14 +134,9 @@ export default function AppointmentsScreen() {
       const ts = nowUtcIso();
       await db.withTransactionAsync(async () => {
         if (r.repeat_rule === 'taeglich') {
-          // Gabe protokollieren (Timeline!) + Faelligkeit auf morgen.
-          if (r.source_type === 'medikament' && r.source_id) {
-            await db.runAsync(
-              `INSERT INTO health_records (id, pet_id, record_type, date, notes, medication_id, created_at, updated_at, is_synced)
-               VALUES (?, ?, 'Medikamentengabe', ?, ?, ?, ?, ?, 0)`,
-              [uuid(), r.pet_id, todayKey, r.title, r.source_id, ts, ts]
-            );
-          }
+          // BUG-4 FIX: Kein Verlaufs-Eintrag bei täglichen Routine-Erinnerungen.
+          // Der Nutzer sagt: "ergibt sich aus der hinterlegten Erinnerung".
+          // Nur essentielle Infos (Gewicht, Impfung, TA-Besuch) gehören in den Verlauf.
           await db.runAsync(
             `UPDATE reminders SET due_date = ?, updated_at = ?, is_synced = 0 WHERE id = ?`,
             [dateKeyWithOffset(1), ts, r.id]
