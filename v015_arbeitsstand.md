@@ -1,4 +1,4 @@
-# v0.1.8 Arbeitsstand (25.07.2026)
+# v0.1.8 Arbeitsstand (26.07.2026)
 
 ## STATUS: ✅ BUILD ERFOLGREICH – APKs verfügbar
 
@@ -28,14 +28,19 @@
   - `simply_devapps_banner_4096x2304.jpg` (4096x2304, Kopfzeilenbild)
 
 ## OFFENE BUGS / VERBESSERUNGEN:
-| ID | Beschreibung | Priorität |
+| ID | Beschreibung | Status |
 |:---|:---|:---|
-| BUG-5 | QR-Code enthält nicht alle Notfall-Pass-Daten (Impfstatus, Gewicht, Geschlecht, Fellfarbe fehlen) | Hoch |
-| E-104 | PDF-Dateiname kryptisch (UUID) → soll `Notfallpass_{Tiername}_{Datum}.pdf` heißen | Mittel |
+| – | Aktuell keine offenen Bugs | – |
+
+## GERADE ERLEDIGT (26.07.2026):
+| ID | Beschreibung | Fix |
+|:---|:---|:---|
+| BUG-5 | QR-Code enthielt nicht alle Notfall-Pass-Daten | ✅ Geschlecht, Kastration, Fellfarbe, Impfstatus, Gewicht hinzugefügt |
+| E-104 | PDF-Dateiname war kryptisch (UUID) | ✅ Jetzt `Notfallpass_{Tiername}_{Datum}.pdf` |
 
 ## NÄCHSTE SCHRITTE (Reihenfolge):
-1. BUG-5 fixen (QR-Code alle Felder)
-2. E-104 fixen (PDF-Dateiname)
+1. ~~BUG-5 fixen (QR-Code alle Felder)~~ ✅ ERLEDIGT
+2. ~~E-104 fixen (PDF-Dateiname)~~ ✅ ERLEDIGT
 3. Tester-Feedback mit v0.1.8 sammeln (3 Personen, 5 Geräte)
 4. Onboarding-Screen für Erstnutzer erstellen
 5. Datenschutzerklärung erstellen + hosten
