@@ -1,8 +1,8 @@
 # Arbeitsanweisung: App-Bau / Update-Prozess
 
 > **PFLICHT** – Diese Anweisung gilt für JEDE Session. Keine Ausnahmen.  
-> Erstellt: 11.07.2026 | Überarbeitet: 17.07.2026  
-> Grund der Überarbeitung: Credits-Verschwendung durch vergessenen Kontext verhindern.
+> Erstellt: 11.07.2026 | Überarbeitet: 25.07.2026  
+> Grund der Überarbeitung: Code-Review/Konsistenz-Check als Pflicht-Schritt eingeführt (BUG-5 Prävention).
 
 ---
 
@@ -44,24 +44,30 @@
 ## Phase 3: Code aktualisieren
 
 13. Code-Änderungen durchführen
-14. TypeScript-Check (`./node_modules/.bin/tsc --noEmit` – muss 0 Fehler haben)
-15. **Sofort auf GitHub pushen** (Sicherung)
+14. TypeScript-Check (`cd app && npx tsc --noEmit` – muss 0 Fehler haben)
+15. **Code-Review & Konsistenz-Check** (PFLICHT vor jedem Push):
+    - Alle geänderten Funktionen durchlesen: Stimmt Input/Output?
+    - Werden Daten an mehreren Stellen angezeigt (z.B. Notfall-Pass UI, QR-Code, PDF)? → Prüfen ob ALLE Stellen die gleichen Felder abfragen
+    - SQL-Queries prüfen: Werden alle benötigten Spalten gelesen?
+    - Navigation: Sind alle neuen Routen registriert und erreichbar?
+    - Wenn ein Feature Daten aus der DB liest: Stimmt die Spaltenanzahl im SELECT mit den Parametern überein?
+16. **Sofort auf GitHub pushen** (Sicherung)
 
 ---
 
 ## Phase 4: GO abwarten
 
-16. **GO vom Nutzer abwarten** – NICHT eigenständig mit dem Build beginnen
-17. Nutzer bestätigt explizit dass gebaut werden soll
+17. **GO vom Nutzer abwarten** – NICHT eigenständig mit dem Build beginnen
+18. Nutzer bestätigt explizit dass gebaut werden soll
 
 ---
 
 ## Phase 5: APK bauen
 
-18. **APK wird über GitHub Actions gebaut** – NICHT in der Sandbox
-19. Push auf `main` triggert automatisch `.github/workflows/build-apk.yml`
-20. APK liegt als Artifact im GitHub Actions Run (30 Tage verfügbar)
-21. Alternativ: `gh workflow run build-apk.yml` für manuellen Trigger
+19. **APK wird über GitHub Actions gebaut** – NICHT in der Sandbox
+20. Push auf `main` triggert automatisch `.github/workflows/build-apk.yml`
+21. APK liegt als Artifact im GitHub Actions Run (30 Tage verfügbar)
+22. Alternativ: `gh workflow run build-apk.yml` für manuellen Trigger
 
 ### NIEMALS in der Sandbox bauen:
 - Die Sandbox hat nicht genug RAM für Gradle (~2 GB vs. benötigte ~4 GB)
