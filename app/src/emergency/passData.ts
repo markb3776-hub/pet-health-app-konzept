@@ -315,6 +315,9 @@ export function buildQrPayload(d: PassData): string {
   lines.push('NOTFALL-PASS (simplyPet)');
   lines.push(`Tier: ${d.pet.name} – ${d.speciesLabel}${d.pet.breed ? `, ${d.pet.breed}` : ''}`);
   if (d.pet.birth_date) lines.push(`Geboren: ${formatDate(d.pet.birth_date)}`);
+  if (d.pet.gender) lines.push(`Geschlecht: ${d.pet.gender}`);
+  if (d.pet.castration_status) lines.push(`Kastration: ${d.pet.castration_status}`);
+  if (d.pet.coat_color) lines.push(`Fellfarbe: ${d.pet.coat_color}`);
   if (d.pet.chip_number) lines.push(`Chip: ${d.pet.chip_number}`);
   // E-80: Pferde-spezifische QR-Zeilen
   if (d.equineData?.passNumber) lines.push(`Equidenpass: ${d.equineData.passNumber}`);
@@ -342,6 +345,16 @@ export function buildQrPayload(d: PassData): string {
     lines.push(
       `Parasitenschutz: ${d.parasiteProtection.map((p) => `${p.name}${p.sub_type ? ` (${p.sub_type})` : ''}`).join(', ')}`
     );
+  }
+  // BUG-5 Fix: Impfstatus im QR-Code
+  if (d.vaccinations.length) {
+    lines.push(
+      `Impfungen: ${d.vaccinations.map((v) => `${v.disease ?? v.product_name ?? 'Impfung'} (${formatDate(v.date_given)})`).join(', ')}`
+    );
+  }
+  // BUG-5 Fix: Gewicht im QR-Code
+  if (d.lastWeight) {
+    lines.push(`Gewicht: ${String(d.lastWeight.value).replace('.', ',')} ${d.lastWeight.unit} (${formatDate(d.lastWeight.date)})`);
   }
   if (d.ownerName || d.ownerPhone) {
     lines.push(`Halter: ${d.ownerName ?? ''}${d.ownerPhone ? ` – Tel. ${d.ownerPhone}` : ''}`.trim());

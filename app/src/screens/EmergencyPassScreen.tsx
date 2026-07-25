@@ -36,6 +36,7 @@ import QRCode from 'react-native-qrcode-svg';
 import * as Clipboard from 'expo-clipboard';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system';
 import { File } from 'expo-file-system';
 import { getDb } from '../db/database';
 import {
@@ -132,11 +133,20 @@ export default function EmergencyPassScreen() {
           photoDataUri = null; // Foto nicht lesbar: PDF ehrlich ohne Foto.
         }
       }
+      // E-104: Sprechender Dateiname statt UUID
+      const today = new Date();
+      const dateStr = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+      const safeName = data.pet.name.replace(/[^a-zA-Z0-9äöüÄÖÜß_-]/g, '_');
+      const pdfFileName = `Notfallpass_${safeName}_${dateStr}.pdf`;
       const { uri } = await Print.printToFileAsync({
         html: buildPassHtml(data, photoDataUri),
       });
+      // Umbenennen der Datei fuer sprechenden Dateinamen
+      const dir = uri.substring(0, uri.lastIndexOf('/'));
+      const newUri = `${dir}/${pdfFileName}`;
+      await FileSystem.moveAsync({ from: uri, to: newUri });
       if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(uri, {
+        await Sharing.shareAsync(newUri, {
           mimeType: 'application/pdf',
           dialogTitle: `Notfall-Pass ${data.pet.name}`,
         });
