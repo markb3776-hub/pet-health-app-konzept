@@ -1,1 +1,76 @@
+name: Build AAB (Play Store)
 
+on:
+  workflow_dispatch:
+
+jobs:
+  build-aab:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Disable Timer
+        working-directory: app
+        run: sed -i 's/const EXPIRY_DAYS = 90/const EXPIRY_DAYS = 9999/' App.tsx
+
+      - name: Expo prebuild
+        working-directory: app
+        run: npx expo prebuild --clean
+
+      - name: Decode Keystore
+        working-directory: app/android/app
+        run: echo "${{ secrets.UPLOAD_KEYSTORE_BASE64 }}" | base64 --decode > upload-key.keystore
+
+      - name: Configure Signing
+        working-directory: app/android
+        run: |
+          echo "MYAPP_UPLOAD_STORE_FILE=upload-key.keystore" >> gradle.properties
+          echo "MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.UPLOAD_KEY_ALIAS }}" >> gradle.properties
+          echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.UPLOAD_STORE_PASSWORD }}" >> gradle.properties
+          echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.UPLOAD_KEY_PASSWORD }}" >> gradle.properties
+
+      - name: Inject Signing Config into build.gradle
+        working-directory: app/android/app
+        run: |
+          sed -i '/signingConfigs {/,/^    }/c\    signingConfigs {\n        debug {\n            storeFile file("debug.keystore")\n            storePassword "android"\n            keyAlias "androiddebugkey"\n            keyPassword "android"\n        }\n        release {\n            if (project.hasProperty("MYAPP_UPLOAD_STORE_FILE")) {\n                storeFile file(MYAPP_UPLOAD_STORE_FILE)\n                storePassword MYAPP_UPLOAD_STORE_PASSWORD\n                keyAlias MYAPP_UPLOAD_KEY_ALIAS\n                keyPassword MYAPP_UPLOAD_KEY_PASSWORD\n            }\n        }\n    }' build.gradle
+          sed -i 's/signingConfig signingConfigs.debug/signingConfig signingConfigs.release/' build.gradle
+
+      - name: Build AAB (Android App Bundle)
+        working-directory: app/android
+        run: ./gradlew bundleRelease
+
+      - name: Get version
+        id: version
+        working-directory: app
+        run: echo "version=$(node -p "require('./app.json').expo.version")" >> $GITHUB_OUTPUT
+
+      - name: Find and Rename AAB
+        run: |
+          AAB_FILE=$(find app/android/app/build/outputs -name "*.aab" -type f | head -1)
+          echo "Found AAB: $AAB_FILE"
+          cp "$AAB_FILE" simplyPet_v${{ steps.version.outputs.version }}.aab
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: simplyPet_v${{ steps.version.outputs.version }}_AAB
+          path: simplyPet_v${{ steps.version.outputs.version }}.aab
+          retention-days: 90
