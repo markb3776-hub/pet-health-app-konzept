@@ -45,12 +45,28 @@ Diese Grafiken müssen im Play Console Dashboard hochgeladen werden:
 
 ## 4. Screenshots (Smartphone)
 Mindestens 2, maximal 8 Screenshots im Format 16:9 oder 9:16.
-**Empfohlene Motive für die Screenshots:**
-1.  **Homescreen:** Die Übersicht aller Tiere mit dem neuen Gruppen-Accordion (Hunde, Katzen, etc.).
-2.  **Tierakte (Verlauf):** Ein Blick in die Historie mit Gewicht, Medikamenten und Untersuchungsergebnissen.
-3.  **Notfallpass:** Die übersichtliche PDF-Ansicht mit dem roten Notfall-Balken und dem QR-Code.
-4.  **Sitter-Modus:** Der Screen zur Erstellung der Tierarzt-Vollmacht und der Sitter-Infos.
-5.  **Datenschutz-Fokus:** Der Backup-Screen, der die lokale Speicherung und Unabhängigkeit betont.
+
+**✅ 13 Screenshots erstellt am 26.07.2026** (im Ordner `screenshots/`)
+
+**Empfohlene 5 für den Play Store (in dieser Reihenfolge hochladen):**
+
+| Nr. | Datei | Zeigt |
+|:---|:---|:---|
+| 1 | `screenshots/01_homescreen_meine_tiere.jpg` | Gruppen-Accordion mit Hunde, Katzen, Reptilien, Aquarien |
+| 2 | `screenshots/02_termine_bald_faellig.jpg` | Termine & Erinnerungen (Medikamente, Impfungen) |
+| 3 | `screenshots/08_notfallpass_profil.jpg` | Notfall-Pass mit Foto, Stammdaten, Erkennungsmerkmale |
+| 4 | `screenshots/10_notfallpass_qrcode.jpg` | QR-Code zeigen + Als PDF teilen |
+| 5 | `screenshots/07_datensicherung.jpg` | Datensicherung (Exportieren/Importieren, Offline-Prinzip) |
+
+**Weitere verfügbare Screenshots (optional zusätzlich hochladen):**
+- `03_erfassen_menu_1.jpg` – Erfassen-Menü (Dokument, Gewicht, Beobachtung)
+- `04_erfassen_menu_2.jpg` – Erfassen-Menü (Vorfall, Impfung, Medikament)
+- `05_erfassen_menu_3.jpg` – Erfassen-Menü (Kotprobe, Untersuchungsergebnis)
+- `06_mehr_einstellungen.jpg` – Einstellungen (Halter-Kontakt, Schnellzugriff)
+- `09_notfallpass_details.jpg` – Notfall-Pass Details (Allergien, Medikamente, Impfstatus)
+- `11_notfallpass_tipp.jpg` – Notfall-Pass Tipp-Box
+- `12_homescreen_unten.jpg` – Homescreen mit "+ Tier hinzufügen"
+- `13_tier_hinzufuegen.jpg` – Tier hinzufügen (alle Tierarten)
 
 ## 5. Datenschutzerklärung (Pflichtfeld)
 URL zur Datenschutzerklärung: `[Hier kommt die URL hin, sobald die PRIVACY_POLICY.md gehostet ist, z.B. als GitHub Page]`

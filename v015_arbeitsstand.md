@@ -52,7 +52,7 @@
 | Data Safety Formular ausfüllen | Mark | Alles "Nein" (offline App) |
 | Content Rating Fragebogen | Mark | USK 0 / PEGI 0 |
 | Feature Graphic (1024x500) | ✅ Erledigt | `feature_graphic_1024x500.png` im Repo |
-| Screenshots (min. 2) | Mark | App auf Gerät fotografieren |
+| Screenshots (min. 2) | ✅ Erledigt | 13 Screenshots im Ordner `screenshots/` |
 | 12 Tester finden | Mark | Gmail-Adressen (seit Dez 2024 nur noch 12 nötig) |
 | Kontakttelefon bestätigen | Mark | Nach Identitätsprüfung |
 
