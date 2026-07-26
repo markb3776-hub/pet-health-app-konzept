@@ -33,7 +33,7 @@ Quellen:
 | Zielgruppe & Inhalte | Alle Altersgruppen | Ja – in Console angeben |
 | Daten-Sicherheitsformular (Data Safety) | Noch nicht ausgefüllt | Ja – KRITISCH (s. Abschnitt 6) |
 | Store-Listing (Beschreibung, Screenshots) | ✅ Texte fertig (`STORE_LISTING.md`) | Ja – Screenshots erstellen + hochladen |
-| App-Kategorie | Gesundheit & Fitness / Lifestyle | Ja – in Console auswählen |
+| App-Kategorie | Lifestyle | Ja – in Console auswählen |
 | Kontakt-E-Mail für Store | ✅ simplypet.app@gmail.com | Nein |
 
 ---

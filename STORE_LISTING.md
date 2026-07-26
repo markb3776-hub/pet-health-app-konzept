@@ -34,7 +34,7 @@ SimplyPet ersetzt keinen Tierarzt, aber es hilft dir, im entscheidenden Moment d
 
 ## 2. Kategorisierung
 *   **App-Typ:** App
-*   **Kategorie:** Gesundheit & Fitness (oder Lifestyle / Tools)
+*   **Kategorie:** Lifestyle
 *   **Tags:** Haustiere, Hunde, Katzen, Gesundheit, Organisation, Offline
 
 ## 3. Grafikelemente
