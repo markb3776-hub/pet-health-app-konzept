@@ -42,16 +42,59 @@ jobs:
       - name: Configure Signing
         working-directory: app/android
         run: |
-          echo "MYAPP_UPLOAD_STORE_FILE=upload-key.keystore" >> gradle.properties
-          echo "MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.UPLOAD_KEY_ALIAS }}" >> gradle.properties
-          echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.UPLOAD_STORE_PASSWORD }}" >> gradle.properties
-          echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.UPLOAD_KEY_PASSWORD }}" >> gradle.properties
+          printf '\nMYAPP_UPLOAD_STORE_FILE=upload-key.keystore\n' >> gradle.properties
+          printf 'MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.UPLOAD_KEY_ALIAS }}\n' >> gradle.properties
+          printf 'MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.UPLOAD_STORE_PASSWORD }}\n' >> gradle.properties
+          printf 'MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.UPLOAD_KEY_PASSWORD }}\n' >> gradle.properties
+          echo "--- gradle.properties tail ---"
+          tail -5 gradle.properties
 
       - name: Inject Signing Config into build.gradle
         working-directory: app/android/app
         run: |
-          sed -i '/signingConfigs {/,/^    }/c\    signingConfigs {\n        debug {\n            storeFile file("debug.keystore")\n            storePassword "android"\n            keyAlias "androiddebugkey"\n            keyPassword "android"\n        }\n        release {\n            if (project.hasProperty("MYAPP_UPLOAD_STORE_FILE")) {\n                storeFile file(MYAPP_UPLOAD_STORE_FILE)\n                storePassword MYAPP_UPLOAD_STORE_PASSWORD\n                keyAlias MYAPP_UPLOAD_KEY_ALIAS\n                keyPassword MYAPP_UPLOAD_KEY_PASSWORD\n            }\n        }\n    }' build.gradle
-          sed -i 's/signingConfig signingConfigs.debug/signingConfig signingConfigs.release/' build.gradle
+          python3 << 'EOF'
+          import re
+
+          with open('build.gradle', 'r') as f:
+              content = f.read()
+
+          signing_block = """    signingConfigs {
+              debug {
+                  storeFile file('debug.keystore')
+                  storePassword 'android'
+                  keyAlias 'androiddebugkey'
+                  keyPassword 'android'
+              }
+              release {
+                  if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                      storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                      storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                      keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                      keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+                  }
+              }
+          }"""
+
+          pattern = r'    signingConfigs \{.*?\n    \}'
+          match = re.search(pattern, content, flags=re.DOTALL)
+
+          if match:
+              content = content[:match.start()] + signing_block + content[match.end():]
+              print(f"Replaced signingConfigs block at position {match.start()}-{match.end()}")
+          else:
+              print("ERROR: Could not find signingConfigs block!")
+              exit(1)
+
+          content = content.replace(
+              '            signingConfig signingConfigs.debug\n            def enableShrinkResources',
+              '            signingConfig signingConfigs.release\n            def enableShrinkResources'
+          )
+
+          with open('build.gradle', 'w') as f:
+              f.write(content)
+
+          print("Signing config injected successfully")
+          EOF
 
       - name: Build AAB (Android App Bundle)
         working-directory: app/android
