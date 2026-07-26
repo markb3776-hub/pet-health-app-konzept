@@ -40,7 +40,7 @@ SimplyPet ersetzt keinen Tierarzt, aber es hilft dir, im entscheidenden Moment d
 ## 3. Grafikelemente
 Diese Grafiken müssen im Play Console Dashboard hochgeladen werden:
 *   **App-Symbol:** `simply_devapps_icon_512x512.jpg` (512x512 Pixel)
-*   **Kopfzeilenbild (Feature Graphic):** `simply_devapps_banner_4096x2304.jpg` (1024x500 Pixel – *Hinweis: das aktuelle Bild muss ggf. auf 1024x500 zugeschnitten/skaliert werden*)
+*   **Kopfzeilenbild (Feature Graphic):** `feature_graphic_1024x500.png` (1024x500 Pixel – ✅ fertig, exakte Größe)
 *   **Video-URL:** (Optional, derzeit leer)
 
 ## 4. Screenshots (Smartphone)

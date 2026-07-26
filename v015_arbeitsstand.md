@@ -1,15 +1,17 @@
 # v0.1.8 Arbeitsstand (26.07.2026)
 
-## STATUS: ✅ BUILD ERFOLGREICH – APKs verfügbar
+## STATUS: ✅ AAB BUILD ERFOLGREICH – Play Store ready
 
 ## AKTUELLE SITUATION (26.07.2026):
 - App-Code ist auf v0.1.8 (app.json: version "0.1.8", versionCode 6)
-- GitHub Actions Build **ERFOLGREICH** abgeschlossen
-- **APKs verfügbar als GitHub Artifacts (30 Tage):**
+- GitHub Actions AAB-Build **ERFOLGREICH** abgeschlossen (28m 57s)
+- **AAB verfügbar als GitHub Artifact (90 Tage):**
+  - `simplyPet_v0.1.8_AAB` (signiert mit Upload-Keystore, Play Store ready)
+- **APKs weiterhin verfügbar (30 Tage):**
   - `simplyPet_v0.1.8_TESTER` (51.8 MB, mit 90-Tage-Timer)
   - `simplyPet_v0.1.8_DEV` (51.8 MB, ohne Timer)
-- Workflow-Fix (find statt hardcoded Pfad) wurde vom Nutzer manuell committed
 - ✅ Sitter-Modus (E-105) spezifiziert und tierarten-spezifische Informationen in `SITTER_MODUS_SPEZIFIKATION.md` dokumentiert
+- ✅ E-105 Implementierung geplant als Update NACH Play Store Closed Test
 
 ## GOOGLE PLAY STORE – ACCOUNT EINGERICHTET:
 - **Developer Account:** Simply DevApps
@@ -23,10 +25,36 @@
 - **Werbetext:** "Simple apps for everyone. Keep your data and information on your device and decide what you're willing to share."
 - **Identitätsbestätigung:** Eingereicht, wartet auf Google-Prüfung (2-7 Tage)
 - **Kontakttelefonnummer:** Noch nicht bestätigt (erst nach Identitätsprüfung möglich)
+- **App-Kategorie:** Lifestyle (E-106)
 - **Logo-Dateien im Repo:**
   - `simply_devapps_logo_v2.png` (1920x1920, Original)
   - `simply_devapps_icon_512x512.jpg` (512x512, für Play Store)
   - `simply_devapps_banner_4096x2304.jpg` (4096x2304, Kopfzeilenbild)
+
+## PLAY STORE VORBEREITUNG – ERLEDIGT:
+| Aufgabe | Status | Datei/Ort |
+|:---|:---|:---|
+| Datenschutzerklärung | ✅ Erstellt | `PRIVACY_POLICY.md` |
+| Store-Listing (Texte) | ✅ Erstellt | `STORE_LISTING.md` |
+| App-Kategorie festgelegt | ✅ Lifestyle | `STORE_LISTING.md` |
+| AAB-Workflow (mit Signing) | ✅ Funktioniert | `.github/workflows/build-aab.yml` |
+| Upload-Keystore erstellt | ✅ Auf Marks PC | `C:\Windows\system32\upload-key.keystore` |
+| GitHub Secrets angelegt | ✅ Alle 4 | UPLOAD_KEYSTORE_BASE64, UPLOAD_KEY_ALIAS, UPLOAD_STORE_PASSWORD, UPLOAD_KEY_PASSWORD |
+| AAB erfolgreich gebaut | ✅ Build #5 | Artifact: `simplyPet_v0.1.8_AAB` |
+| Vollständige Anforderungen-Checkliste | ✅ | `PLAY_STORE_ANFORDERUNGEN_KOMPLETT.md` |
+| Feature Graphic (1024x500) | ✅ Erstellt | `feature_graphic_1024x500.png` |
+
+## PLAY STORE – NOCH OFFEN (nach Identitätsprüfung):
+| Aufgabe | Wer | Hinweis |
+|:---|:---|:---|
+| Datenschutzerklärung hosten | Mark | GitHub Pages aktivieren oder simplypet.de |
+| App in Play Console anlegen | Mark | AAB hochladen |
+| Data Safety Formular ausfüllen | Mark | Alles "Nein" (offline App) |
+| Content Rating Fragebogen | Mark | USK 0 / PEGI 0 |
+| Feature Graphic (1024x500) | ✅ Erledigt | `feature_graphic_1024x500.png` im Repo |
+| Screenshots (min. 2) | Mark | App auf Gerät fotografieren |
+| 12 Tester finden | Mark | Gmail-Adressen (seit Dez 2024 nur noch 12 nötig) |
+| Kontakttelefon bestätigen | Mark | Nach Identitätsprüfung |
 
 ## OFFENE BUGS / VERBESSERUNGEN:
 | ID | Beschreibung | Status |
@@ -39,27 +67,34 @@
 | BUG-5 | QR-Code enthielt nicht alle Notfall-Pass-Daten | ✅ Geschlecht, Kastration, Fellfarbe, Impfstatus, Gewicht hinzugefügt |
 | E-104 | PDF-Dateiname war kryptisch (UUID) | ✅ Jetzt `Notfallpass_{Tiername}_{Datum}.pdf` |
 | E-105 | Sitter-Modus Recherche & Spezifikation | ✅ Alle 7 Tiergruppen recherchiert und in `SITTER_MODUS_SPEZIFIKATION.md` dokumentiert |
+| E-106 | App-Kategorie festgelegt | ✅ Lifestyle |
+| – | Play Store Datenschutzerklärung | ✅ `PRIVACY_POLICY.md` |
+| – | Play Store Listing Texte | ✅ `STORE_LISTING.md` |
+| – | AAB-Workflow mit Signing | ✅ Getestet und funktionsfähig |
+| – | Upload-Keystore + GitHub Secrets | ✅ Eingerichtet |
 
 ## NÄCHSTE SCHRITTE (Reihenfolge):
-1. ~~BUG-5 fixen (QR-Code alle Felder)~~ ✅ ERLEDIGT
-2. ~~E-104 fixen (PDF-Dateiname)~~ ✅ ERLEDIGT
-3. ~~Datenschutzerklärung erstellen~~ ✅ ERLEDIGT (`PRIVACY_POLICY.md`)
-4. ~~Store-Listing vorbereiten~~ ✅ ERLEDIGT (`STORE_LISTING.md`)
-5. ~~AAB-Workflow erstellen~~ ✅ ERLEDIGT (`.github/workflows/build-aab.yml`)
+1. ~~Datenschutzerklärung erstellen~~ ✅ ERLEDIGT
+2. ~~Store-Listing vorbereiten~~ ✅ ERLEDIGT
+3. ~~AAB-Workflow erstellen + testen~~ ✅ ERLEDIGT
+4. ~~Upload-Keystore + Secrets~~ ✅ ERLEDIGT
+5. ~~AAB erfolgreich bauen~~ ✅ ERLEDIGT
 6. Datenschutzerklärung hosten (GitHub Pages oder simplypet.de)
 7. Google Identitätsprüfung abwarten
-8. AAB-Workflow manuell triggern (build_type=tester für geschlossenen Test)
-9. Geschlossener Test im Play Store starten (20 Tester, 14 Tage)
-10. Onboarding-Screen für Erstnutzer erstellen
-11. Domain sichern (simplypet.de / .app)
+8. App in Play Console anlegen + AAB hochladen
+9. Geschlossener Test starten (12 Tester, 14 Tage)
+10. E-105 Sitter-Modus implementieren (als Update nach Closed Test)
+11. Onboarding-Screen für Erstnutzer erstellen
+12. Domain sichern (simplypet.de / .app)
 
 ## PLAY STORE ANFORDERUNGEN (vor Produktion):
-- 20 Tester müssen App 14 Tage lang über geschlossenen Test nutzen
+- 12 Tester müssen App 14 Tage lang über geschlossenen Test nutzen
 - Datenschutzerklärung (öffentliche URL)
-- AAB-Format (nicht APK)
+- AAB-Format (nicht APK) ✅
 - Altersfreigabe-Fragebogen
+- Data Safety Formular
 - Store Listing (Screenshots, Beschreibung)
-- Timer entfernen für Release-Version
+- Timer entfernen für Release-Version ✅ (AAB-Workflow baut ohne Timer)
 - Version auf 1.0.0 hochsetzen
 
 ## IMPLEMENTIERT (v0.1.7 → v0.1.8):
@@ -94,16 +129,29 @@
 - checkExpiry() prüft beim App-Start
 - Alert mit "Testversion abgelaufen" + BackHandler.exitApp()
 - Ablauf: ca. 18. Oktober 2026
+- **HINWEIS:** AAB-Workflow deaktiviert Timer automatisch (EXPIRY_DAYS = 9999)
 
 ### GitHub Actions Build-System:
-- Workflow: `.github/workflows/build-apk.yml`
-- Trigger: Push in `app/`-Ordner ODER manuell via `workflow_dispatch`
-- Zwei Jobs: `build-tester` (mit 90-Tage-Timer) + `build-dev` (Timer deaktiviert)
-- APK-Benennung: `simplyPet_v{version}.apk` (Tester) / `simplyPet_v{version}_DEV.apk`
-- APK-Suche: `find app/android/app/build/outputs -name "*.apk"` (dynamisch, nicht hardcoded)
-- Artifacts: 30 Tage Aufbewahrung
-- Build-Dauer: ca. 30 Min (erster Lauf), danach schneller durch Caching
-- **WICHTIG:** Manus kann Workflow-Dateien NICHT pushen (fehlende `workflows`-Permission der GitHub App)
+- **APK-Workflow:** `.github/workflows/build-apk.yml`
+  - Trigger: Push in `app/`-Ordner ODER manuell
+  - Zwei Jobs: `build-tester` (mit Timer) + `build-dev` (ohne Timer)
+  - Artifacts: 30 Tage Aufbewahrung
+- **AAB-Workflow:** `.github/workflows/build-aab.yml`
+  - Trigger: Nur manuell (workflow_dispatch)
+  - Ein Job: `build-aab` (ohne Timer, signiert mit Upload-Keystore)
+  - Signing: Upload-Keystore aus GitHub Secret (Base64-dekodiert)
+  - Signing-Config wird per Python-Script in build.gradle injiziert
+  - Artifacts: 90 Tage Aufbewahrung
+- Build-Dauer: ca. 29 Min
+- **WICHTIG:** Manus kann Workflow-Dateien NICHT pushen und Workflows NICHT triggern (fehlende `workflows`-Permission der GitHub App)
+
+### Upload-Keystore:
+- Alias: `simplypet-upload`
+- Typ: PKCS12
+- Gültigkeit: 10.000 Tage (~27 Jahre)
+- Erstellt: 26.07.2026
+- Speicherort: Marks PC (`C:\Windows\system32\upload-key.keystore`) + Desktop-Kopie
+- **WICHTIG:** Bei Verlust kann die App im Play Store NICHT mehr aktualisiert werden!
 
 ### Backup-System (E-93):
 - autoBackup bei: AddPet, EditPet, ManagePets, PetFile, Appointments, CaptureSheet
@@ -121,3 +169,4 @@
 ### Version:
 - app.json: version "0.1.8", versionCode 6
 - APK-Name: simplyPet_v0.1.8.apk / simplyPet_v0.1.8_DEV.apk
+- AAB-Name: simplyPet_v0.1.8.aab
