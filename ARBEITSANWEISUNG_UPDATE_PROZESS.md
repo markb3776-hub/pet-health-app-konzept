@@ -62,12 +62,13 @@
 
 ---
 
-## Phase 5: APK bauen
+## Phase 5: Build (APK oder AAB)
 
-19. **APK wird über GitHub Actions gebaut** – NICHT in der Sandbox
-20. Push auf `main` triggert automatisch `.github/workflows/build-apk.yml`
-21. APK liegt als Artifact im GitHub Actions Run (30 Tage verfügbar)
-22. Alternativ: `gh workflow run build-apk.yml` für manuellen Trigger
+19. **Builds werden über GitHub Actions gebaut** – NICHT in der Sandbox
+20. **APK (für direkte Tester):** Push auf `main` triggert automatisch `.github/workflows/build-apk.yml`
+21. **AAB (für Play Store):** Manuell triggern: `gh workflow run build-aab.yml -f build_type=tester` (oder `release`)
+22. Artifacts liegen im GitHub Actions Run (APK: 30 Tage, AAB: 90 Tage)
+23. Alternativ: `gh workflow run build-apk.yml` für manuellen APK-Trigger
 
 ### NIEMALS in der Sandbox bauen:
 - Die Sandbox hat nicht genug RAM für Gradle (~2 GB vs. benötigte ~4 GB)

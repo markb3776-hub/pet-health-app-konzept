@@ -43,12 +43,15 @@
 ## NÄCHSTE SCHRITTE (Reihenfolge):
 1. ~~BUG-5 fixen (QR-Code alle Felder)~~ ✅ ERLEDIGT
 2. ~~E-104 fixen (PDF-Dateiname)~~ ✅ ERLEDIGT
-3. Tester-Feedback mit v0.1.8 sammeln (3 Personen, 5 Geräte)
-4. Onboarding-Screen für Erstnutzer erstellen
-5. Datenschutzerklärung erstellen + hosten
-6. AAB (Android App Bundle) statt APK für Play Store
-7. Geschlossener Test im Play Store starten (20 Tester, 14 Tage)
-8. Domain sichern (simplypet.de / .app)
+3. ~~Datenschutzerklärung erstellen~~ ✅ ERLEDIGT (`PRIVACY_POLICY.md`)
+4. ~~Store-Listing vorbereiten~~ ✅ ERLEDIGT (`STORE_LISTING.md`)
+5. ~~AAB-Workflow erstellen~~ ✅ ERLEDIGT (`.github/workflows/build-aab.yml`)
+6. Datenschutzerklärung hosten (GitHub Pages oder simplypet.de)
+7. Google Identitätsprüfung abwarten
+8. AAB-Workflow manuell triggern (build_type=tester für geschlossenen Test)
+9. Geschlossener Test im Play Store starten (20 Tester, 14 Tage)
+10. Onboarding-Screen für Erstnutzer erstellen
+11. Domain sichern (simplypet.de / .app)
 
 ## PLAY STORE ANFORDERUNGEN (vor Produktion):
 - 20 Tester müssen App 14 Tage lang über geschlossenen Test nutzen
