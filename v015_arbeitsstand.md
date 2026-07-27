@@ -74,12 +74,17 @@
 | – | Upload-Keystore + GitHub Secrets | ✅ Eingerichtet |
 
 ## NÄCHSTE SCHRITTE (Reihenfolge):
-1. **Push-Notifications implementieren (Kern-Feature)**
-2. App-Version auf 1.0.0 setzen und neuen AAB-Build erstellen
-3. App in Play Console neu anlegen (mit korrektem Paketnamen `de.simplypet.app`)
-4. Korrigiertes Store-Listing (ohne Sitter-Modus/Verschlüsselung) in Play Console eintragen
-5. AAB hochladen und 12 Tester einladen (14 Tage Test)
-6. Sitter-Modus (E-105) und verschlüsselte Backups als Post-Release Updates implementieren
+> **Entscheidung 28.07.2026: ALLE beworbenen Features werden implementiert. Store-Listing bleibt unverändert.**
+
+1. **Push-Notifications implementieren** (Erinnerungen & Termine)
+2. **Sitter-Modus implementieren** (E-105, Spezifikation existiert)
+3. **Backup-Verschlüsselung implementieren** (AES-256)
+4. Version auf 1.0.0 bumpen + neuen AAB-Build erstellen
+5. Neue App in Play Console anlegen (Paketname `de.simplypet.app`)
+6. Store-Listing (unverändert) + AAB hochladen
+7. 12 Tester einladen, 14 Tage warten, Produktion beantragen
+
+Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 
 ## PLAY STORE ANFORDERUNGEN (vor Produktion):
 - 12 Tester müssen App 14 Tage lang über geschlossenen Test nutzen
