@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenschutzerklärung – SimplyPet</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+            background: #fafafa;
+        }
+        h1 { color: #0d9488; border-bottom: 2px solid #0d9488; padding-bottom: 10px; }
+        h2 { color: #0d9488; margin-top: 30px; }
+        strong { color: #111; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .highlight { background: #e0f7f5; padding: 12px; border-radius: 8px; margin: 15px 0; }
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 0.9em; color: #666; }
+    </style>
+</head>
+<body>
+    <h1>Datenschutzerklärung für SimplyPet</h1>
+    <p><em>Stand: 26.07.2026</em></p>
+
+    <h2>1. Einleitung</h2>
+    <p>Diese Datenschutzerklärung klärt Sie über die Art, den Umfang und den Zweck der Verarbeitung von personenbezogenen Daten innerhalb der App "SimplyPet" (nachfolgend "App") auf. Die App wird von Simply DevApps (nachfolgend "wir", "uns") entwickelt und bereitgestellt.</p>
+    <div class="highlight">
+        <strong>Unsere Kernphilosophie lautet:</strong> Ihre Daten gehören Ihnen. SimplyPet ist eine zu 100 % offline funktionierende App. Es findet keine Datenübertragung an unsere Server oder Server von Drittanbietern statt.
+    </div>
+
+    <h2>2. Verantwortliche Stelle</h2>
+    <p>Simply DevApps<br>
+    E-Mail: <a href="mailto:simplypet.app@gmail.com">simplypet.app@gmail.com</a></p>
+
+    <h2>3. Welche Daten erfasst die App?</h2>
+    <p>Die App bietet Ihnen die Möglichkeit, Gesundheits- und Verwaltungsdaten für Ihre Haustiere zu erfassen. Dazu gehören unter anderem:</p>
+    <ul>
+        <li>Name, Tierart, Rasse, Geburtsdatum, Geschlecht, Fellfarbe, Kennzeichnungsnummern (z.B. Transponder-Code)</li>
+        <li>Gewichtsverlauf</li>
+        <li>Medikamente und Parasitenschutz</li>
+        <li>Impfungen</li>
+        <li>Beobachtungen, Vorfälle und Untersuchungsergebnisse</li>
+        <li>Termine und Erinnerungen</li>
+        <li>Tierarzt- und Notfallkontakte</li>
+        <li>Fotos von Tieren und Dokumenten (z.B. Impfpass)</li>
+        <li>Unterschrift für die Tierarzt-Vollmacht (Sitter-Modus)</li>
+    </ul>
+
+    <h2>4. Wo werden diese Daten gespeichert?</h2>
+    <p><strong>Ausschließlich lokal auf Ihrem Endgerät.</strong></p>
+    <p>Alle von Ihnen eingegebenen Daten, erstellten Fotos und Dokumente werden in einer lokalen SQLite-Datenbank und im lokalen Dateisystem Ihres Smartphones oder Tablets gespeichert. Es gibt keine Cloud-Anbindung, keinen Sync-Server und keine externe Datenbank.</p>
+
+    <h2>5. Datenweitergabe an Dritte</h2>
+    <p>Wir geben <strong>keine</strong> Daten an Dritte weiter, da wir selbst zu keinem Zeitpunkt Zugriff auf Ihre Daten haben.</p>
+    <p><strong>Ausnahmen (durch Sie initiierte Aktionen):</strong></p>
+    <ul>
+        <li><strong>Notfallpass / Sitter-Modus:</strong> Wenn Sie den Notfallpass oder die Vollmacht als PDF generieren, können Sie diese über den systemeigenen Teilen-Dialog Ihres Geräts (z.B. per E-Mail, WhatsApp) versenden.</li>
+        <li><strong>QR-Code:</strong> Wenn Sie den QR-Code auf dem Bildschirm anzeigen lassen, enthält dieser die Notfall-Daten Ihres Tieres in Textform. Personen, die diesen Code scannen, erhalten Zugriff auf diese Daten.</li>
+        <li><strong>Backup-Funktion:</strong> Wenn Sie ein Backup erstellen (.simplypet-Datei), können Sie dieses lokal speichern oder über den Teilen-Dialog an einen von Ihnen gewählten Speicherort (z.B. Google Drive, Dropbox) übertragen.</li>
+    </ul>
+    <p>Für die Sicherheit der Daten nach dem Export oder Teilen sind Sie selbst verantwortlich.</p>
+
+    <h2>6. Berechtigungen der App</h2>
+    <p>Die App benötigt bestimmte Berechtigungen auf Ihrem Gerät, um ordnungsgemäß zu funktionieren:</p>
+    <ul>
+        <li><strong>Kamera &amp; Fotos (READ_MEDIA_IMAGES / CAMERA):</strong> Um Profilbilder für Ihre Tiere oder Fotos von Dokumenten aufzunehmen oder aus der Galerie auszuwählen.</li>
+        <li><strong>Benachrichtigungen (POST_NOTIFICATIONS):</strong> Um Sie an Termine, fällige Impfungen oder Medikamentengaben zu erinnern.</li>
+        <li><strong>Vordergrunddienst (FOREGROUND_SERVICE):</strong> Um die permanente Benachrichtigung für den Schnellzugriff auf den Notfallpass aufrechtzuerhalten (falls von Ihnen in den Einstellungen aktiviert).</li>
+    </ul>
+
+    <h2>7. Tracking und Analysetools</h2>
+    <p>Wir verzichten vollständig auf den Einsatz von Tracking-, Analyse- oder Werbe-Tools (wie z.B. Google Analytics, Firebase Crashlytics oder Facebook Pixel). Ihr Nutzungsverhalten wird nicht aufgezeichnet.</p>
+
+    <h2>8. Löschung der Daten</h2>
+    <p>Da alle Daten lokal auf Ihrem Gerät gespeichert sind, können Sie diese jederzeit selbst löschen:</p>
+    <ul>
+        <li>Durch das Löschen einzelner Tiere oder Einträge innerhalb der App.</li>
+        <li>Durch das Deinstallieren der App (hierbei wird die lokale Datenbank samt aller Fotos unwiderruflich vom Gerät gelöscht, sofern Sie kein Backup extern gesichert haben).</li>
+    </ul>
+
+    <h2>9. Änderungen dieser Datenschutzerklärung</h2>
+    <p>Wir behalten uns vor, diese Datenschutzerklärung anzupassen, damit sie stets den aktuellen rechtlichen Anforderungen entspricht oder um Änderungen unserer Leistungen in der Datenschutzerklärung umzusetzen (z.B. bei der Einführung neuer Funktionen). Für Ihren erneuten Besuch gilt dann die neue Datenschutzerklärung.</p>
+
+    <h2>10. Kontakt</h2>
+    <p>Wenn Sie Fragen zum Datenschutz haben, schreiben Sie uns bitte eine E-Mail an: <a href="mailto:simplypet.app@gmail.com">simplypet.app@gmail.com</a></p>
+
+    <div class="footer">
+        <p>&copy; 2026 Simply DevApps – SimplyPet</p>
+    </div>
+</body>
+</html>
