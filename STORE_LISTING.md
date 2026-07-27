@@ -20,11 +20,10 @@ DIE WICHTIGSTEN FUNKTIONEN:
 • Alle Tierarten: Spezifische Profile für Hunde, Katzen, Pferde, Reptilien, Fische, Vögel und Kleinnager.
 • Digitale Tierakte: Erfasse Gewicht, Medikamente, Parasitenschutz, Impfungen, Vorfälle und Untersuchungsergebnisse.
 • Notfallpass & QR-Code: Generiere mit einem Klick einen PDF-Notfallpass oder zeige einen QR-Code vor, damit Tierärzte im Ernstfall sofort alle lebenswichtigen Infos (Allergien, Vorerkrankungen, Medikamente) auf einen Blick haben.
-• Sitter-Modus: Du fährst in den Urlaub? Generiere ein Info-Paket für deinen Tiersitter – inklusive tierartspezifischer Checklisten (z.B. Terrarien-Klima, Fütterungs-Routinen) und einer digitalen Tierarzt-Vollmacht mit deiner Unterschrift.
 • Erinnerungen & Termine: Verpasse nie wieder eine Wurmkur, eine Impfung oder den nächsten Tierarztbesuch.
 • Dokumentenscan: Fotografiere Impfpässe oder Befunde und ordne sie direkt der digitalen Akte deines Tieres zu.
 • Lockscreen-Schnellzugriff: Im Notfall zählt jede Sekunde. Aktiviere die permanente Benachrichtigung, um den Notfallpass direkt vom Sperrbildschirm aus aufzurufen.
-• Souveräne Backups: Exportiere deine verschlüsselte Backup-Datei lokal oder teile sie über deine bevorzugten Kanäle (Drive, Mail, WhatsApp) – ganz ohne unsere Server.
+• Souveräne Backups: Exportiere deine lokale Backup-Datei oder teile sie über deine bevorzugten Kanäle (Drive, Mail, WhatsApp) – ganz ohne unsere Server.
 
 EINE APP, EIN PREIS.
 SimplyPet ist ein ehrlicher Einmalkauf. Keine versteckten Kosten, keine In-App-Käufe, keine Premium-Schranken.

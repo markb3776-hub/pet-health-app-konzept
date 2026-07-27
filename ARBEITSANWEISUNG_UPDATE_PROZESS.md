@@ -12,10 +12,10 @@
 
 1. **Repository klonen:** `gh repo clone markb3776-hub/pet-health-app-konzept simplypet_workspace`
 2. **Diese Datei lesen** (ARBEITSANWEISUNG_UPDATE_PROZESS.md)
-3. **INFRASTRUKTUR_UND_KONTEXT.md lesen** – enthält alles was bereits existiert, eingerichtet ist, funktioniert
-4. **ENTSCHEIDUNGSREGISTER.md lesen** – alle bisherigen Entscheidungen
-5. **v0XX_arbeitsstand.md lesen** – aktueller Stand, was offen ist
-6. **PROGRESS_v012.md lesen** – was in welcher Phase erledigt wurde
+3. **SCHLACHTPLAN_STORE_RELEASE.md lesen** – enthält die exakten nächsten Schritte für den Store-Release (Prio 1)
+4. **INFRASTRUKTUR_UND_KONTEXT.md lesen** – enthält alles was bereits existiert, eingerichtet ist, funktioniert
+5. **ENTSCHEIDUNGSREGISTER.md lesen** – alle bisherigen Entscheidungen
+6. **v015_arbeitsstand.md lesen** – aktueller Stand, was offen ist
 
 ### VERBOTEN in Phase 0:
 - Code anfassen

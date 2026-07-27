@@ -1,6 +1,6 @@
 # v0.1.8 Arbeitsstand (26.07.2026)
 
-## STATUS: ✅ AAB BUILD ERFOLGREICH – Play Store ready
+## STATUS: ⚠️ PLAY STORE RELEASE BLOCKIERT – Audit ergab fehlende Features
 
 ## AKTUELLE SITUATION (26.07.2026):
 - App-Code ist auf v0.1.8 (app.json: version "0.1.8", versionCode 6)
@@ -74,18 +74,12 @@
 | – | Upload-Keystore + GitHub Secrets | ✅ Eingerichtet |
 
 ## NÄCHSTE SCHRITTE (Reihenfolge):
-1. ~~Datenschutzerklärung erstellen~~ ✅ ERLEDIGT
-2. ~~Store-Listing vorbereiten~~ ✅ ERLEDIGT
-3. ~~AAB-Workflow erstellen + testen~~ ✅ ERLEDIGT
-4. ~~Upload-Keystore + Secrets~~ ✅ ERLEDIGT
-5. ~~AAB erfolgreich bauen~~ ✅ ERLEDIGT
-6. Datenschutzerklärung hosten (GitHub Pages oder simplypet.de)
-7. Google Identitätsprüfung abwarten
-8. App in Play Console anlegen + AAB hochladen
-9. Geschlossener Test starten (12 Tester, 14 Tage)
-10. E-105 Sitter-Modus implementieren (als Update nach Closed Test)
-11. Onboarding-Screen für Erstnutzer erstellen
-12. Domain sichern (simplypet.de / .app)
+1. **Push-Notifications implementieren (Kern-Feature)**
+2. App-Version auf 1.0.0 setzen und neuen AAB-Build erstellen
+3. App in Play Console neu anlegen (mit korrektem Paketnamen `de.simplypet.app`)
+4. Korrigiertes Store-Listing (ohne Sitter-Modus/Verschlüsselung) in Play Console eintragen
+5. AAB hochladen und 12 Tester einladen (14 Tage Test)
+6. Sitter-Modus (E-105) und verschlüsselte Backups als Post-Release Updates implementieren
 
 ## PLAY STORE ANFORDERUNGEN (vor Produktion):
 - 12 Tester müssen App 14 Tage lang über geschlossenen Test nutzen
