@@ -3,7 +3,7 @@
 ## STATUS: 🚧 IN ARBEIT – Fehlende Features werden implementiert
 
 ## AKTUELLE SITUATION (28.07.2026):
-- App-Code ist auf v0.1.8 (app.json: version "0.1.8", versionCode 6)
+- App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 7)
 - GitHub Actions AAB-Build **ERFOLGREICH** abgeschlossen (28m 57s)
 - **AAB verfügbar als GitHub Artifact (90 Tage):**
   - `simplyPet_v0.1.8_AAB` (signiert mit Upload-Keystore, Play Store ready)
@@ -175,6 +175,6 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Detailbericht: `SimplyPet_Markenrecherche_Bericht.md`
 
 ### Version:
-- app.json: version "0.1.8", versionCode 6
-- APK-Name: simplyPet_v0.1.8.apk / simplyPet_v0.1.8_DEV.apk
-- AAB-Name: simplyPet_v0.1.8.aab
+- app.json: version "1.0.0", versionCode 7
+- APK-Name: simplyPet_v1.0.0.apk / simplyPet_v1.0.0_DEV.apk
+- AAB-Name: simplyPet_v1.0.0.aab

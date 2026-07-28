@@ -103,7 +103,7 @@
 - [x] Sitter-Modus funktioniert (Info-Paket + Vollmacht-PDF generierbar) ✅ 28.07.2026
 - [x] Backup-Verschlüsselung funktioniert (Export verschlüsselt, Import entschlüsselt) ✅ 28.07.2026
 - [x] Prototyp-Banner aus AppointmentsScreen entfernt ✅ 28.07.2026
-- [ ] Version 1.0.0, versionCode 7
+- [x] Version 1.0.0, versionCode 7 ✅ 28.07.2026
 - [x] TypeScript 0 Fehler ✅ 28.07.2026
 - [x] Jedes Store-Listing-Feature gegen Code verifiziert (kein Bullet ohne Funktion) ✅ 28.07.2026
 
