@@ -201,15 +201,8 @@ class EmergencyForegroundService : Service() {
       });
     }
 
-    // FOREGROUND_SERVICE_SPECIAL_USE fuer Android 14+
-    const hasFgSpecial = manifest['uses-permission'].some(
-      (p) => p.$?.['android:name'] === 'android.permission.FOREGROUND_SERVICE_SPECIAL_USE'
-    );
-    if (!hasFgSpecial) {
-      manifest['uses-permission'].push({
-        $: { 'android:name': 'android.permission.FOREGROUND_SERVICE_SPECIAL_USE' },
-      });
-    }
+    // FOREGROUND_SERVICE_SPECIAL_USE entfernt (E-119: Google verlangt Video-Nachweis)
+    // Wird fuer v1.1.0 wieder hinzugefuegt wenn Video erstellt ist.
 
     // Service im Application-Block registrieren
     const mainApp = manifest.application?.[0];
@@ -228,7 +221,7 @@ class EmergencyForegroundService : Service() {
             'android:name': '.EmergencyForegroundService',
             'android:enabled': 'true',
             'android:exported': 'false',
-            'android:foregroundServiceType': 'specialUse',
+            'android:foregroundServiceType': 'shortService',
           },
         });
       }
