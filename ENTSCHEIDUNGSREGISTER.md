@@ -205,3 +205,15 @@ Diese Punkte sind NICHT verhandelbar:
   - navigationRef.ts: `navigateToAppointments()` hinzugefügt
 - **TypeScript:** 0 Fehler
 - **Grund:** Store-Listing bewirbt "Erinnerungen & Termine" – muss funktionieren vor Release
+
+### E-105-IMPL (28.07.2026)
+**Kontext:** Sitter-Modus Implementierung
+**Entscheidung:** Sitter-Infos als Freitextfelder in den Stammdaten (pets-Tabelle) gespeichert, nicht erst im Sitter-Modus eingegeben. Begründung: Nutzer füllt einmal aus, hat es immer parat. Sitter-Modus zieht Daten nur noch raus und generiert PDF.
+**Umsetzung:**
+- Migration 009: 6 neue Spalten (sitter_feeding, sitter_routine, sitter_behavior, sitter_equipment, sitter_climate, sitter_notes)
+- EditPetScreen: Neue Sektion "Sitter-Infos" mit artspezifischen Labels
+- SitterScreen: Sitter-Daten (Name, Telefon, Zeitraum) + PDF-Generierung + Teilen
+- Vollmacht: HTML→PDF mit Unterschrift (react-native-signature-canvas, AsyncStorage)
+- Info-Paket: HTML→PDF mit allen Tierdaten + Checkliste
+- Navigation: PetFileScreen Button → SitterModus Route
+- Neue Dependencies: react-native-signature-canvas, react-native-webview

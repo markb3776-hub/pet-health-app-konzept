@@ -82,6 +82,13 @@ interface PetRow {
   tattoo_location: string | null;
   // E-100: EU-Heimtierausweis (Migration 007)
   eu_pet_passport_number: string | null;
+  // E-105: Sitter-Modus (Migration 009)
+  sitter_feeding: string | null;
+  sitter_routine: string | null;
+  sitter_behavior: string | null;
+  sitter_equipment: string | null;
+  sitter_climate: string | null;
+  sitter_notes: string | null;
 }
 
 interface EditPetDraft {
@@ -125,6 +132,13 @@ interface EditPetDraft {
   tattooLocation: string;
   // E-100: EU-Heimtierausweis
   euPetPassportNumber: string;
+  // E-105: Sitter-Modus
+  sitterFeeding: string;
+  sitterRoutine: string;
+  sitterBehavior: string;
+  sitterEquipment: string;
+  sitterClimate: string;
+  sitterNotes: string;
 }
 
 const GENDER_OPTIONS = ['Männlich', 'Weiblich', 'Unbekannt'];
@@ -214,6 +228,13 @@ function petToDraft(p: PetRow): EditPetDraft {
     tattooLocation: p.tattoo_location ?? '',
     // E-100: EU-Heimtierausweis
     euPetPassportNumber: p.eu_pet_passport_number ?? '',
+    // E-105: Sitter-Modus
+    sitterFeeding: p.sitter_feeding ?? '',
+    sitterRoutine: p.sitter_routine ?? '',
+    sitterBehavior: p.sitter_behavior ?? '',
+    sitterEquipment: p.sitter_equipment ?? '',
+    sitterClimate: p.sitter_climate ?? '',
+    sitterNotes: p.sitter_notes ?? '',
   };
 }
 
@@ -331,6 +352,8 @@ export default function EditPetScreen() {
            chip_implant_date = ?, chip_implant_location = ?,
            tattoo_number = ?, tattoo_date = ?, tattoo_location = ?,
            eu_pet_passport_number = ?,
+           sitter_feeding = ?, sitter_routine = ?, sitter_behavior = ?,
+           sitter_equipment = ?, sitter_climate = ?, sitter_notes = ?,
            updated_at = ?, is_synced = 0
          WHERE id = ?`,
         [
@@ -371,6 +394,12 @@ export default function EditPetScreen() {
           form.tattooDate || null,
           form.tattooLocation.trim() || null,
           form.euPetPassportNumber.trim() || null,
+          form.sitterFeeding.trim() || null,
+          form.sitterRoutine.trim() || null,
+          form.sitterBehavior.trim() || null,
+          form.sitterEquipment.trim() || null,
+          form.sitterClimate.trim() || null,
+          form.sitterNotes.trim() || null,
           ts,
           petId,
         ]
@@ -779,6 +808,82 @@ export default function EditPetScreen() {
               Der Stamm-{speciesCfg?.terminology.vet ?? 'Tierarzt'} steht im Fußbereich des
               Notfall-Passes – zusätzlich zum Spezialisten oben.
             </Hint>
+
+            {/* E-105: Sitter-Infos – artspezifische Freitextfelder */}
+            <View style={styles.healthSection}>
+              <Text style={styles.healthSectionTitle}>Sitter-Infos</Text>
+              <Hint>Diese Angaben werden im Sitter-Modus automatisch ins Info-Paket übernommen. Du kannst sie jederzeit ergänzen.</Hint>
+
+              <FieldLabel>Fütterung</FieldLabel>
+              <TextInput
+                style={[styles.input, styles.multiline]}
+                value={form.sitterFeeding}
+                onChangeText={(t) => update('sitterFeeding', t)}
+                placeholder="Futterzeiten, Mengen, Standort, erlaubte/verbotene Leckerlis"
+                placeholderTextColor={colors.textSecondary}
+                multiline
+                accessibilityLabel="Sitter: Fütterung"
+              />
+
+              <FieldLabel>{species === 'hund' ? 'Gassi-Routine' : species === 'katze' ? 'Freigang / Katzenklo' : 'Routine / Pflege'}</FieldLabel>
+              <TextInput
+                style={[styles.input, styles.multiline]}
+                value={form.sitterRoutine}
+                onChangeText={(t) => update('sitterRoutine', t)}
+                placeholder={species === 'hund' ? 'Häufigkeit, Dauer, Routen, Leinenpflicht' : species === 'katze' ? 'Freigänger? Zeiten, Katzenklo-Standort, Reinigung' : 'Tägliche Pflege, Reinigung, Auslauf'}
+                placeholderTextColor={colors.textSecondary}
+                multiline
+                accessibilityLabel="Sitter: Routine"
+              />
+
+              <FieldLabel>Verhalten & Eigenheiten</FieldLabel>
+              <TextInput
+                style={[styles.input, styles.multiline]}
+                value={form.sitterBehavior}
+                onChangeText={(t) => update('sitterBehavior', t)}
+                placeholder="Ängste, Verträglichkeit, Tabuzonen, besondere Gewohnheiten"
+                placeholderTextColor={colors.textSecondary}
+                multiline
+                accessibilityLabel="Sitter: Verhalten"
+              />
+
+              <FieldLabel>Ausstattung & Standorte</FieldLabel>
+              <TextInput
+                style={[styles.input, styles.multiline]}
+                value={form.sitterEquipment}
+                onChangeText={(t) => update('sitterEquipment', t)}
+                placeholder="Leine, Geschirr, Spielzeug, Kotbeutel – wo ist was?"
+                placeholderTextColor={colors.textSecondary}
+                multiline
+                accessibilityLabel="Sitter: Ausstattung"
+              />
+
+              {['reptil', 'schildkroete', 'schlange', 'gecko', 'leguan', 'fisch'].includes(species) ? (
+                <>
+                  <FieldLabel>Klima & Technik (WICHTIG)</FieldLabel>
+                  <TextInput
+                    style={[styles.input, styles.multiline]}
+                    value={form.sitterClimate}
+                    onChangeText={(t) => update('sitterClimate', t)}
+                    placeholder="Temperatur, Luftfeuchtigkeit, Beleuchtung, Zeitschaltuhren, Filter"
+                    placeholderTextColor={colors.textSecondary}
+                    multiline
+                    accessibilityLabel="Sitter: Klima und Technik"
+                  />
+                </>
+              ) : null}
+
+              <FieldLabel>Sonstige Hinweise</FieldLabel>
+              <TextInput
+                style={[styles.input, styles.multiline]}
+                value={form.sitterNotes}
+                onChangeText={(t) => update('sitterNotes', t)}
+                placeholder="Alles was der Sitter sonst noch wissen sollte"
+                placeholderTextColor={colors.textSecondary}
+                multiline
+                accessibilityLabel="Sitter: Sonstige Hinweise"
+              />
+            </View>
 
             <FieldLabel>Foto</FieldLabel>
             {form.photoUri ? (

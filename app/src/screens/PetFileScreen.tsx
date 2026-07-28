@@ -671,6 +671,14 @@ export default function PetFileScreen() {
       ) : (
         <>
           {passCard}
+          <Pressable
+            style={styles.sitterButton}
+            onPress={() => navigation.navigate('SitterModus', { petId })}
+            accessibilityLabel="Sitter-Modus öffnen"
+          >
+            <Text style={styles.sitterButtonText}>🧳 Sitter-Modus</Text>
+            <Text style={styles.sitterButtonHint}>Info-Paket & Vollmacht für deinen Tiersitter</Text>
+          </Pressable>
           {tabContent}
         </>
       )}
@@ -856,4 +864,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   empty: { fontSize: typography.body, color: colors.textSecondary },
+  sitterButton: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: 12,
+    padding: spacing.m,
+    marginBottom: spacing.l,
+    alignItems: 'center',
+  },
+  sitterButtonText: { fontSize: typography.body, fontWeight: '600', color: colors.primary },
+  sitterButtonHint: { fontSize: typography.bodySmall, color: colors.textSecondary, marginTop: 2 },
 });

@@ -30,7 +30,7 @@
 
 ---
 
-### Session 2: Sitter-Modus (E-105)
+### Session 2: Sitter-Modus (E-105) ✅ ERLEDIGT (28.07.2026)
 
 **Was im Store-Listing steht:**
 > "Sitter-Modus: Du fährst in den Urlaub? Generiere ein Info-Paket für deinen Tiersitter – inklusive tierartspezifischer Checklisten und einer digitalen Tierarzt-Vollmacht mit deiner Unterschrift."
@@ -100,7 +100,7 @@
 ## CHECKLISTE VOR AAB-BUILD
 
 - [x] Push-Notifications funktionieren (Termin anlegen → Erinnerung kommt) ✅ 28.07.2026
-- [ ] Sitter-Modus funktioniert (Info-Paket + Vollmacht-PDF generierbar)
+- [x] Sitter-Modus funktioniert (Info-Paket + Vollmacht-PDF generierbar) ✅ 28.07.2026
 - [ ] Backup-Verschlüsselung funktioniert (Export verschlüsselt, Import entschlüsselt)
 - [x] Prototyp-Banner aus AppointmentsScreen entfernt ✅ 28.07.2026
 - [ ] Version 1.0.0, versionCode 7

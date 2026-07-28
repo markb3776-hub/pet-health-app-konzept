@@ -45,6 +45,7 @@ import FecalSampleEntryScreen from '../screens/entries/FecalSampleEntryScreen';
 import DocumentCaptureScreen from '../screens/entries/DocumentCaptureScreen';
 import ExaminationEntryScreen from '../screens/entries/ExaminationEntryScreen';
 import EditPetScreen from '../screens/EditPetScreen';
+import SitterScreen from '../screens/SitterScreen';
 import ManagePetsScreen from '../screens/ManagePetsScreen';
 import { isOnboardingDone } from '../profile/profileStore';
 import { colors, typography } from '../theme/theme';
@@ -67,6 +68,7 @@ export type HomeStackParamList = {
   StammdatenBearbeiten: { petId: string };
   TiereVerwalten: undefined;
   Notfallpass: { petId?: string } | undefined;
+  SitterModus: { petId: string };
 };
 
 export type AppointmentsStackParamList = {
@@ -172,6 +174,11 @@ function HomeStackScreen() {
         name="Notfallpass"
         component={EmergencyPassScreen}
         options={{ title: 'Notfall-Pass' }}
+      />
+      <HomeStack.Screen
+        name="SitterModus"
+        component={SitterScreen}
+        options={{ title: 'Sitter-Modus' }}
       />
     </HomeStack.Navigator>
   );

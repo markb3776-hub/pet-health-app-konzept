@@ -64,6 +64,7 @@
 ## GERADE ERLEDIGT (28.07.2026):
 | ID | Beschreibung | Fix |
 |:---|:---|:---|
+| E-105 | Sitter-Modus komplett implementiert | ✅ SitterScreen.tsx, sitterConfig.ts, sitterPdf.ts, vollmachtPdf.ts, Migration 009, EditPetScreen Sitter-Infos, PetFileScreen Button, Navigation |
 | E-108 | Push-Notifications (Erinnerungen) | ✅ notificationService.ts, Migration 008, AppointmentsScreen Toggle, VaccinationEntry + MedicationEntry Scheduling |
 | – | Prototyp-Banner entfernt | ✅ AppointmentsScreen.tsx |
 | – | Notification-Tap → Termine-Tab | ✅ navigationRef.ts + App.tsx |
@@ -84,7 +85,7 @@
 > **Entscheidung 28.07.2026: ALLE beworbenen Features werden implementiert. Store-Listing bleibt unverändert.**
 
 1. ~~**Push-Notifications implementieren**~~ ✅ ERLEDIGT (28.07.2026)
-2. **Sitter-Modus implementieren** (E-105, Spezifikation existiert)
+2. ~~**Sitter-Modus implementieren**~~ ✅ ERLEDIGT (28.07.2026)
 3. **Backup-Verschlüsselung implementieren** (AES-256)
 4. Version auf 1.0.0 bumpen + neuen AAB-Build erstellen
 5. Neue App in Play Console anlegen (Paketname `de.simplypet.app`)
