@@ -73,7 +73,7 @@
 | BUG | Unterschrift-Zeichenfeld: Löschen/Übernehmen-Buttons nicht sichtbar | ✅ WebView-Footer ausgeblendet, native Pressable-Buttons (Übernehmen/Löschen/Abbrechen) wie Abbrechen-Stil (SitterScreen.tsx) |
 | BUG | Tab-Navigation: Unter-Screens blieben hängen (z.B. Notfallpass bei Zuhause-Tab) | ✅ Alle Tabs setzen Stack auf Main zurück bei Tab-Press (AppNavigator.tsx) |
 | BUG | Notification-Tap öffnete Hauptseite statt Notfallpass | ✅ LockScreenActivity setzt Action OPEN_EMERGENCY statt Intent-Extra (withShowOnLockScreen.js) |
-| STORE | FOREGROUND_SERVICE_SPECIAL_USE blockierte Play Console (Video-Nachweis nötig) | ✅ Berechtigung entfernt, Feature für v1.1.0 mit Video nachreichen |
+| STORE | FOREGROUND_SERVICE_SPECIAL_USE blockierte Play Console (Video-Nachweis nötig) | ✅ Berechtigung aus app.json UND withForegroundService.js entfernt, foregroundServiceType → shortService |
 | STORE | versionCode 7 bereits in Console verwendet | ✅ versionCode auf 9 erhöht (app.json) |
 | BUG | Über-Dialog zeigte "(Prototyp)" und "Tiergesundheits-App" | ✅ Entfernt bzw. geändert zu "Pocket-Tool-App für dein Tier" (MoreScreen.tsx) |
 | BUG | DateField Quick-Chips bei allowFuture=true zeigten Vergangenheit | ✅ Dynamische Chips (Heute/In 1 Woche/In 2 Wochen) |
