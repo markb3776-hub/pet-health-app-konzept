@@ -33,7 +33,7 @@ function withForegroundService(config) {
         fs.mkdirSync(packagePath, { recursive: true });
       }
 
-      const serviceCode = `package com.simplydevapps.simplypet
+      const serviceCode = `package de.simplypet.app
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -55,7 +55,7 @@ class EmergencyForegroundService : Service() {
     companion object {
         const val CHANNEL_ID = "simplypet_emergency_fg"
         const val NOTIFICATION_ID = 7301
-        const val ACTION_STOP = "com.simplydevapps.simplypet.STOP_EMERGENCY_FG"
+        const val ACTION_STOP = "de.simplypet.app.STOP_EMERGENCY_FG"
 
         fun start(context: Context) {
             val intent = Intent(context, EmergencyForegroundService::class.java)
@@ -115,7 +115,7 @@ class EmergencyForegroundService : Service() {
     private fun buildNotification(): Notification {
         // Intent: Tippe auf Notification -> LockScreenActivity (E-72: zeigt auch auf Sperrbildschirm)
         val openIntent = Intent(this, LockScreenActivity::class.java).apply {
-            action = "com.simplydevapps.simplypet.OPEN_EMERGENCY"
+            action = "de.simplypet.app.OPEN_EMERGENCY"
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
