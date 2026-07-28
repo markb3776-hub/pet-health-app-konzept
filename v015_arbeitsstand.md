@@ -59,7 +59,7 @@
 ## OFFENE BUGS / VERBESSERUNGEN:
 | ID | Beschreibung | Status |
 |:---|:---|:---|
-| – | Aktuell keine offenen Bugs | – |
+| E-110 | "In Erinnerung"-Modus (verstorbene Tiere) | ⏳ Geplant für v1.1.0 (nach Release) |
 
 ## GERADE ERLEDIGT (28.07.2026):
 | ID | Beschreibung | Fix |

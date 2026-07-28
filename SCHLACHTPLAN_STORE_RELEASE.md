@@ -104,5 +104,13 @@
 - [x] Backup-Verschlüsselung funktioniert (Export verschlüsselt, Import entschlüsselt) ✅ 28.07.2026
 - [x] Prototyp-Banner aus AppointmentsScreen entfernt ✅ 28.07.2026
 - [ ] Version 1.0.0, versionCode 7
-- [ ] TypeScript 0 Fehler
-- [ ] Jedes Store-Listing-Feature gegen Code verifiziert (kein Bullet ohne Funktion)
+- [x] TypeScript 0 Fehler ✅ 28.07.2026
+- [x] Jedes Store-Listing-Feature gegen Code verifiziert (kein Bullet ohne Funktion) ✅ 28.07.2026
+
+## TO-DO NACH STORE-RELEASE (Version 1.1.0+)
+
+- [ ] **"In Erinnerung"-Modus (E-110):**
+  - Nutzer kann Tier als verstorben markieren (Datum + Notiz)
+  - Tier verschwindet vom HomeScreen, wandert in "In Erinnerung"-Bereich
+  - Tierakte bleibt vollständig einsehbar (read-only)
+  - Archiv-Option: Endgültiges Löschen aus dem "In Erinnerung"-Bereich möglich (mit Warnung)
