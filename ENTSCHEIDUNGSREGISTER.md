@@ -254,3 +254,17 @@ Diese Punkte sind NICHT verhandelbar:
 **Entscheidung E-117:** Tab-Press setzt immer auf die Hauptseite des jeweiligen Tabs zurück. Kein "Merken" des letzten Unter-Screens. Begründung: Nutzer erwartet bei Tab-Klick immer die Startseite des Bereichs, nicht einen zufällig noch offenen Unter-Screen.
 
 **Entscheidung E-118:** Unterschrift-Buttons werden NICHT als WebView-interne HTML-Buttons gerendert, sondern als native React-Native `<Pressable>`. Begründung: WebView-Footer ist unzuverlässig (Größe, Rendering, Touch-Targets variieren je nach Gerät). Native Buttons funktionieren garantiert.
+
+### BUGFIX-SESSION-4 (29.07.2026)
+
+**Kontext:** Play Console Store-Release Blocker + Notification-Tap Bug
+
+| Bug | Ursache | Fix | Datei(en) |
+|:---|:---|:---|:---|
+| Play Console: "Berechtigungen für Dienste im Vordergrund" blockiert Release | `FOREGROUND_SERVICE_SPECIAL_USE` erfordert Video-Nachweis den Google prüft. Video-Aufnahme auf dem Gerät nicht möglich (Screenrecorder stoppt bei Power-Taste, Timeout wird durch Recorder verhindert) | Berechtigung entfernt. Normaler `FOREGROUND_SERVICE` bleibt (braucht kein Video). Lockscreen-Feature wird für v1.1.0 mit Video nachgereicht | app.json |
+| Notification-Tap öffnet Hauptseite statt Notfallpass | LockScreenActivity startete MainActivity mit Intent-Extra `show_emergency_pass=true`, aber nirgends im React-Native-Code wurde dieses Extra ausgelesen | LockScreenActivity setzt jetzt Action `de.simplypet.app.OPEN_EMERGENCY` (wie App-Shortcut). Wird von bestehendem `intentHandler.ts` über `Linking.getInitialURL()` erkannt | withShowOnLockScreen.js |
+| versionCode 7 bereits in Console | Alte AAB (vor Bugfixes) war mit versionCode 7 hochgeladen worden | versionCode auf 9 erhöht (8 war Zwischenschritt der nie hochgeladen wurde) | app.json |
+
+**Entscheidung E-119:** `FOREGROUND_SERVICE_SPECIAL_USE` wird für v1.0.0 entfernt. Der Lockscreen-Notfallpass funktioniert trotzdem (über normale Notification + LockScreenActivity mit `showWhenLocked`). Für v1.1.0 wird das Video erstellt und die Berechtigung wieder hinzugefügt, falls Google den Vordergrunddienst ohne SPECIAL_USE ablehnt.
+
+**Entscheidung E-120:** Paketname bleibt `de.simplypet.app`. Die alte App (`com.simplydevapps.simplypet`) in der Play Console wird nicht mehr verwendet. User muss darauf achten, in der richtigen App zu arbeiten.
