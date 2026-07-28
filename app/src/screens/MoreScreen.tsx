@@ -318,8 +318,8 @@ export default function MoreScreen() {
           onPress={() => {
             Alert.alert(
               'Über simplyPet',
-              `Version ${Constants.expoConfig?.version ?? '?'} (Prototyp)\n\n` +
-                'simplyPet ist eine unabhängige Tiergesundheits-App.\n' +
+              `Version ${Constants.expoConfig?.version ?? '?'}\n\n` +
+                'simplyPet ist eine unabhängige Pocket-Tool-App für dein Tier.\n' +
                 'Keine Werbung, kein Abo, keine versteckten Kosten.\n\n' +
                 'Einmal kaufen – für immer nutzen.',
               [{ text: 'OK' }]

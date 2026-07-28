@@ -78,6 +78,8 @@ export type AppointmentsStackParamList = {
 export type MoreStackParamList = {
   MoreMain: undefined;
   TiereVerwalten: undefined;
+  StammdatenBearbeiten: { petId: string };
+  TierAnlegen: { firstPet?: boolean } | undefined;
 };
 
 // Fuer externe Navigation (Shortcut, Notification) behalten wir einen
@@ -214,6 +216,16 @@ function MoreStackScreen() {
         name="TiereVerwalten"
         component={ManagePetsScreen}
         options={{ title: 'Tiere verwalten' }}
+      />
+      <MoreStack.Screen
+        name="StammdatenBearbeiten"
+        component={EditPetScreen}
+        options={{ title: 'Stammdaten bearbeiten' }}
+      />
+      <MoreStack.Screen
+        name="TierAnlegen"
+        component={AddPetScreen}
+        options={{ title: 'Tier hinzufügen' }}
       />
     </MoreStack.Navigator>
   );

@@ -15,7 +15,7 @@ import { View, Text, Pressable, Image, ScrollView, StyleSheet, Alert } from 'rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../navigation/AppNavigator';
+import type { MoreStackParamList } from '../navigation/AppNavigator';
 import { getDb } from '../db/database';
 import { getSpeciesConfig } from '../config/species';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
@@ -33,7 +33,7 @@ interface PetRow {
 export default function ManagePetsScreen() {
   // Edge-to-Edge-Korrektur (Nutzertest 10.07.2026): Systemleiste unten freihalten.
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<MoreStackParamList>>();
   const [active, setActive] = useState<PetRow[]>([]);
   const [archived, setArchived] = useState<PetRow[]>([]);
   const [loaded, setLoaded] = useState(false);

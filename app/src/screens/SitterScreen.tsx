@@ -382,9 +382,9 @@ export default function SitterScreen() {
               clearText="Löschen"
               confirmText="Übernehmen"
               webStyle={`.m-signature-pad { box-shadow: none; border: 1px solid #ccc; border-radius: 8px; }
-                .m-signature-pad--footer { display: flex; justify-content: space-between; padding: 8px 16px; }
-                .m-signature-pad--footer .button { font-size: 16px; padding: 8px 24px; border-radius: 8px; }
-                .m-signature-pad--footer .button.clear { background: #f5f5f5; color: #333; }
+                .m-signature-pad--footer { display: flex; justify-content: space-between; padding: 12px 16px; min-height: 56px; align-items: center; }
+                .m-signature-pad--footer .button { font-size: 17px; padding: 10px 28px; border-radius: 10px; font-weight: 600; }
+                .m-signature-pad--footer .button.clear { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
                 .m-signature-pad--footer .button.save { background: #2E7D32; color: white; }`}
               backgroundColor="white"
               penColor="#1a1a1a"
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
   sigModal: { flex: 1, backgroundColor: colors.background, padding: spacing.m },
   sigModalTitle: { fontSize: typography.headline, fontWeight: '700', color: colors.textPrimary, marginBottom: spacing.xs },
   sigModalHint: { fontSize: typography.bodySmall, color: colors.textSecondary, marginBottom: spacing.m },
-  sigPad: { flex: 1, maxHeight: 350, borderRadius: 12, overflow: 'hidden' },
+  sigPad: { flex: 1, maxHeight: 350, borderRadius: 12 },
   sigPadLandscape: { maxHeight: 220 },
   sigCancelButton: {
     marginTop: spacing.m,
