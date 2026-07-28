@@ -62,12 +62,14 @@ export default function MoreScreen() {
     message: '',
   });
   const [pwInput, setPwInput] = useState('');
+  const [pwVisible, setPwVisible] = useState(false);
 
   useEffect(() => {
     const unsub = addPasswordListener(() => {
       const state = getPasswordPromptState();
       setPwPrompt({ visible: state.visible, title: state.title, message: state.message });
       setPwInput('');
+      setPwVisible(false);
     });
     return unsub;
   }, []);
@@ -339,15 +341,24 @@ export default function MoreScreen() {
           <View style={styles.pwCard}>
             <Text style={styles.pwTitle}>{pwPrompt.title}</Text>
             <Text style={styles.pwMessage}>{pwPrompt.message}</Text>
-            <TextInput
-              style={styles.pwInput}
-              secureTextEntry
-              placeholder="Passwort"
-              placeholderTextColor={colors.textSecondary}
-              value={pwInput}
-              onChangeText={setPwInput}
-              autoFocus
-            />
+            <View style={styles.pwInputRow}>
+              <TextInput
+                style={styles.pwInputField}
+                secureTextEntry={!pwVisible}
+                placeholder="Passwort"
+                placeholderTextColor={colors.textSecondary}
+                value={pwInput}
+                onChangeText={setPwInput}
+                autoFocus
+              />
+              <Pressable
+                style={styles.pwEye}
+                onPress={() => setPwVisible(!pwVisible)}
+                accessibilityLabel={pwVisible ? 'Passwort verbergen' : 'Passwort anzeigen'}
+              >
+                <Text style={styles.pwEyeText}>{pwVisible ? '🙈' : '👁️'}</Text>
+              </Pressable>
+            </View>
             <View style={styles.pwButtons}>
               <Pressable
                 style={styles.pwCancel}
@@ -551,14 +562,27 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: spacing.m,
   },
-  pwInput: {
+  pwInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 8,
+    marginBottom: spacing.m,
+  },
+  pwInputField: {
+    flex: 1,
     padding: spacing.s,
     fontSize: typography.body,
     color: colors.textPrimary,
-    marginBottom: spacing.m,
+  },
+  pwEye: {
+    padding: spacing.s,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pwEyeText: {
+    fontSize: 20,
   },
   pwButtons: {
     flexDirection: 'row',
