@@ -76,10 +76,10 @@ class LockScreenActivity : Activity() {
             )
         }
 
-        // Haupt-Activity starten mit Intent-Extra
+        // Haupt-Activity starten mit OPEN_EMERGENCY Action (wird von intentHandler.ts erkannt)
         val mainIntent = Intent(this, MainActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            putExtra("show_emergency_pass", true)
+            action = "de.simplypet.app.OPEN_EMERGENCY"
         }
         startActivity(mainIntent)
 

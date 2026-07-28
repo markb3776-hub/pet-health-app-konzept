@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "android": {
       "package": "de.simplypet.app",
-      "versionCode": 8,
+      "versionCode": 9,
       "adaptiveIcon": {
         "backgroundColor": "#F7F5F0",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -20,8 +20,7 @@
         "android.permission.CAMERA",
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.READ_MEDIA_IMAGES",
-        "android.permission.FOREGROUND_SERVICE",
-        "android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
+        "android.permission.FOREGROUND_SERVICE"
       ],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
