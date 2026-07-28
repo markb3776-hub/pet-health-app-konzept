@@ -12,7 +12,7 @@
  *
  * Doktrin: Kein toter Knopf, kein falsches Versprechen.
  */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Constants from 'expo-constants';
 import {
   View,
@@ -24,13 +24,21 @@ import {
   Alert,
   StyleSheet,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { getOwnerName, setOwnerName, getOwnerPhone, setOwnerPhone } from '../profile/profileStore';
-import { exportBackup, importBackup, getLastBackupDate } from '../backup/backupService';
+import {
+  exportBackup,
+  importBackup,
+  getLastBackupDate,
+  getPasswordPromptState,
+  resolvePasswordPrompt,
+  addPasswordListener,
+} from '../backup/backupService';
 import {
   isPersistentNotificationEnabled,
   setPersistentNotificationEnabled,
@@ -48,6 +56,21 @@ export default function MoreScreen() {
   const [lastBackup, setLastBackup] = useState<string | null>(null);
   const [backupBusy, setBackupBusy] = useState(false);
   const [notifEnabled, setNotifEnabled] = useState(false);
+  const [pwPrompt, setPwPrompt] = useState<{ visible: boolean; title: string; message: string }>({
+    visible: false,
+    title: '',
+    message: '',
+  });
+  const [pwInput, setPwInput] = useState('');
+
+  useEffect(() => {
+    const unsub = addPasswordListener(() => {
+      const state = getPasswordPromptState();
+      setPwPrompt({ visible: state.visible, title: state.title, message: state.message });
+      setPwInput('');
+    });
+    return unsub;
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -309,6 +332,46 @@ export default function MoreScreen() {
           {`simplyPet v${Constants.expoConfig?.version ?? '?'} · Deine Daten bleiben auf diesem Gerät – ohne Konto, ohne Anmeldung.`}
         </Text>
       </ScrollView>
+
+      {/* Passwort-Dialog Modal */}
+      <Modal visible={pwPrompt.visible} transparent animationType="fade">
+        <View style={styles.pwOverlay}>
+          <View style={styles.pwCard}>
+            <Text style={styles.pwTitle}>{pwPrompt.title}</Text>
+            <Text style={styles.pwMessage}>{pwPrompt.message}</Text>
+            <TextInput
+              style={styles.pwInput}
+              secureTextEntry
+              placeholder="Passwort"
+              placeholderTextColor={colors.textSecondary}
+              value={pwInput}
+              onChangeText={setPwInput}
+              autoFocus
+            />
+            <View style={styles.pwButtons}>
+              <Pressable
+                style={styles.pwCancel}
+                onPress={() => {
+                  setPwPrompt({ ...pwPrompt, visible: false });
+                  resolvePasswordPrompt(null);
+                }}
+              >
+                <Text style={styles.pwCancelText}>Abbrechen</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.pwConfirm, !pwInput && { opacity: 0.5 }]}
+                disabled={!pwInput}
+                onPress={() => {
+                  setPwPrompt({ ...pwPrompt, visible: false });
+                  resolvePasswordPrompt(pwInput);
+                }}
+              >
+                <Text style={styles.pwConfirmText}>OK</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -461,5 +524,69 @@ const styles = StyleSheet.create({
     marginTop: spacing.m,
     lineHeight: 22,
     textAlign: 'center',
+  },
+  pwOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: spacing.l,
+  },
+  pwCard: {
+    backgroundColor: colors.surface,
+    borderRadius: 16,
+    padding: spacing.l,
+    width: '100%',
+    maxWidth: 340,
+  },
+  pwTitle: {
+    fontSize: typography.title,
+    fontWeight: '700',
+    color: colors.textPrimary,
+    marginBottom: spacing.s,
+  },
+  pwMessage: {
+    fontSize: typography.bodySmall,
+    color: colors.textSecondary,
+    lineHeight: 20,
+    marginBottom: spacing.m,
+  },
+  pwInput: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    padding: spacing.s,
+    fontSize: typography.body,
+    color: colors.textPrimary,
+    marginBottom: spacing.m,
+  },
+  pwButtons: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: spacing.m,
+  },
+  pwCancel: {
+    minWidth: minTouchTarget,
+    minHeight: minTouchTarget,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pwCancelText: {
+    fontSize: typography.body,
+    color: colors.textSecondary,
+  },
+  pwConfirm: {
+    minWidth: minTouchTarget,
+    minHeight: minTouchTarget,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    paddingHorizontal: spacing.m,
+  },
+  pwConfirmText: {
+    fontSize: typography.body,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });

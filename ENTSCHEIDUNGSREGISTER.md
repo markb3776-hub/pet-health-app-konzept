@@ -217,3 +217,12 @@ Diese Punkte sind NICHT verhandelbar:
 - Info-Paket: HTML→PDF mit allen Tierdaten + Checkliste
 - Navigation: PetFileScreen Button → SitterModus Route
 - Neue Dependencies: react-native-signature-canvas, react-native-webview
+
+### E-109-IMPL (28.07.2026)
+**Kontext:** Backup-Verschlüsselung implementiert
+**Entscheidung:** AES-256-GCM via expo-crypto (native Implementierung). Key-Derivation über iteratives SHA-512 (10.000 Runden) statt PBKDF2 (expo-crypto hat kein natives PBKDF2). Salt: 16 Bytes zufällig. Format: JSON-Envelope mit {encrypted: true, salt, data}. Auto-Detect beim Import: isEncryptedBackup() prüft ob Envelope-Format vorliegt. Abwärtskompatibel: Alte unverschlüsselte Backups werden weiterhin direkt importiert.
+**Umsetzung:**
+- cryptoService.ts (NEU): encryptBackup, decryptBackup, isEncryptedBackup
+- backupService.ts: exportBackup erweitert (Passwort 2x abfragen → verschlüsseln), importBackup erweitert (Auto-Detect → Passwort abfragen → entschlüsseln)
+- MoreScreen.tsx: Passwort-Modal (da Alert.prompt nur iOS), addPasswordListener Pattern
+- Dependency: expo-crypto (bereits im Expo SDK enthalten)

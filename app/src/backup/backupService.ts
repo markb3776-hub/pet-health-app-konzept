@@ -20,6 +20,7 @@ import { Alert, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { getDb } from '../db/database';
+import { encryptBackup, decryptBackup, isEncryptedBackup } from './cryptoService';
 
 const BACKUP_VERSION = 1;
 const KEY_BACKUP_COUNTER = 'simplypet.backup_counter';
@@ -178,17 +179,49 @@ export async function autoBackup(): Promise<void> {
 }
 
 /**
- * Export: Erstellt Backup mit fortlaufender Nummer und bietet dem Nutzer
- * die Wahl zwischen "Lokal speichern" (SAF) und "Teilen" (Share-Intent).
+ * Export: Erstellt Backup, fragt Passwort ab, verschlüsselt, bietet Speicher-Optionen.
  */
 export async function exportBackup(): Promise<void> {
+  // Schritt 1: Passwort abfragen
+  const password = await promptPassword(
+    'Backup verschlüsseln',
+    'Wähle ein Passwort zum Schutz deiner Sicherung.\n\n⚠️ Ohne dieses Passwort kannst du die Sicherung NICHT wiederherstellen!'
+  );
+  if (password === null) return; // Abgebrochen
+
+  // Schritt 2: Passwort bestätigen
+  const confirm = await promptPassword(
+    'Passwort bestätigen',
+    'Bitte gib das Passwort erneut ein.'
+  );
+  if (confirm === null) return;
+  if (confirm !== password) {
+    Alert.alert('Fehler', 'Die Passwörter stimmen nicht überein. Bitte versuche es erneut.');
+    return;
+  }
+
+  // Schritt 3: Backup erstellen
   const backupPath = await createBackup(false);
   if (!backupPath) return;
 
-  // Nutzer-Auswahl: Lokal speichern oder Teilen
+  // Schritt 4: Verschlüsseln
+  try {
+    const plainJson = await FileSystem.readAsStringAsync(backupPath, {
+      encoding: FileSystem.EncodingType.UTF8,
+    });
+    const encryptedJson = await encryptBackup(plainJson, password);
+    await FileSystem.writeAsStringAsync(backupPath, encryptedJson, {
+      encoding: FileSystem.EncodingType.UTF8,
+    });
+  } catch {
+    Alert.alert('Verschlüsselung fehlgeschlagen', 'Die Sicherung konnte nicht verschlüsselt werden.');
+    return;
+  }
+
+  // Schritt 5: Speicher-Auswahl
   return new Promise<void>((resolve) => {
     Alert.alert(
-      'Sicherung erstellt',
+      'Verschlüsselte Sicherung erstellt',
       'Wo möchtest du die Sicherung speichern?',
       [
         {
@@ -213,6 +246,65 @@ export async function exportBackup(): Promise<void> {
       ]
     );
   });
+}
+
+/**
+ * Zeigt einen Passwort-Eingabe-Dialog.
+ * Gibt das Passwort zurück oder null bei Abbruch.
+ * Hinweis: React Native Alert unterstützt kein TextInput.
+ * Wir verwenden prompt() nicht (nicht verfügbar in RN).
+ * Stattdessen exportieren wir eine Callback-basierte Lösung
+ * die vom MoreScreen aufgerufen wird.
+ *
+ * WORKAROUND: Da Alert.prompt nur auf iOS existiert, verwenden wir
+ * eine Promise-basierte Lösung mit einem globalen Callback.
+ */
+let _passwordResolver: ((value: string | null) => void) | null = null;
+let _passwordTitle = '';
+let _passwordMessage = '';
+let _passwordVisible = false;
+
+export function getPasswordPromptState() {
+  return {
+    visible: _passwordVisible,
+    title: _passwordTitle,
+    message: _passwordMessage,
+  };
+}
+
+export function resolvePasswordPrompt(value: string | null) {
+  _passwordVisible = false;
+  if (_passwordResolver) {
+    _passwordResolver(value);
+    _passwordResolver = null;
+  }
+}
+
+function promptPassword(title: string, message: string): Promise<string | null> {
+  return new Promise((resolve) => {
+    _passwordTitle = title;
+    _passwordMessage = message;
+    _passwordVisible = true;
+    _passwordResolver = resolve;
+    // Der MoreScreen muss auf _passwordVisible reagieren
+    // Wir triggern ein Event über den passwordPromptListeners
+    notifyPasswordListeners();
+  });
+}
+
+type PasswordListener = () => void;
+const passwordListeners: PasswordListener[] = [];
+
+export function addPasswordListener(listener: PasswordListener): () => void {
+  passwordListeners.push(listener);
+  return () => {
+    const idx = passwordListeners.indexOf(listener);
+    if (idx >= 0) passwordListeners.splice(idx, 1);
+  };
+}
+
+function notifyPasswordListeners() {
+  passwordListeners.forEach((l) => l());
 }
 
 /**
@@ -288,7 +380,8 @@ async function shareBackup(backupPath: string): Promise<void> {
 
 /**
  * Import: Nutzer waehlt eine .simplypet-Datei, Daten werden wiederhergestellt.
- * Fragt vorher: Ersetzen oder Zusammenfuehren?
+ * Auto-Detect: Verschlüsselte Backups werden erkannt und Passwort abgefragt.
+ * Abwärtskompatibel: Alte unverschlüsselte Backups werden direkt importiert.
  */
 export async function importBackup(): Promise<boolean> {
   try {
@@ -302,9 +395,28 @@ export async function importBackup(): Promise<boolean> {
     }
 
     const fileUri = result.assets[0].uri;
-    const content = await FileSystem.readAsStringAsync(fileUri, {
+    let content = await FileSystem.readAsStringAsync(fileUri, {
       encoding: FileSystem.EncodingType.UTF8,
     });
+
+    // Auto-Detect: Verschlüsseltes Backup?
+    if (isEncryptedBackup(content)) {
+      const password = await promptPassword(
+        'Passwort eingeben',
+        'Diese Sicherung ist verschlüsselt. Bitte gib das Passwort ein.'
+      );
+      if (password === null) return false; // Abgebrochen
+
+      try {
+        content = await decryptBackup(content, password);
+      } catch {
+        Alert.alert(
+          'Entschlüsselung fehlgeschlagen',
+          'Das Passwort ist falsch oder die Datei ist beschädigt.'
+        );
+        return false;
+      }
+    }
 
     let backup: BackupData;
     try {

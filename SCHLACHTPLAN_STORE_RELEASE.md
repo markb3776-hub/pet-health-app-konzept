@@ -64,7 +64,7 @@
 
 ---
 
-### Session 2 oder 3: Backup-Verschlüsselung
+### Session 2 oder 3: Backup-Verschlüsselung ✅ ERLEDIGT (28.07.2026)
 
 **Was im Store-Listing steht:**
 > "Souveräne Backups: Exportiere deine verschlüsselte Backup-Datei lokal..."
@@ -101,7 +101,7 @@
 
 - [x] Push-Notifications funktionieren (Termin anlegen → Erinnerung kommt) ✅ 28.07.2026
 - [x] Sitter-Modus funktioniert (Info-Paket + Vollmacht-PDF generierbar) ✅ 28.07.2026
-- [ ] Backup-Verschlüsselung funktioniert (Export verschlüsselt, Import entschlüsselt)
+- [x] Backup-Verschlüsselung funktioniert (Export verschlüsselt, Import entschlüsselt) ✅ 28.07.2026
 - [x] Prototyp-Banner aus AppointmentsScreen entfernt ✅ 28.07.2026
 - [ ] Version 1.0.0, versionCode 7
 - [ ] TypeScript 0 Fehler

@@ -64,6 +64,7 @@
 ## GERADE ERLEDIGT (28.07.2026):
 | ID | Beschreibung | Fix |
 |:---|:---|:---|
+| E-109 | Backup-Verschlüsselung (AES-256-GCM) | ✅ cryptoService.ts, backupService.ts erweitert, MoreScreen Passwort-Modal, expo-crypto |
 | E-105 | Sitter-Modus komplett implementiert | ✅ SitterScreen.tsx, sitterConfig.ts, sitterPdf.ts, vollmachtPdf.ts, Migration 009, EditPetScreen Sitter-Infos, PetFileScreen Button, Navigation |
 | E-108 | Push-Notifications (Erinnerungen) | ✅ notificationService.ts, Migration 008, AppointmentsScreen Toggle, VaccinationEntry + MedicationEntry Scheduling |
 | – | Prototyp-Banner entfernt | ✅ AppointmentsScreen.tsx |
@@ -86,7 +87,7 @@
 
 1. ~~**Push-Notifications implementieren**~~ ✅ ERLEDIGT (28.07.2026)
 2. ~~**Sitter-Modus implementieren**~~ ✅ ERLEDIGT (28.07.2026)
-3. **Backup-Verschlüsselung implementieren** (AES-256)
+3. ~~**Backup-Verschlüsselung implementieren**~~ ✅ ERLEDIGT (28.07.2026)
 4. Version auf 1.0.0 bumpen + neuen AAB-Build erstellen
 5. Neue App in Play Console anlegen (Paketname `de.simplypet.app`)
 6. Store-Listing (unverändert) + AAB hochladen
