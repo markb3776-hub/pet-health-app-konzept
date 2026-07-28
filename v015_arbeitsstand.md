@@ -60,6 +60,8 @@
 | ID | Beschreibung | Status |
 |:---|:---|:---|
 | E-110 | "In Erinnerung"-Modus (verstorbene Tiere) | ⏳ Geplant für v1.1.0 (nach Release) |
+| E-111 | Praxis-Datentransfer: OCR-Import (Befund fotografieren → Eintrag vorausfüllen) | ⏳ Geplant für v1.1/v1.2 |
+| E-112 | NFC-Tag am Halsband als digitaler Notfallpass (Finder scannt → Kontaktdaten + Allergien) | 🔮 Zukunftsmusik |
 
 ## GERADE ERLEDIGT (28.07.2026):
 | ID | Beschreibung | Fix |
