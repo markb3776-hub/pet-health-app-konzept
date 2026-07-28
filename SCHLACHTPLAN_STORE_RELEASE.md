@@ -8,7 +8,7 @@
 
 ## REIHENFOLGE DER IMPLEMENTIERUNG
 
-### Session 1: Push-Notifications (Erinnerungen & Termine)
+### Session 1: Push-Notifications (Erinnerungen & Termine) ✅ ERLEDIGT (28.07.2026)
 
 **Was im Store-Listing steht:**
 > "Erinnerungen & Termine: Verpasse nie wieder eine Wurmkur, eine Impfung oder den nächsten Tierarztbesuch."
@@ -99,10 +99,10 @@
 
 ## CHECKLISTE VOR AAB-BUILD
 
-- [ ] Push-Notifications funktionieren (Termin anlegen → Erinnerung kommt)
+- [x] Push-Notifications funktionieren (Termin anlegen → Erinnerung kommt) ✅ 28.07.2026
 - [ ] Sitter-Modus funktioniert (Info-Paket + Vollmacht-PDF generierbar)
 - [ ] Backup-Verschlüsselung funktioniert (Export verschlüsselt, Import entschlüsselt)
-- [ ] Prototyp-Banner aus AppointmentsScreen entfernt
+- [x] Prototyp-Banner aus AppointmentsScreen entfernt ✅ 28.07.2026
 - [ ] Version 1.0.0, versionCode 7
 - [ ] TypeScript 0 Fehler
 - [ ] Jedes Store-Listing-Feature gegen Code verifiziert (kein Bullet ohne Funktion)

@@ -32,6 +32,11 @@ import DateField from '../../components/DateField';
 import { PetPicker, FieldLabel, Hint, SaveButton, ChoiceChips } from '../../components/FormParts';
 import { usePets, useEntryForm } from '../../forms/useEntryForm';
 import { todayKey, nowUtcIso, formatDate } from '../../time/timeModule';
+import {
+  scheduleReminderNotification,
+  calculateTriggerDate,
+  buildReminderBody,
+} from '../../services/notificationService';
 
 const VACC_TYPES = ['Impfung', 'Entwurmung', 'Zeckenschutz'];
 
@@ -127,19 +132,30 @@ export default function VaccinationEntryScreen() {
             const dueDate = new Date(form.validUntil);
             dueDate.setDate(dueDate.getDate() - Math.max(1, form.reminderDaysBefore));
             const dueDateStr = dueDate.toISOString().slice(0, 10);
+            const reminderId = uuid();
+            const reminderTitle = `${form.vaccType} auffrischen: ${form.disease.trim()}`;
             await db.runAsync(
-              `INSERT INTO reminders (id, pet_id, title, due_date, status, source_type, source_id, offset_days, created_at, updated_at, is_synced)
-               VALUES (?, ?, ?, ?, 'Offen', 'impfung', ?, ?, ?, ?, 0)`,
+              `INSERT INTO reminders (id, pet_id, title, due_date, status, source_type, source_id, offset_days, reminder_active, reminder_offset_days, created_at, updated_at, is_synced)
+               VALUES (?, ?, ?, ?, 'Offen', 'impfung', ?, ?, 1, ?, ?, ?, 0)`,
               [
-                uuid(),
+                reminderId,
                 effectivePetId,
-                `${form.vaccType} auffrischen: ${form.disease.trim()}`,
+                reminderTitle,
                 dueDateStr,
                 vaccId,
+                form.reminderDaysBefore,
                 form.reminderDaysBefore,
                 ts,
                 ts,
               ]
+            );
+            // Push-Notification planen
+            const trigger = calculateTriggerDate(dueDateStr, 0, 9);
+            await scheduleReminderNotification(
+              reminderId,
+              reminderTitle,
+              buildReminderBody(pet?.name ?? 'Dein Tier', dueDateStr, 0),
+              trigger
             );
           }
         });

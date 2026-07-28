@@ -193,3 +193,15 @@ Diese Punkte sind NICHT verhandelbar:
 | AUDIT-1 | Store-Listing vs. Code Audit | **3 Blocker identifiziert:** (1) Push-Notifications beworben aber nicht implementiert, (2) Sitter-Modus beworben aber nicht implementiert, (3) "verschlüsselte Backup-Datei" beworben aber Backup ist unverschlüsseltes JSON. **Entscheidung: Option C** – Push-Notifications implementieren (Kern-Feature), Store-Listing für Sitter-Modus und Verschlüsselung korrigieren. Sitter-Modus und Verschlüsselung kommen als Post-Release Updates. | Audit 28.07.2026: Systematischer Abgleich jedes Store-Listing-Bullets gegen den tatsächlichen Code. Google lehnt Apps ab die nicht-existierende Features bewerben. Push-Notifications sind für eine Termin-App unverzichtbar. Sitter-Modus und Verschlüsselung sind nice-to-have und können als Update nachgeliefert werden. |
 | AUDIT-2 | Store-Listing bleibt unverändert | **Alle 3 Features werden implementiert.** Store-Listing wird NICHT angepasst – es beschreibt den geplanten Funktionsumfang der v1.0.0. Sitter-Modus, Push-Notifications und verschlüsselte Backups müssen VOR dem Release fertig sein. | Marks Entscheidung 28.07.2026: "Da wird nix geändert im Store-Listing, so wirds kommen. Das war geplant seit Wochen." |
 | AUDIT-3 | Paketname-Problem | Alte App (`com.simplydevapps.simplypet`) in Play Console stehen lassen (kann nicht gelöscht werden). **Neue App mit korrektem Paketnamen `de.simplypet.app` anlegen.** Alle Formulare erneut ausfüllen (Mark kennt den Prozess). | AAB wurde abgelehnt wegen Paketname-Mismatch. Play Console erlaubt kein Löschen von kostenpflichtigen Apps die nie veröffentlicht wurden. |
+
+### E-108: Push-Notifications implementiert (28.07.2026)
+- **Entscheidung:** Lokale Notifications via expo-notifications für alle Termine/Erinnerungen
+- **Umsetzung:**
+  - Neuer Service: `src/services/notificationService.ts` (Scheduling, Stornierung, Channel)
+  - DB-Migration 008: `reminder_active`, `notification_id`, `reminder_offset_days` in reminders
+  - AppointmentsScreen: Prototyp-Banner entfernt, Toggle pro Erinnerung
+  - VaccinationEntryScreen + MedicationEntryScreen: Notification wird beim Anlegen geplant
+  - App.tsx: Channel-Init + Notification-Tap → Termine-Tab
+  - navigationRef.ts: `navigateToAppointments()` hinzugefügt
+- **TypeScript:** 0 Fehler
+- **Grund:** Store-Listing bewirbt "Erinnerungen & Termine" – muss funktionieren vor Release

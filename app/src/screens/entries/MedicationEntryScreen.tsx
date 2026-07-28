@@ -29,6 +29,10 @@ import DateField from '../../components/DateField';
 import { PetPicker, FieldLabel, Hint, SaveButton, ChoiceChips } from '../../components/FormParts';
 import { usePets, useEntryForm } from '../../forms/useEntryForm';
 import { todayKey, nowUtcIso } from '../../time/timeModule';
+import {
+  scheduleReminderNotification,
+  buildReminderBody,
+} from '../../services/notificationService';
 
 const MED_TYPES = ['Medikament', 'Pflege', 'Parasitenschutz', 'Vorerkrankung', 'Allergie'];
 const PARASIT_SUB_TYPES = ['Spot-On', 'Halsband', 'Tablette', 'Sonstiges'];
@@ -169,14 +173,17 @@ export default function MedicationEntryScreen() {
           );
           // Optionale taegliche Erinnerung – atomar mitgespeichert.
           if (form.createDailyReminder && !isCondition) {
+            const reminderId = uuid();
+            const reminderTitle = `${form.name.trim()}${form.dosage.trim() ? ` (${form.dosage.trim()})` : ''}`;
+            const dueDate = todayKey();
             await db.runAsync(
-              `INSERT INTO reminders (id, pet_id, title, due_date, status, source_type, source_id, repeat_rule, season_start, season_end, hint_text, created_at, updated_at, is_synced)
-               VALUES (?, ?, ?, ?, 'Offen', 'medikament', ?, 'taeglich', ?, ?, ?, ?, ?, 0)`,
+              `INSERT INTO reminders (id, pet_id, title, due_date, status, source_type, source_id, repeat_rule, season_start, season_end, hint_text, reminder_active, reminder_offset_days, created_at, updated_at, is_synced)
+               VALUES (?, ?, ?, ?, 'Offen', 'medikament', ?, 'taeglich', ?, ?, ?, 1, 0, ?, ?, 0)`,
               [
-                uuid(),
+                reminderId,
                 effectivePetId,
-                `${form.name.trim()}${form.dosage.trim() ? ` (${form.dosage.trim()})` : ''}`,
-                todayKey(),
+                reminderTitle,
+                dueDate,
                 medId,
                 form.seasonStart,
                 form.seasonEnd,
@@ -184,6 +191,16 @@ export default function MedicationEntryScreen() {
                 ts,
                 ts,
               ]
+            );
+            // Push-Notification fuer morgen planen (taeglich = Erinnerung am Morgen)
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            tomorrow.setHours(9, 0, 0, 0);
+            await scheduleReminderNotification(
+              reminderId,
+              reminderTitle,
+              buildReminderBody(pet?.name ?? 'Dein Tier', dueDate, 0),
+              tomorrow
             );
           }
         });

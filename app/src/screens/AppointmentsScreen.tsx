@@ -20,10 +20,17 @@
  *        (3) Prototyp-Hinweis am Ende.
  */
 import React, { useCallback, useState } from 'react';
-import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, Pressable, ScrollView, StyleSheet, Switch } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { getDb, uuid } from '../db/database';
+import {
+  scheduleReminderNotification,
+  cancelReminderNotification,
+  calculateTriggerDate,
+  buildReminderBody,
+  type ReminderOffset,
+} from '../services/notificationService';
 import {
   useTodayKey,
   formatDate,
@@ -48,6 +55,9 @@ interface ReminderRow {
   pet_name: string;
   pet_species: string;
   pet_color: string | null;
+  reminder_active: number;
+  reminder_offset_days: number;
+  notification_id: string | null;
 }
 
 /** Ist der Monat (1-12) im Saisonfenster? Fenster über den Jahreswechsel (z. B. 11–2) inklusive. */
@@ -135,17 +145,25 @@ export default function AppointmentsScreen() {
       await db.withTransactionAsync(async () => {
         if (r.repeat_rule === 'taeglich') {
           // BUG-4 FIX: Kein Verlaufs-Eintrag bei täglichen Routine-Erinnerungen.
-          // Der Nutzer sagt: "ergibt sich aus der hinterlegten Erinnerung".
-          // Nur essentielle Infos (Gewicht, Impfung, TA-Besuch) gehören in den Verlauf.
+          const nextDue = dateKeyWithOffset(1);
           await db.runAsync(
             `UPDATE reminders SET due_date = ?, updated_at = ?, is_synced = 0 WHERE id = ?`,
-            [dateKeyWithOffset(1), ts, r.id]
+            [nextDue, ts, r.id]
           );
+          // Tägliche Erinnerung: Notification auf morgen neu planen
+          if (r.reminder_active) {
+            const trigger = calculateTriggerDate(nextDue, 0, 9);
+            await scheduleReminderNotification(
+              r.id, r.title, buildReminderBody(r.pet_name, nextDue, 0), trigger
+            );
+          }
         } else {
           await db.runAsync(
             `UPDATE reminders SET status = 'Erledigt', done_at = ?, updated_at = ?, is_synced = 0 WHERE id = ?`,
             [ts, ts, r.id]
           );
+          // Einmaliger Termin erledigt: Notification stornieren
+          await cancelReminderNotification(r.id);
         }
       });
       // E-93: Auto-Backup nach jeder Datenaenderung
@@ -168,6 +186,46 @@ export default function AppointmentsScreen() {
         `UPDATE reminders SET status = 'Offen', done_at = NULL, updated_at = ?, is_synced = 0 WHERE id = ?`,
         [nowUtcIso(), r.id]
       );
+      // Notification wieder planen wenn Erinnerung aktiv
+      if (r.reminder_active && r.due_date) {
+        const offset = (r.reminder_offset_days ?? 1) as ReminderOffset;
+        const trigger = calculateTriggerDate(r.due_date, offset, 9);
+        await scheduleReminderNotification(
+          r.id, r.title, buildReminderBody(r.pet_name, r.due_date, offset), trigger
+        );
+      }
+      // E-93: Auto-Backup nach jeder Datenaenderung
+      try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
+      await reload();
+    } catch {
+      // unveraendert
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  /** Erinnerung ein-/ausschalten (Toggle) */
+  async function toggleReminder(r: ReminderRow) {
+    if (busyId) return;
+    setBusyId(r.id);
+    try {
+      const db = await getDb();
+      const newActive = r.reminder_active ? 0 : 1;
+      await db.runAsync(
+        `UPDATE reminders SET reminder_active = ?, updated_at = ?, is_synced = 0 WHERE id = ?`,
+        [newActive, nowUtcIso(), r.id]
+      );
+      if (newActive) {
+        // Notification planen
+        const offset = (r.reminder_offset_days ?? 1) as ReminderOffset;
+        const trigger = calculateTriggerDate(r.due_date, offset, 9);
+        await scheduleReminderNotification(
+          r.id, r.title, buildReminderBody(r.pet_name, r.due_date, offset), trigger
+        );
+      } else {
+        // Notification stornieren
+        await cancelReminderNotification(r.id);
+      }
       // E-93: Auto-Backup nach jeder Datenaenderung
       try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
       await reload();
@@ -197,10 +255,10 @@ export default function AppointmentsScreen() {
           </Text>
         ) : (
           <>
-            <ReminderGroup title="Überfällig" items={overdue} highlight onCheck={complete} busyId={busyId} />
+            <ReminderGroup title="Überfällig" items={overdue} highlight onCheck={complete} onToggleReminder={toggleReminder} busyId={busyId} />
             {/* E-82: Bald fällig (≤14 Tage) und Geplant (>14 Tage) */}
-            <ReminderGroup title="Bald fällig" items={soonDue} onCheck={complete} busyId={busyId} />
-            <ReminderGroup title="Geplant" items={planned} onCheck={complete} busyId={busyId} />
+            <ReminderGroup title="Bald fällig" items={soonDue} onCheck={complete} onToggleReminder={toggleReminder} busyId={busyId} />
+            <ReminderGroup title="Geplant" items={planned} onCheck={complete} onToggleReminder={toggleReminder} busyId={busyId} />
 
             {done.length > 0 ? (
               <View style={styles.group}>
@@ -242,12 +300,7 @@ export default function AppointmentsScreen() {
           </>
         )}
 
-        {/* E-81: Prototyp-Hinweis */}
-        <View style={styles.protoHint}>
-          <Text style={styles.protoHintText}>
-            Prototyp – noch keine Push-Notifications oder Kalender-Sync aktiv!
-          </Text>
-        </View>
+
       </ScrollView>
     </View>
   );
@@ -258,12 +311,14 @@ function ReminderGroup({
   items,
   highlight = false,
   onCheck,
+  onToggleReminder,
   busyId,
 }: {
   title: string;
   items: ReminderRow[];
   highlight?: boolean;
   onCheck: (r: ReminderRow) => void;
+  onToggleReminder: (r: ReminderRow) => void;
   busyId: string | null;
 }) {
   if (items.length === 0) return null;
@@ -304,6 +359,19 @@ function ReminderGroup({
                 {r.repeat_rule === 'taeglich' ? 'Täglich' : `Fällig am ${formatDate(r.due_date)}`}
                 {r.hint_text ? ` · ${r.hint_text}` : ''}
               </Text>
+              {/* Erinnerungs-Toggle */}
+              <View style={styles.reminderRow}>
+                <Text style={styles.reminderLabel}>
+                  {r.reminder_active ? '🔔' : '🔕'} Erinnerung
+                </Text>
+                <Switch
+                  value={!!r.reminder_active}
+                  onValueChange={() => onToggleReminder(r)}
+                  trackColor={{ false: colors.border, true: colors.primaryLight }}
+                  thumbColor={r.reminder_active ? colors.primary : '#ccc'}
+                  style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
+                />
+              </View>
               {highlight && r.source_type === 'impfung' ? (
                 <Text style={styles.overdueHint}>
                   Überfällig – bitte Tierarzt konsultieren
@@ -408,19 +476,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   undoText: { fontSize: typography.bodySmall, color: colors.primary, fontWeight: '600' },
-  // E-81: Prototyp-Hinweis
-  protoHint: {
-    marginTop: spacing.l,
-    paddingVertical: spacing.s,
-    paddingHorizontal: spacing.m,
-    backgroundColor: colors.primaryLight,
-    borderRadius: 10,
+  // Erinnerungs-Toggle in der Karte
+  reminderRow: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginTop: spacing.xs,
+    gap: spacing.s,
   },
-  protoHintText: {
+  reminderLabel: {
     fontSize: typography.bodySmall,
     color: colors.textSecondary,
-    fontStyle: 'italic',
-    textAlign: 'center',
   },
 });

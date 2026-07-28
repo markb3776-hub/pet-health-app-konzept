@@ -187,6 +187,14 @@ async function migrate(database: SQLite.SQLiteDatabase): Promise<void> {
   await addColumnIfMissing(database, 'vaccinations', 'batch_number', 'TEXT'); // Chargen-Nummer
   await addColumnIfMissing(database, 'vaccinations', 'valid_from', 'TEXT'); // Gueltig ab
   await addColumnIfMissing(database, 'vaccinations', 'manufacturer', 'TEXT'); // Hersteller/Impfstoff-Name
+
+  // Migration 008 (Push-Notifications): Erinnerungs-Steuerung pro Termin
+  // reminder_active: 0 = keine Notification, 1 = Notification geplant
+  // notification_id: expo-notifications Identifier (fuer Stornierung)
+  // reminder_offset_days: Vorlaufzeit in Tagen (0/1/3/7/14)
+  await addColumnIfMissing(database, 'reminders', 'reminder_active', 'INTEGER NOT NULL DEFAULT 1');
+  await addColumnIfMissing(database, 'reminders', 'notification_id', 'TEXT');
+  await addColumnIfMissing(database, 'reminders', 'reminder_offset_days', 'INTEGER NOT NULL DEFAULT 1');
 }
 
 async function addColumnIfMissing(

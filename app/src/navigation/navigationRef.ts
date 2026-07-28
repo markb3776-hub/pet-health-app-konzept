@@ -34,3 +34,25 @@ export function navigateToEmergencyPass(): void {
     setTimeout(() => clearInterval(interval), 3000);
   }
 }
+
+/**
+ * Navigiert zum Termine-Tab – wird aufgerufen wenn der Nutzer
+ * auf eine Erinnerungs-Notification tippt.
+ */
+export function navigateToAppointments(): void {
+  const doNavigate = () => {
+    navigationRef.navigate('Termine', { screen: 'AppointmentsMain' });
+  };
+
+  if (navigationRef.isReady()) {
+    doNavigate();
+  } else {
+    const interval = setInterval(() => {
+      if (navigationRef.isReady()) {
+        clearInterval(interval);
+        doNavigate();
+      }
+    }, 100);
+    setTimeout(() => clearInterval(interval), 3000);
+  }
+}

@@ -19,9 +19,10 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Notifications from 'expo-notifications';
 import AppNavigator from './src/navigation/AppNavigator';
-import { navigateToEmergencyPass } from './src/navigation/navigationRef';
+import { navigateToEmergencyPass, navigateToAppointments } from './src/navigation/navigationRef';
 import { checkShortcutIntent, onShortcutIntent } from './src/utils/intentHandler';
 import { initPersistentNotification } from './src/services/persistentNotification';
+import { initReminderChannel } from './src/services/notificationService';
 import { registerLowMemoryHandler } from './src/utils/lowMemoryHandler';
 
 // Notification-Handler: Zeigt Benachrichtigungen auch im Vordergrund an
@@ -83,17 +84,22 @@ export default function App() {
       navigateToEmergencyPass();
     });
 
-    // E-62: Notification-Response-Handler (Tipp auf Notification -> Notfallpass)
+    // E-62: Notification-Response-Handler (Tipp auf Notification -> Notfallpass / Termine)
     const notificationResponseSub =
       Notifications.addNotificationResponseReceivedListener((response) => {
         const data = response.notification.request.content.data;
         if (data?.action === 'open_emergency_pass') {
           navigateToEmergencyPass();
+        } else if (data?.action === 'open_appointments') {
+          navigateToAppointments();
         }
       });
 
     // E-62: Permanente Notification pruefen und ggf. setzen
     initPersistentNotification();
+
+    // Push-Notifications: Reminder-Channel anlegen
+    initReminderChannel();
 
     // E-52 / Praevention Nr. 33: Low-Memory-Handler
     registerLowMemoryHandler();

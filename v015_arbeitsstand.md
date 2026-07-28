@@ -1,8 +1,8 @@
 # v0.1.8 Arbeitsstand (26.07.2026)
 
-## STATUS: ⚠️ PLAY STORE RELEASE BLOCKIERT – Audit ergab fehlende Features
+## STATUS: 🚧 IN ARBEIT – Fehlende Features werden implementiert
 
-## AKTUELLE SITUATION (26.07.2026):
+## AKTUELLE SITUATION (28.07.2026):
 - App-Code ist auf v0.1.8 (app.json: version "0.1.8", versionCode 6)
 - GitHub Actions AAB-Build **ERFOLGREICH** abgeschlossen (28m 57s)
 - **AAB verfügbar als GitHub Artifact (90 Tage):**
@@ -61,6 +61,13 @@
 |:---|:---|:---|
 | – | Aktuell keine offenen Bugs | – |
 
+## GERADE ERLEDIGT (28.07.2026):
+| ID | Beschreibung | Fix |
+|:---|:---|:---|
+| E-108 | Push-Notifications (Erinnerungen) | ✅ notificationService.ts, Migration 008, AppointmentsScreen Toggle, VaccinationEntry + MedicationEntry Scheduling |
+| – | Prototyp-Banner entfernt | ✅ AppointmentsScreen.tsx |
+| – | Notification-Tap → Termine-Tab | ✅ navigationRef.ts + App.tsx |
+
 ## GERADE ERLEDIGT (26.07.2026):
 | ID | Beschreibung | Fix |
 |:---|:---|:---|
@@ -76,7 +83,7 @@
 ## NÄCHSTE SCHRITTE (Reihenfolge):
 > **Entscheidung 28.07.2026: ALLE beworbenen Features werden implementiert. Store-Listing bleibt unverändert.**
 
-1. **Push-Notifications implementieren** (Erinnerungen & Termine)
+1. ~~**Push-Notifications implementieren**~~ ✅ ERLEDIGT (28.07.2026)
 2. **Sitter-Modus implementieren** (E-105, Spezifikation existiert)
 3. **Backup-Verschlüsselung implementieren** (AES-256)
 4. Version auf 1.0.0 bumpen + neuen AAB-Build erstellen
