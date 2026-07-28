@@ -226,3 +226,18 @@ Diese Punkte sind NICHT verhandelbar:
 - backupService.ts: exportBackup erweitert (Passwort 2x abfragen → verschlüsseln), importBackup erweitert (Auto-Detect → Passwort abfragen → entschlüsseln)
 - MoreScreen.tsx: Passwort-Modal (da Alert.prompt nur iOS), addPasswordListener Pattern
 - Dependency: expo-crypto (bereits im Expo SDK enthalten)
+
+### BUGFIX-SESSION-2 (28.07.2026)
+
+**Kontext:** Zweite Runde Gerätetest-Bugfixes nach User-Feedback
+
+| Bug | Ursache | Fix | Datei(en) |
+|:---|:---|:---|:---|
+| Bearbeiten-Buttons in "Tiere verwalten" tun nichts | ManagePetsScreen liegt im MoreStack, navigiert aber zu `StammdatenBearbeiten` das nur im HomeStack registriert war | `StammdatenBearbeiten` + `TierAnlegen` auch im MoreStack registriert, ManagePetsScreen Navigation-Typ auf `MoreStackParamList` geändert | AppNavigator.tsx, ManagePetsScreen.tsx |
+| Unterschrift-Zeichenfeld: Löschen/Übernehmen-Buttons nicht sichtbar | `overflow: hidden` auf dem sigPad-Container schnitt den WebView-Footer (mit den Buttons) ab | `overflow: hidden` entfernt, Footer-Buttons via webStyle größer und deutlicher gestylt (min-height 56px, font-size 17px) | SitterScreen.tsx |
+| Über-Dialog zeigt "(Prototyp)" | Alter Text aus der Entwicklungsphase | "(Prototyp)" entfernt – App ist v1.0.0 Store-Release | MoreScreen.tsx |
+| Über-Dialog: "Tiergesundheits-App" | User-Entscheidung: App soll als "Pocket-Tool" positioniert werden | Geändert zu "unabhängige Pocket-Tool-App für dein Tier" | MoreScreen.tsx |
+
+**Entscheidung E-116:** App-Selbstbezeichnung ist "Pocket-Tool-App für dein Tier" (nicht "Tiergesundheits-App"). Store-Listing bleibt unverändert (dort steht "Tier-Gesundheits-App" im Kontext der Features), aber die App selbst nennt sich neutraler.
+
+**Archiv-Verhalten (Klarstellung):** Das Archiv ist kein separater Menüpunkt. Archivierte Tiere erscheinen als eigene Sektion am Ende der "Tiere verwalten"-Seite mit "Zurückholen"-Button. Die Sektion ist nur sichtbar wenn mindestens ein Tier archiviert ist. Bewusste Entscheidung: Kein endgültiges Löschen möglich (Doktrin gegen versehentlichen Datenverlust).

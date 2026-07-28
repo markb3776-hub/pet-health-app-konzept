@@ -69,6 +69,9 @@
 ## GERADE ERLEDIGT (28.07.2026):
 | ID | Beschreibung | Fix |
 |:---|:---|:---|
+| BUG | Bearbeiten-Buttons in "Tiere verwalten" funktionierten nicht | ✅ StammdatenBearbeiten + TierAnlegen im MoreStack registriert (AppNavigator.tsx) |
+| BUG | Unterschrift-Zeichenfeld: Löschen/Übernehmen-Buttons nicht sichtbar | ✅ overflow:hidden entfernt, Footer-Buttons größer gestylt (SitterScreen.tsx) |
+| BUG | Über-Dialog zeigte "(Prototyp)" und "Tiergesundheits-App" | ✅ Entfernt bzw. geändert zu "Pocket-Tool-App für dein Tier" (MoreScreen.tsx) |
 | BUG | DateField Quick-Chips bei allowFuture=true zeigten Vergangenheit | ✅ Dynamische Chips (Heute/In 1 Woche/In 2 Wochen) |
 | BUG | Unterschrift-Modal Buttons abgeschnitten (sigPad flex:1) | ✅ maxHeight 350px + SafeArea paddingBottom |
 | BUG | PDF-Crash bei fehlender Unterschrift (img src="") | ✅ Null-Check + Fallback-Text in vollmachtPdf.ts |

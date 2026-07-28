@@ -370,7 +370,7 @@ export default function SitterScreen() {
 
       {/* Unterschrift-Modal */}
       <Modal visible={sigModalOpen} animationType="slide" supportedOrientations={['portrait', 'landscape']}>
-        <View style={[styles.sigModal, { paddingTop: insets.top + 8 }]}>
+        <View style={[styles.sigModal, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 8 }]}>
           <Text style={styles.sigModalTitle}>Unterschrift</Text>
           <Text style={styles.sigModalHint}>Mit dem Finger unterschreiben:</Text>
           <View style={[styles.sigPad, isLandscape && styles.sigPadLandscape]}>
@@ -379,13 +379,10 @@ export default function SitterScreen() {
               onOK={handleSignatureOK}
               onEmpty={() => Alert.alert('Leer', 'Bitte unterschreibe zuerst.')}
               descriptionText=""
-              clearText="Löschen"
-              confirmText="Übernehmen"
+              clearText=""
+              confirmText=""
               webStyle={`.m-signature-pad { box-shadow: none; border: 1px solid #ccc; border-radius: 8px; }
-                .m-signature-pad--footer { display: flex; justify-content: space-between; padding: 12px 16px; min-height: 56px; align-items: center; }
-                .m-signature-pad--footer .button { font-size: 17px; padding: 10px 28px; border-radius: 10px; font-weight: 600; }
-                .m-signature-pad--footer .button.clear { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
-                .m-signature-pad--footer .button.save { background: #2E7D32; color: white; }`}
+                .m-signature-pad--footer { display: none; }`}
               backgroundColor="white"
               penColor="#1a1a1a"
               dotSize={2}
@@ -393,8 +390,14 @@ export default function SitterScreen() {
               maxWidth={3}
             />
           </View>
-          <Pressable style={[styles.sigCancelButton, { paddingBottom: insets.bottom + 8 }]} onPress={() => setSigModalOpen(false)}>
-            <Text style={styles.sigCancelText}>Abbrechen</Text>
+          <Pressable style={styles.sigActionButton} onPress={() => sigRef.current?.readSignature()}>
+            <Text style={styles.sigActionTextGreen}>Übernehmen</Text>
+          </Pressable>
+          <Pressable style={styles.sigActionButton} onPress={() => sigRef.current?.clearSignature()}>
+            <Text style={styles.sigActionText}>Löschen</Text>
+          </Pressable>
+          <Pressable style={styles.sigActionButton} onPress={() => setSigModalOpen(false)}>
+            <Text style={styles.sigActionTextRed}>Abbrechen</Text>
           </Pressable>
         </View>
       </Modal>
@@ -464,12 +467,14 @@ const styles = StyleSheet.create({
   sigModalHint: { fontSize: typography.bodySmall, color: colors.textSecondary, marginBottom: spacing.m },
   sigPad: { flex: 1, maxHeight: 350, borderRadius: 12 },
   sigPadLandscape: { maxHeight: 220 },
-  sigCancelButton: {
-    marginTop: spacing.m,
+  sigActionButton: {
+    marginTop: spacing.s,
     padding: spacing.m,
     alignItems: 'center',
   },
-  sigCancelText: { fontSize: typography.body, color: colors.signalRed },
+  sigActionText: { fontSize: typography.body, color: colors.textPrimary },
+  sigActionTextGreen: { fontSize: typography.body, color: colors.primary, fontWeight: '700' },
+  sigActionTextRed: { fontSize: typography.body, color: colors.signalRed },
   hintBox: {
     marginTop: spacing.l,
     backgroundColor: colors.primaryLight,
