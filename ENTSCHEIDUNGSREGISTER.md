@@ -241,3 +241,16 @@ Diese Punkte sind NICHT verhandelbar:
 **Entscheidung E-116:** App-Selbstbezeichnung ist "Pocket-Tool-App für dein Tier" (nicht "Tiergesundheits-App"). Store-Listing bleibt unverändert (dort steht "Tier-Gesundheits-App" im Kontext der Features), aber die App selbst nennt sich neutraler.
 
 **Archiv-Verhalten (Klarstellung):** Das Archiv ist kein separater Menüpunkt. Archivierte Tiere erscheinen als eigene Sektion am Ende der "Tiere verwalten"-Seite mit "Zurückholen"-Button. Die Sektion ist nur sichtbar wenn mindestens ein Tier archiviert ist. Bewusste Entscheidung: Kein endgültiges Löschen möglich (Doktrin gegen versehentlichen Datenverlust).
+
+### BUGFIX-SESSION-3 (28.07.2026)
+
+**Kontext:** Dritte Runde Gerätetest-Bugfixes – Unterschrift-Buttons + Tab-Navigation
+
+| Bug | Ursache | Fix | Datei(en) |
+|:---|:---|:---|:---|
+| Unterschrift-Buttons (Löschen/Übernehmen) immer noch nicht sichtbar | WebView-Footer wird vom Container abgeschnitten – `overflow: hidden` entfernen reichte nicht, da der WebView den Footer intern nicht rendert wenn der Container zu klein ist | WebView-Footer komplett ausgeblendet (`display: none`). Stattdessen 3 native `<Pressable>`-Buttons untereinander im gleichen Stil wie "Abbrechen": Übernehmen (grün), Löschen (schwarz), Abbrechen (rot) | SitterScreen.tsx |
+| Tab-Navigation: Unter-Screens bleiben hängen | Notfall-Tab navigiert zu `Notfallpass` im HomeStack. Beim Zurückwechseln auf Zuhause-Tab bleibt der HomeStack auf dem Notfallpass stehen (React Navigation setzt Stacks nicht automatisch zurück bei Tab-Wechsel) | Alle 3 Tabs mit eigenem Stack (Zuhause, Termine, Mehr) bekommen `tabPress`-Listener der den Stack auf die jeweilige Main-Seite zurücksetzt | AppNavigator.tsx |
+
+**Entscheidung E-117:** Tab-Press setzt immer auf die Hauptseite des jeweiligen Tabs zurück. Kein "Merken" des letzten Unter-Screens. Begründung: Nutzer erwartet bei Tab-Klick immer die Startseite des Bereichs, nicht einen zufällig noch offenen Unter-Screen.
+
+**Entscheidung E-118:** Unterschrift-Buttons werden NICHT als WebView-interne HTML-Buttons gerendert, sondern als native React-Native `<Pressable>`. Begründung: WebView-Footer ist unzuverlässig (Größe, Rendering, Touch-Targets variieren je nach Gerät). Native Buttons funktionieren garantiert.
