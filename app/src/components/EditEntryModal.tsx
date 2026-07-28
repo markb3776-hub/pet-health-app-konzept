@@ -17,6 +17,8 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { formatDate } from '../time/timeModule';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 
 export interface EditableField {
@@ -41,6 +43,7 @@ export default function EditEntryModal({
   onSave,
   onCancel,
 }: EditEntryModalProps) {
+  const insets = useSafeAreaInsets();
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const [values, setValues] = useState<Record<string, string>>({});
 
@@ -67,6 +70,16 @@ export default function EditEntryModal({
     onSave(values);
   }
 
+  /** Anzeigewert: Bei Datumsfeldern TT.MM.JJJJ statt YYYY-MM-DD. */
+  function displayValue(field: EditableField, raw: string): string {
+    if (!raw) return '(leer)';
+    if (field.type === 'date') {
+      const formatted = formatDate(raw);
+      return formatted !== '\u2013' ? formatted : raw;
+    }
+    return raw;
+  }
+
   const hasChanges = fields.some((f) => values[f.key] !== f.value);
 
   return (
@@ -75,7 +88,7 @@ export default function EditEntryModal({
         style={styles.backdrop}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <View style={styles.container}>
+        <View style={[styles.container, { paddingBottom: spacing.l + insets.bottom }]}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.hint}>Tippe auf ein Feld um es zu bearbeiten.</Text>
 
@@ -107,13 +120,13 @@ export default function EditEntryModal({
                       autoFocus
                       multiline={field.type === 'multiline'}
                       keyboardType={field.type === 'number' ? 'decimal-pad' : 'default'}
-                      placeholder={field.label}
+                      placeholder={field.type === 'date' ? 'JJJJ-MM-TT' : field.label}
                       placeholderTextColor={colors.textSecondary}
                       onBlur={() => setEditingKey(null)}
                     />
                   ) : (
                     <Text style={[styles.fieldValue, wasChanged && styles.fieldValueChanged]}>
-                      {currentValue || '(leer)'}
+                      {displayValue(field, currentValue)}
                     </Text>
                   )}
                 </Pressable>

@@ -306,9 +306,9 @@ export default function SitterScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Zeitraum *</Text>
           <FieldLabel>Von</FieldLabel>
-          <DateField value={periodFrom} onChange={setPeriodFrom} label="Startdatum" />
+          <DateField value={periodFrom} onChange={setPeriodFrom} label="Startdatum" allowFuture />
           <FieldLabel>Bis</FieldLabel>
-          <DateField value={periodTo} onChange={setPeriodTo} label="Enddatum" />
+          <DateField value={periodTo} onChange={setPeriodTo} label="Enddatum" allowFuture />
         </View>
 
         {/* Unterschrift */}
@@ -393,7 +393,7 @@ export default function SitterScreen() {
               maxWidth={3}
             />
           </View>
-          <Pressable style={styles.sigCancelButton} onPress={() => setSigModalOpen(false)}>
+          <Pressable style={[styles.sigCancelButton, { paddingBottom: insets.bottom + 8 }]} onPress={() => setSigModalOpen(false)}>
             <Text style={styles.sigCancelText}>Abbrechen</Text>
           </Pressable>
         </View>
@@ -462,8 +462,8 @@ const styles = StyleSheet.create({
   sigModal: { flex: 1, backgroundColor: colors.background, padding: spacing.m },
   sigModalTitle: { fontSize: typography.headline, fontWeight: '700', color: colors.textPrimary, marginBottom: spacing.xs },
   sigModalHint: { fontSize: typography.bodySmall, color: colors.textSecondary, marginBottom: spacing.m },
-  sigPad: { flex: 1, borderRadius: 12, overflow: 'hidden' },
-  sigPadLandscape: { maxHeight: 300 },
+  sigPad: { flex: 1, maxHeight: 350, borderRadius: 12, overflow: 'hidden' },
+  sigPadLandscape: { maxHeight: 220 },
   sigCancelButton: {
     marginTop: spacing.m,
     padding: spacing.m,

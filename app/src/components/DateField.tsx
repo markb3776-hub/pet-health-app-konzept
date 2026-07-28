@@ -4,7 +4,8 @@
  *
  * Verbindliche Regeln:
  * - Eingabe AUSSCHLIESSLICH ueber den nativen Kalender-Picker, kein Freitext.
- * - Schnellwahl-Chips "Heute · Gestern · Vorgestern" ueber dem Kalender.
+ * - Schnellwahl-Chips kontextabhaengig: Vergangenheit (Heute/Gestern/Vorgestern)
+ *   oder Zukunft (Heute/In 1 Woche/In 2 Wochen) je nach allowFuture.
  * - Anzeigeformat immer TT.MM.JJJJ.
  * - Rueckdatierung ohne harte Grenze; Zukunft gesperrt (ausser bei Terminen,
  *   dann allowFuture=true).
@@ -41,10 +42,16 @@ interface DateFieldProps {
   hint?: string;
 }
 
-const QUICK_CHIPS: { label: string; offset: number }[] = [
+const PAST_CHIPS: { label: string; offset: number }[] = [
   { label: 'Heute', offset: 0 },
   { label: 'Gestern', offset: -1 },
   { label: 'Vorgestern', offset: -2 },
+];
+
+const FUTURE_CHIPS: { label: string; offset: number }[] = [
+  { label: 'Heute', offset: 0 },
+  { label: 'In 1 Woche', offset: 7 },
+  { label: 'In 2 Wochen', offset: 14 },
 ];
 
 /** Wie viele Jahre rueckwirkend die Jahresliste anbietet (Schildkroeten & Co.). */
@@ -100,7 +107,7 @@ export default function DateField({ label, value, onChange, allowFuture = false,
       <Text style={styles.label}>{label}</Text>
 
       <View style={styles.chipRow}>
-        {QUICK_CHIPS.map((chip) => {
+        {(allowFuture ? FUTURE_CHIPS : PAST_CHIPS).map((chip) => {
           const chipKey = dateKeyWithOffset(chip.offset);
           const active = value === chipKey;
           return (

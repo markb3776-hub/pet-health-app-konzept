@@ -62,10 +62,18 @@
 | E-110 | "In Erinnerung"-Modus (verstorbene Tiere) | ⏳ Geplant für v1.1.0 (nach Release) |
 | E-111 | Befund-Import via Share-Intent (PDF aus Mail teilen → App parst → Eintrag vorausfüllen) + Foto-OCR für Papier-Rechnungen | ⏳ Geplant für v1.1.0 |
 | E-112 | NFC-Tag am Halsband als digitaler Notfallpass (Finder scannt → Kontaktdaten + Allergien) | 🔮 Zukunftsmusik |
+| E-113 | Notification-Vorlauf wählbar (1 Tag / 3 Tage / 1 Woche vorher) | ⏳ Geplant für v1.1.0 |
+| E-114 | Notification-Uhrzeit wählbar (statt fest 09:00) | ⏳ Geplant für v1.1.0 |
+| E-115 | Mehrfach-Erinnerung (z.B. morgens + abends bei 2x täglich Medikament) | ⏳ Geplant für v1.1.0 |
 
 ## GERADE ERLEDIGT (28.07.2026):
 | ID | Beschreibung | Fix |
 |:---|:---|:---|
+| BUG | DateField Quick-Chips bei allowFuture=true zeigten Vergangenheit | ✅ Dynamische Chips (Heute/In 1 Woche/In 2 Wochen) |
+| BUG | Unterschrift-Modal Buttons abgeschnitten (sigPad flex:1) | ✅ maxHeight 350px + SafeArea paddingBottom |
+| BUG | PDF-Crash bei fehlender Unterschrift (img src="") | ✅ Null-Check + Fallback-Text in vollmachtPdf.ts |
+| BUG | EditEntryModal Buttons hinter System-Navigation | ✅ useSafeAreaInsets paddingBottom |
+| BUG | EditEntryModal Datum als YYYY-MM-DD statt TT.MM.JJJJ | ✅ formatDate() für Anzeige |
 | E-109 | Backup-Verschlüsselung (AES-256-GCM) | ✅ cryptoService.ts, backupService.ts erweitert, MoreScreen Passwort-Modal, expo-crypto |
 | E-105 | Sitter-Modus komplett implementiert | ✅ SitterScreen.tsx, sitterConfig.ts, sitterPdf.ts, vollmachtPdf.ts, Migration 009, EditPetScreen Sitter-Infos, PetFileScreen Button, Navigation |
 | E-108 | Push-Notifications (Erinnerungen) | ✅ notificationService.ts, Migration 008, AppointmentsScreen Toggle, VaccinationEntry + MedicationEntry Scheduling |

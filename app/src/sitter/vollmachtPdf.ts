@@ -130,7 +130,7 @@ export function buildVollmachtHtml(d: VollmachtData): string {
 
 <div class="footer">
   <div>
-    ${d.signatureBase64 ? `<img class="sig-img" src="${d.signatureBase64}" alt="Unterschrift"/>` : '<div class="sig-line"></div>'}
+    ${d.signatureBase64 && d.signatureBase64.length > 10 ? `<img class="sig-img" src="${d.signatureBase64}" alt="Unterschrift"/>` : '<div class="sig-line"></div><div style="font-size:11px;color:#888;margin-top:2px;">Keine digitale Unterschrift hinterlegt</div>'}
     <div class="sig-label">Unterschrift Tierhalter/in</div>
     <div class="date">Datum: ${dateStr}</div>
   </div>
