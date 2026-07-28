@@ -281,11 +281,22 @@ function MainTabs() {
         <Tab.Screen
           name="Zuhause"
           component={HomeStackScreen}
+          listeners={{
+            tabPress: () => {
+              // Stack auf HomeMain zurücksetzen wenn Zuhause-Tab gedrückt wird
+              navigation.navigate('Zuhause', { screen: 'HomeMain' });
+            },
+          }}
           options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>⌂</Text> }}
         />
         <Tab.Screen
           name="Termine"
           component={AppointmentsStackScreen}
+          listeners={{
+            tabPress: () => {
+              navigation.navigate('Termine', { screen: 'AppointmentsMain' });
+            },
+          }}
           options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>▤</Text> }}
         />
         <Tab.Screen
@@ -299,6 +310,11 @@ function MainTabs() {
         <Tab.Screen
           name="Mehr"
           component={MoreStackScreen}
+          listeners={{
+            tabPress: () => {
+              navigation.navigate('Mehr', { screen: 'MoreMain' });
+            },
+          }}
           options={{ tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>≡</Text> }}
         />
         <Tab.Screen
