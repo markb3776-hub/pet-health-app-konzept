@@ -32,7 +32,7 @@ function withForegroundServiceBridge(config) {
       }
 
       // Bridge Module
-      const bridgeCode = `package de.simplypet.app
+      const bridgeCode = `package com.simplydevapps.simplypet
 
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -67,7 +67,7 @@ class EmergencyServiceBridge(reactContext: ReactApplicationContext) :
 `;
 
       // Package registrieren
-      const packageCode = `package de.simplypet.app
+      const packageCode = `package com.simplydevapps.simplypet
 
 import com.facebook.react.ReactPackage
 import com.facebook.react.bridge.NativeModule

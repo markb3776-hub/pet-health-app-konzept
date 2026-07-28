@@ -1,7 +1,7 @@
 /**
  * simplyPet: Intent-Handler fuer App-Shortcuts (E-61)
  *
- * Faengt den Intent "de.simplypet.app.OPEN_EMERGENCY" ab,
+ * Faengt den Intent "com.simplydevapps.simplypet.OPEN_EMERGENCY" ab,
  * der vom Android App-Shortcut (lang druecken auf Icon) gesendet wird.
  */
 import { Linking, Platform } from 'react-native';

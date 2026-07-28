@@ -38,7 +38,7 @@ function withShowOnLockScreen(config) {
         fs.mkdirSync(packagePath, { recursive: true });
       }
 
-      const activityCode = `package de.simplypet.app
+      const activityCode = `package com.simplydevapps.simplypet
 
 import android.app.Activity
 import android.app.KeyguardManager

@@ -40,9 +40,9 @@ function withAndroidShortcuts(config) {
         android:shortcutShortLabel="@string/shortcut_emergency_short"
         android:shortcutLongLabel="@string/shortcut_emergency_long">
         <intent
-            android:action="de.simplypet.app.OPEN_EMERGENCY"
-            android:targetPackage="de.simplypet.app"
-            android:targetClass="de.simplypet.app.MainActivity" />
+            android:action="com.simplydevapps.simplypet.OPEN_EMERGENCY"
+            android:targetPackage="com.simplydevapps.simplypet"
+            android:targetClass="com.simplydevapps.simplypet.MainActivity" />
         <categories android:name="android.shortcut.conversation" />
     </shortcut>
 </shortcuts>`;
@@ -100,13 +100,13 @@ function withAndroidShortcuts(config) {
       const hasShortcutFilter = mainActivity['intent-filter'].some(
         (f) =>
           f.action?.some(
-            (a) => a.$?.['android:name'] === 'de.simplypet.app.OPEN_EMERGENCY'
+            (a) => a.$?.['android:name'] === 'com.simplydevapps.simplypet.OPEN_EMERGENCY'
           )
       );
 
       if (!hasShortcutFilter) {
         mainActivity['intent-filter'].push({
-          action: [{ $: { 'android:name': 'de.simplypet.app.OPEN_EMERGENCY' } }],
+          action: [{ $: { 'android:name': 'com.simplydevapps.simplypet.OPEN_EMERGENCY' } }],
           category: [{ $: { 'android:name': 'android.intent.category.DEFAULT' } }],
         });
       }
