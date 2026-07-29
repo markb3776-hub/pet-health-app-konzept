@@ -268,3 +268,17 @@ Diese Punkte sind NICHT verhandelbar:
 **Entscheidung E-119:** `FOREGROUND_SERVICE_SPECIAL_USE` wird für v1.0.0 entfernt. Der Lockscreen-Notfallpass funktioniert trotzdem (über normale Notification + LockScreenActivity mit `showWhenLocked`). Für v1.1.0 wird das Video erstellt und die Berechtigung wieder hinzugefügt, falls Google den Vordergrunddienst ohne SPECIAL_USE ablehnt.
 
 **Entscheidung E-120:** Paketname bleibt `de.simplypet.app`. Die alte App (`com.simplydevapps.simplypet`) in der Play Console wird nicht mehr verwendet. User muss darauf achten, in der richtigen App zu arbeiten.
+
+### BUGFIX-SESSION-5 (29.07.2026)
+**Kontext:** ANR-Fix (Foreground Service Typ) + Notification-Navigation-Bug
+
+| Bug | Ursache | Fix | Datei(en) |
+|:---|:---|:---|:---|
+| ANR (App Not Responding) nach 3 Minuten | `foregroundServiceType` wurde in E-119 von `specialUse` auf `shortService` geändert. `shortService` hat ein 3-Minuten-Timeout – danach killt Android den Service und löst ANR aus | Zurück auf `specialUse`. `FOREGROUND_SERVICE_SPECIAL_USE` Permission wieder eingefügt. Video-Nachweis wurde auf YouTube (unlisted) hochgeladen | withForegroundService.js, app.json |
+| Notification-Tap öffnet Hauptseite statt Notfallpass | Beim Tippen auf die Notification wird die App in den Vordergrund gebracht. Dabei feuert der `tabPress`-Listener auf dem Zuhause-Tab und setzt den Stack auf `HomeMain` zurück – BEVOR die `navigateToEmergencyPass()`-Navigation durchkommt | Navigation-Lock-Mechanismus: `navigateToEmergencyPass()` setzt einen 600ms-Lock. Alle `tabPress`-Listener prüfen `isNavigationLocked()` und überspringen den Reset wenn aktiv. Zusätzlich navigiert die Funktion mit 150ms Delay um sicher NACH dem Tab-Wechsel zu landen | navigationRef.ts, AppNavigator.tsx |
+
+**Entscheidung E-119 REVIDIERT:** `FOREGROUND_SERVICE_SPECIAL_USE` wird NICHT entfernt. Video-Nachweis wurde erfolgreich auf YouTube als "unlisted" hochgeladen. Der Link wird in der Play Console im Formular "Vordergrunddienst" eingetragen. `foregroundServiceType` ist wieder `specialUse`.
+
+**Entscheidung E-121:** Navigation-Lock-Pattern für externe Navigation. Wenn eine Notification oder ein Intent die App öffnet und zu einem bestimmten Screen navigieren will, wird ein temporärer Lock (600ms) gesetzt. Alle `tabPress`-Listener prüfen diesen Lock und überspringen ihren Stack-Reset. Verhindert Race-Condition zwischen Tab-Aktivierung und externer Navigation.
+
+**versionCode:** 11 (erhöht von 10)

@@ -2,8 +2,8 @@
 
 ## STATUS: 🚧 IN ARBEIT – Fehlende Features werden implementiert
 
-## AKTUELLE SITUATION (28.07.2026):
-- App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 7)
+## AKTUELLE SITUATION (29.07.2026):
+- App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 11)
 - GitHub Actions AAB-Build **ERFOLGREICH** abgeschlossen (28m 57s)
 - **AAB verfügbar als GitHub Artifact (90 Tage):**
   - `simplyPet_v0.1.8_AAB` (signiert mit Upload-Keystore, Play Store ready)
@@ -192,6 +192,20 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Detailbericht: `SimplyPet_Markenrecherche_Bericht.md`
 
 ### Version:
-- app.json: version "1.0.0", versionCode 7
+- app.json: version "1.0.0", versionCode 11
 - APK-Name: simplyPet_v1.0.0.apk / simplyPet_v1.0.0_DEV.apk
 - AAB-Name: simplyPet_v1.0.0.aab
+
+### Bugfix-Session 5 (29.07.2026):
+**ANR-Fix (KRITISCH):**
+- Ursache: `foregroundServiceType` stand auf `shortService` (3-Min-Timeout → ANR)
+- Fix: Zurück auf `specialUse` + `FOREGROUND_SERVICE_SPECIAL_USE` Permission wieder eingefügt
+- Video-Nachweis für Google: YouTube (unlisted) hochgeladen
+- Dateien: withForegroundService.js, app.json
+
+**Notification-Tap öffnet Hauptseite statt Notfallpass (E-121):**
+- Ursache: tabPress-Listener setzt Stack auf HomeMain zurück BEVOR navigateToEmergencyPass() greift
+- Fix: Navigation-Lock-Mechanismus – 600ms Lock blockiert tabPress-Reset bei externer Navigation
+- Dateien: navigationRef.ts, AppNavigator.tsx
+
+**versionCode:** 10 → 11

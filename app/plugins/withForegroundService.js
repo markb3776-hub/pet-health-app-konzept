@@ -201,8 +201,15 @@ class EmergencyForegroundService : Service() {
       });
     }
 
-    // FOREGROUND_SERVICE_SPECIAL_USE entfernt (E-119: Google verlangt Video-Nachweis)
-    // Wird fuer v1.1.0 wieder hinzugefuegt wenn Video erstellt ist.
+    // FOREGROUND_SERVICE_SPECIAL_USE (E-121: Video-Nachweis wurde aufgenommen und hochgeladen)
+    const hasSpecialUsePerm = manifest['uses-permission'].some(
+      (p) => p.$?.['android:name'] === 'android.permission.FOREGROUND_SERVICE_SPECIAL_USE'
+    );
+    if (!hasSpecialUsePerm) {
+      manifest['uses-permission'].push({
+        $: { 'android:name': 'android.permission.FOREGROUND_SERVICE_SPECIAL_USE' },
+      });
+    }
 
     // Service im Application-Block registrieren
     const mainApp = manifest.application?.[0];
@@ -221,7 +228,7 @@ class EmergencyForegroundService : Service() {
             'android:name': '.EmergencyForegroundService',
             'android:enabled': 'true',
             'android:exported': 'false',
-            'android:foregroundServiceType': 'shortService',
+            'android:foregroundServiceType': 'specialUse',
           },
         });
       }

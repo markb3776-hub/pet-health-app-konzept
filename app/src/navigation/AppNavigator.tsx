@@ -49,7 +49,7 @@ import SitterScreen from '../screens/SitterScreen';
 import ManagePetsScreen from '../screens/ManagePetsScreen';
 import { isOnboardingDone } from '../profile/profileStore';
 import { colors, typography } from '../theme/theme';
-import { navigationRef } from './navigationRef';
+import { navigationRef, isNavigationLocked } from './navigationRef';
 
 // ---------- Param Lists ----------
 
@@ -283,6 +283,8 @@ function MainTabs() {
           component={HomeStackScreen}
           listeners={{
             tabPress: () => {
+              // E-121: Nicht resetten wenn externe Navigation (Notification/Intent) aktiv
+              if (isNavigationLocked()) return;
               // Stack auf HomeMain zurücksetzen wenn Zuhause-Tab gedrückt wird
               navigation.navigate('Zuhause', { screen: 'HomeMain' });
             },
@@ -294,6 +296,8 @@ function MainTabs() {
           component={AppointmentsStackScreen}
           listeners={{
             tabPress: () => {
+              // E-121: Nicht resetten wenn externe Navigation (Notification/Intent) aktiv
+              if (isNavigationLocked()) return;
               navigation.navigate('Termine', { screen: 'AppointmentsMain' });
             },
           }}
@@ -312,6 +316,8 @@ function MainTabs() {
           component={MoreStackScreen}
           listeners={{
             tabPress: () => {
+              // E-121: Nicht resetten wenn externe Navigation (Notification/Intent) aktiv
+              if (isNavigationLocked()) return;
               navigation.navigate('Mehr', { screen: 'MoreMain' });
             },
           }}
