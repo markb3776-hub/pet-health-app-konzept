@@ -341,7 +341,7 @@ export function buildQrPayload(d: PassData): string {
   );
   lines.push(
     `Vorerkrankungen: ${
-      d.conditions.length ? d.conditions.map((c) => `${c.name}${c.active_since ? ` (seit ${formatDate(c.active_since)})` : ''}`).join(', ') : 'Keine erfasst'
+      d.conditions.length ? d.conditions.map((c) => `${c.name}${c.active_since ? ` (am ${formatDate(c.active_since)})` : ''}`).join(', ') : 'Keine erfasst'
     }`
   );
   if (d.parasiteProtection.length) {
@@ -440,7 +440,7 @@ export function buildPassHtml(d: PassData, photoDataUri: string | null): string 
     ? d.allergies.map((a) => `<div>${esc(a.name)}</div>`).join('')
     : '<div class="muted">Keine Allergien erfasst</div>';
   const conditions = d.conditions.length
-    ? d.conditions.map((c) => `<div>${esc(c.name)}${c.active_since ? ` <span style="color:#666;font-size:10pt;">(seit ${formatDate(c.active_since)})</span>` : ''}</div>`).join('')
+    ? d.conditions.map((c) => `<div>${esc(c.name)}${c.active_since ? ` <span style="color:#666;font-size:10pt;">(am ${formatDate(c.active_since)})</span>` : ''}</div>`).join('')
     : '<div class="muted">Keine Vorerkrankungen erfasst</div>';
   const parasites = d.parasiteProtection.length
     ? d.parasiteProtection

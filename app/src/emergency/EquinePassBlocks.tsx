@@ -87,7 +87,7 @@ function EquineConditionsSection({ data, Section, setHelpVisible }: Props) {
         data.conditions.map((c, i) => (
           <Text key={i} style={styles.body}>
             {c.name}
-            {c.active_since ? ` (seit ${formatDate(c.active_since)})` : ''}
+            {c.active_since ? ` (am ${formatDate(c.active_since)})` : ''}
           </Text>
         ))
       ) : (
