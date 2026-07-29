@@ -56,11 +56,13 @@ export interface PassPet {
 export interface PassMedication {
   name: string;
   dosage: string | null;
+  hint_text: string | null;
   active_since: string | null;
 }
 
 export interface PassCondition {
   name: string;
+  active_since: string | null;
 }
 
 export interface PassVaccination {
@@ -153,10 +155,11 @@ export async function loadPassData(petId: string): Promise<PassData | null> {
     type: string;
     name: string;
     dosage: string | null;
+    hint_text: string | null;
     active_since: string | null;
     updated_at: string;
   }>(
-    `SELECT type, name, dosage, active_since, updated_at
+    `SELECT type, name, dosage, hint_text, active_since, updated_at
      FROM medications
      WHERE pet_id = ? AND is_active = 1 AND deleted_at IS NULL
      ORDER BY created_at`,
@@ -164,14 +167,14 @@ export async function loadPassData(petId: string): Promise<PassData | null> {
   );
   // Allergien/Vorerkrankungen: ZUERST aus pets-Stammdaten (v0.1.2), DANN Fallback auf medications
   const petAllergies = pet.allergies?.trim()
-    ? pet.allergies.split(',').map((a) => ({ name: a.trim() })).filter((a) => a.name.length > 0)
+    ? pet.allergies.split(',').map((a) => ({ name: a.trim(), active_since: null as string | null })).filter((a) => a.name.length > 0)
     : [];
   const petConditions = pet.pre_conditions?.trim()
-    ? pet.pre_conditions.split(',').map((c) => ({ name: c.trim() })).filter((c) => c.name.length > 0)
+    ? pet.pre_conditions.split(',').map((c) => ({ name: c.trim(), active_since: null as string | null })).filter((c) => c.name.length > 0)
     : [];
   // Fallback: alte Eintraege aus medications-Tabelle (Rueckwaertskompatibilitaet)
-  const medAllergies = medRows.filter((m) => m.type === 'Allergie').map((m) => ({ name: m.name }));
-  const medConditions = medRows.filter((m) => m.type === 'Vorerkrankung').map((m) => ({ name: m.name }));
+  const medAllergies = medRows.filter((m) => m.type === 'Allergie').map((m) => ({ name: m.name, active_since: null as string | null }));
+  const medConditions = medRows.filter((m) => m.type === 'Vorerkrankung').map((m) => ({ name: m.name, active_since: m.active_since }));
   // Zusammenfuehren ohne Duplikate
   const allergyNames = new Set(petAllergies.map((a) => a.name.toLowerCase()));
   const allergies = [...petAllergies, ...medAllergies.filter((a) => !allergyNames.has(a.name.toLowerCase()))];
@@ -179,7 +182,7 @@ export async function loadPassData(petId: string): Promise<PassData | null> {
   const conditions = [...petConditions, ...medConditions.filter((c) => !conditionNames.has(c.name.toLowerCase()))];
   const medications = medRows
     .filter((m) => m.type === 'Medikament')
-    .map((m) => ({ name: m.name, dosage: m.dosage, active_since: m.active_since }));
+    .map((m) => ({ name: m.name, dosage: m.dosage, hint_text: m.hint_text, active_since: m.active_since }));
 
   // E-79: Parasitenschutz separat laden (eigener Block im Notfallpass)
   const parasiteRows = await db.getAllAsync<{
@@ -332,13 +335,13 @@ export function buildQrPayload(d: PassData): string {
   lines.push(
     `Medikation: ${
       d.medications.length
-        ? d.medications.map((m) => `${m.name}${m.dosage ? ` (${m.dosage})` : ''}`).join(', ')
+        ? d.medications.map((m) => `${m.name}${m.dosage ? ` (${m.dosage})` : ''}${m.hint_text ? ` [${m.hint_text}]` : ''}`).join(', ')
         : 'Keine erfasst'
     }`
   );
   lines.push(
     `Vorerkrankungen: ${
-      d.conditions.length ? d.conditions.map((c) => c.name).join(', ') : 'Keine erfasst'
+      d.conditions.length ? d.conditions.map((c) => `${c.name}${c.active_since ? ` (seit ${formatDate(c.active_since)})` : ''}`).join(', ') : 'Keine erfasst'
     }`
   );
   if (d.parasiteProtection.length) {
@@ -428,8 +431,8 @@ export function buildPassHtml(d: PassData, photoDataUri: string | null): string 
         .map(
           (m) =>
             `<div>${esc(m.name)}${m.dosage ? ` – ${esc(m.dosage)}` : ''}${
-              m.active_since ? ` (seit ${formatDate(m.active_since)})` : ''
-            }</div>`
+              m.hint_text ? ` <span style="color:#555;">(${esc(m.hint_text)})</span>` : ''
+            }${m.active_since ? ` <span style="color:#666;font-size:10pt;">(seit ${formatDate(m.active_since)})</span>` : ''}</div>`
         )
         .join('')
     : '<div class="muted">Keine Dauermedikation erfasst</div>';
@@ -437,7 +440,7 @@ export function buildPassHtml(d: PassData, photoDataUri: string | null): string 
     ? d.allergies.map((a) => `<div>${esc(a.name)}</div>`).join('')
     : '<div class="muted">Keine Allergien erfasst</div>';
   const conditions = d.conditions.length
-    ? d.conditions.map((c) => `<div>${esc(c.name)}</div>`).join('')
+    ? d.conditions.map((c) => `<div>${esc(c.name)}${c.active_since ? ` <span style="color:#666;font-size:10pt;">(seit ${formatDate(c.active_since)})</span>` : ''}</div>`).join('')
     : '<div class="muted">Keine Vorerkrankungen erfasst</div>';
   const parasites = d.parasiteProtection.length
     ? d.parasiteProtection

@@ -36,8 +36,7 @@ import QRCode from 'react-native-qrcode-svg';
 import * as Clipboard from 'expo-clipboard';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
-import * as FileSystem from 'expo-file-system';
-import { File } from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { getDb } from '../db/database';
 import {
   loadPassData,
@@ -126,8 +125,9 @@ export default function EmergencyPassScreen() {
       let photoDataUri: string | null = null;
       if (data.pet.photo_uri) {
         try {
-          const file = new File(data.pet.photo_uri);
-          const base64 = await file.base64();
+          const base64 = await FileSystem.readAsStringAsync(data.pet.photo_uri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
           photoDataUri = `data:image/jpeg;base64,${base64}`;
         } catch {
           photoDataUri = null; // Foto nicht lesbar: PDF ehrlich ohne Foto.
@@ -281,6 +281,7 @@ export default function EmergencyPassScreen() {
           data.conditions.map((c, i) => (
             <Text key={i} style={styles.body}>
               {c.name}
+              {c.active_since ? ` (seit ${formatDate(c.active_since)})` : ''}
             </Text>
           ))
         ) : (
@@ -294,7 +295,8 @@ export default function EmergencyPassScreen() {
             <Text key={i} style={styles.body}>
               {m.name}
               {m.dosage ? ` – ${m.dosage}` : ''}
-              {m.active_since ? ` (seit ${formatDate(m.active_since)})` : ''}
+              {m.hint_text ? ` (${m.hint_text})` : ''}
+              {m.active_since ? ` · seit ${formatDate(m.active_since)}` : ''}
             </Text>
           ))
         ) : (

@@ -282,3 +282,17 @@ Diese Punkte sind NICHT verhandelbar:
 **Entscheidung E-121:** Navigation-Lock-Pattern für externe Navigation. Wenn eine Notification oder ein Intent die App öffnet und zu einem bestimmten Screen navigieren will, wird ein temporärer Lock (600ms) gesetzt. Alle `tabPress`-Listener prüfen diesen Lock und überspringen ihren Stack-Reset. Verhindert Race-Condition zwischen Tab-Aktivierung und externer Navigation.
 
 **versionCode:** 11 (erhöht von 10)
+
+### BUGFIX-SESSION-6 (29.07.2026)
+**Kontext:** PDF-Crash + Medikation/Vorerkrankungen-Darstellung verbessern
+
+| Bug | Ursache | Fix | Datei(en) |
+|:---|:---|:---|:---|
+| PDF konnte nicht erstellt werden (Notfallpass) | `new File(uri).base64()` – die `File`-Klasse in expo-file-system SDK 57 hat KEINE `base64()`-Methode. Die Legacy-API (`readAsStringAsync`) wirft zur Laufzeit einen Fehler | Import auf `expo-file-system/legacy` umgestellt. `FileSystem.readAsStringAsync()` statt `File.base64()` verwendet | EmergencyPassScreen.tsx |
+| PDF konnte nicht erstellt werden (Sitter-Vollmacht) | Gleiche Ursache: `FileSystem.readAsStringAsync()` und `FileSystem.moveAsync()` aus dem Hauptexport von expo-file-system werfen in SDK 57 zur Laufzeit | Import auf `expo-file-system/legacy` umgestellt | SitterScreen.tsx |
+| Medikation im Notfallpass zeigt keinen Hinweistext | `hint_text` wurde in der DB-Query nicht geladen und im Interface nicht definiert. Sitter/Notarzt sieht nur Name + Dosierung, aber nicht WARUM das Medikament gegeben wird | `PassMedication` Interface um `hint_text` erweitert. DB-Query lädt `hint_text`. Darstellung in App, PDF, QR-Code zeigt hint_text | passData.ts, EmergencyPassScreen.tsx, EquinePassBlocks.tsx |
+| Vorerkrankungen ohne Datum | `PassCondition` hatte nur `name`. Ein Sitter/Notarzt kann nicht einschätzen ob eine OP 2 Monate oder 4 Jahre her ist | `PassCondition` Interface um `active_since` erweitert. Vorerkrankungen aus medications-Tabelle bekommen ihr `active_since` mit. Darstellung überall mit Datum | passData.ts, EmergencyPassScreen.tsx, EquinePassBlocks.tsx |
+
+**Entscheidung E-122:** Medizinische Informationen im Notfallpass und Sitter-PDF müssen immer den vollständigen Kontext liefern: Name + Dosierung + Hinweis (warum) + seit-wann. Ein Sitter oder Notfall-Tierarzt muss ohne Rückfrage alle relevanten Infos sehen können.
+
+**versionCode:** bleibt 11 (noch kein neuer Build nötig – Fixes werden mit nächstem Build ausgeliefert)

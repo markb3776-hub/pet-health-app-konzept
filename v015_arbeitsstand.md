@@ -209,3 +209,26 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Dateien: navigationRef.ts, AppNavigator.tsx
 
 **versionCode:** 10 → 11
+
+### Bugfix-Session 6 (29.07.2026):
+**PDF-Crash (Notfallpass + Sitter-Vollmacht):**
+- Ursache: expo-file-system SDK 57 hat Legacy-API (`readAsStringAsync`, `moveAsync`) als Runtime-Error-Wrapper. `File.base64()` existiert nicht.
+- Fix: Import auf `expo-file-system/legacy` umgestellt (beide Screens)
+- Dateien: EmergencyPassScreen.tsx, SitterScreen.tsx
+
+**Medikation: Hinweistext fehlt im Notfallpass (E-122):**
+- Ursache: `hint_text` wurde in DB-Query und Interface nicht berücksichtigt
+- Fix: PassMedication um `hint_text` erweitert. Darstellung in App-Screen, PDF, QR-Code
+- Dateien: passData.ts, EmergencyPassScreen.tsx, EquinePassBlocks.tsx
+
+**Vorerkrankungen: Datum fehlt (E-122):**
+- Ursache: PassCondition hatte nur `name`, kein Datum
+- Fix: PassCondition um `active_since` erweitert. Darstellung überall mit "seit [Datum]"
+- Dateien: passData.ts, EmergencyPassScreen.tsx, EquinePassBlocks.tsx
+
+**Alle Stellen geprüft und konsistent:**
+- App-Screen (Standard): ✅
+- App-Screen (Pferd/Equine): ✅
+- QR-Code-Text: ✅
+- PDF-Export (HTML): ✅
+- Sitter-PDF: ✅ (hatte hint_text bereits)

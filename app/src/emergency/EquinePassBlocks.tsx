@@ -87,6 +87,7 @@ function EquineConditionsSection({ data, Section, setHelpVisible }: Props) {
         data.conditions.map((c, i) => (
           <Text key={i} style={styles.body}>
             {c.name}
+            {c.active_since ? ` (seit ${formatDate(c.active_since)})` : ''}
           </Text>
         ))
       ) : (
@@ -255,7 +256,8 @@ export function EquinePassBlocks({ data, Section, setHelpVisible }: Props) {
             <Text key={i} style={styles.body}>
               {m.name}
               {m.dosage ? ` – ${m.dosage}` : ''}
-              {m.active_since ? ` (seit ${formatDate(m.active_since)})` : ''}
+              {m.hint_text ? ` (${m.hint_text})` : ''}
+              {m.active_since ? ` · seit ${formatDate(m.active_since)}` : ''}
             </Text>
           ))
         ) : (
