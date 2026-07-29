@@ -192,7 +192,7 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Detailbericht: `SimplyPet_Markenrecherche_Bericht.md`
 
 ### Version:
-- app.json: version "1.0.0", versionCode 11
+- app.json: version "1.0.0", versionCode 12
 - APK-Name: simplyPet_v1.0.0.apk / simplyPet_v1.0.0_DEV.apk
 - AAB-Name: simplyPet_v1.0.0.aab
 
@@ -223,8 +223,10 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 
 **Vorerkrankungen: Datum fehlt (E-122):**
 - Ursache: PassCondition hatte nur `name`, kein Datum
-- Fix: PassCondition um `active_since` erweitert. Darstellung überall mit "seit [Datum]"
+- Fix: PassCondition um `active_since` erweitert. Darstellung überall mit "am [Datum]" (OP = einmaliges Ereignis)
 - Dateien: passData.ts, EmergencyPassScreen.tsx, EquinePassBlocks.tsx
+
+**versionCode:** 11 → 12 (für nächsten AAB-Build mit allen Fixes)
 
 **Alle Stellen geprüft und konsistent:**
 - App-Screen (Standard): ✅
