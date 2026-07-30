@@ -59,7 +59,7 @@
 ## OFFENE BUGS / VERBESSERUNGEN:
 | ID | Beschreibung | Status |
 |:---|:---|:---|
-| E-110 | "In Erinnerung"-Modus (verstorbene Tiere) | ⏳ Geplant für v1.1.0 (nach Release) |
+| E-110 | "In Erinnerung"-Modus (verstorbene Tiere) – Wolke+Kreuz-Icon, unter "Tiere verwalten", Akte read-only, Notifications stoppen, kein Sitter/Notfallpass | ⏳ Geplant für v1.1.0, spezifiziert (30.07.2026) |
 | E-111 | Befund-Import via Share-Intent (PDF aus Mail teilen → App parst → Eintrag vorausfüllen) + Foto-OCR für Papier-Rechnungen | ⏳ Geplant für v1.1.0 |
 | E-112 | NFC-Tag am Halsband als digitaler Notfallpass (Finder scannt → Kontaktdaten + Allergien) | 🔮 Zukunftsmusik |
 | E-113 | Notification-Vorlauf wählbar (1 Tag / 3 Tage / 1 Woche vorher) | ⏳ Geplant für v1.1.0 |

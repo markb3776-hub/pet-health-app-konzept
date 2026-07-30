@@ -296,3 +296,24 @@ Diese Punkte sind NICHT verhandelbar:
 **Entscheidung E-122:** Medizinische Informationen im Notfallpass und Sitter-PDF müssen immer den vollständigen Kontext liefern: Name + Dosierung + Hinweis (warum) + seit-wann. Ein Sitter oder Notfall-Tierarzt muss ohne Rückfrage alle relevanten Infos sehen können.
 
 **versionCode:** bleibt 11 (noch kein neuer Build nötig – Fixes werden mit nächstem Build ausgeliefert)
+
+### E-110 – "In Erinnerung"-Modus (30.07.2026)
+**Kontext:** Wenn ein Tier stirbt, muss die Akte erhalten bleiben (emotionale Bindung). Feature geplant für v1.1.0.
+
+**Entscheidungen:**
+
+| Aspekt | Entscheidung |
+|:---|:---|
+| Bezeichnung | "In Erinnerung" |
+| Icon | Wolke mit Kreuz |
+| Platzierung | Unter "Tiere verwalten" (ManagePetsScreen), eigene Sektion |
+| Hinweis | In "Tiere verwalten" soll ein Hinweis auf den Bereich sichtbar sein |
+| Ton/Stil | Sachlich, respektvoll, kein Kitsch |
+| Akte | Bleibt vollständig einsehbar (read-only) |
+| Notifications | Sofort stoppen beim Markieren als verstorben |
+| Sitter-Modus | Tier taucht nicht mehr auf |
+| Notfallpass | Tier taucht nicht mehr auf |
+| Endgültiges Löschen | Möglich (mit Warnung) |
+| Eingabe beim Markieren | Datum + optionale Notiz |
+
+**Zeitplan:** v1.1.0 (nach Store-Release und 14-Tage-Testphase)

@@ -109,8 +109,14 @@
 
 ## TO-DO NACH STORE-RELEASE (Version 1.1.0+)
 
-- [ ] **"In Erinnerung"-Modus (E-110):**
-  - Nutzer kann Tier als verstorben markieren (Datum + Notiz)
+- [ ] **"In Erinnerung"-Modus (E-110):** *(spezifiziert 30.07.2026)*
+  - Nutzer kann Tier als verstorben markieren (Datum + optionale Notiz)
   - Tier verschwindet vom HomeScreen, wandert in "In Erinnerung"-Bereich
+  - Platzierung: Unter "Tiere verwalten" (ManagePetsScreen), eigene Sektion mit Hinweis
+  - Icon: Wolke mit Kreuz
+  - Ton: Sachlich, respektvoll, kein Kitsch
   - Tierakte bleibt vollständig einsehbar (read-only)
-  - Archiv-Option: Endgültiges Löschen aus dem "In Erinnerung"-Bereich möglich (mit Warnung)
+  - Notifications/Erinnerungen: Sofort stoppen beim Markieren
+  - Sitter-Modus: Tier taucht nicht mehr auf
+  - Notfallpass: Tier taucht nicht mehr auf
+  - Endgültiges Löschen möglich (mit Warnung)
