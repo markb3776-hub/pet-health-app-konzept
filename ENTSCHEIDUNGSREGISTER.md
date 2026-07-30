@@ -377,3 +377,11 @@ Diese Punkte sind NICHT verhandelbar:
 - `app/src/components/ScreenBackground.tsx` – neue Komponente
 - Alle 18 Screen-Dateien (Import + Wrapping + backgroundColor transparent)
 - `create_bg.py` – Generierungs-Script (reproduzierbar)
+
+## E-125: Fix Backup-Entschlüsselung (Android-Bug expo-crypto #47274)
+- **Datum:** 30.07.2026
+- **Problem:** "Entschlüsselung fehlgeschlagen" beim Import eines verschlüsselten Backups – auch mit korrektem Passwort.
+- **Ursache:** Bekannter Bug in expo-crypto (GitHub Issue #47274): `AESSealedData.fromCombined()` akzeptiert auf Android nativ nur `ByteArray`, nicht Base64-String. Die TypeScript-Schicht übergibt aber einen String.
+- **Fix:** Base64-String vor `fromCombined()` manuell in `Uint8Array` konvertieren (`base64ToUint8(envelope.data)`).
+- **Datei:** `src/backup/cryptoService.ts`, Zeile 125
+- **Status:** Implementiert, TypeScript 0 Fehler. Braucht neuen Build zum Testen.
