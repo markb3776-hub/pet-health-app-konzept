@@ -3,7 +3,7 @@
 ## STATUS: ✅ LIVE IM PLAY STORE (veröffentlicht 29.07.2026)
 
 ## AKTUELLE SITUATION (29.07.2026):
-- App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 13)
+- App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 14)
 - GitHub Actions AAB-Build **ERFOLGREICH** abgeschlossen (28m 57s)
 - **AAB verfügbar als GitHub Artifact (90 Tage):**
   - `simplyPet_v0.1.8_AAB` (signiert mit Upload-Keystore, Play Store ready)
@@ -196,7 +196,7 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Detailbericht: `SimplyPet_Markenrecherche_Bericht.md`
 
 ### Version:
-- app.json: version "1.0.0", versionCode 12
+- app.json: version "1.0.0", versionCode 14
 - APK-Name: simplyPet_v1.0.0.apk / simplyPet_v1.0.0_DEV.apk
 - AAB-Name: simplyPet_v1.0.0.aab
 
@@ -246,6 +246,22 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Medikation mit Hinweistext: sichtbar ✅
 - Vorerkrankungen mit Datum ("am"): sichtbar ✅
 - ANR-Fix (5+ Min offen): ❓ noch ausstehend
+
+### Session 30.07.2026 (E-124, E-125):
+
+**E-124: App-Hintergrund (grüner Gradient + Blasen):**
+- Programmatisch generiertes Hintergrundbild (1080x2340, Gradient #1F7A64 → #5ECFB0 + semi-transparente Blasen)
+- ScreenBackground-Komponente mit fixiertem ImageBackground (scrollt nicht mit)
+- Alle 18 Screens gewrapped, container-Backgrounds auf transparent
+- Datei: `src/components/ScreenBackground.tsx`, `assets/app-background.png`
+
+**E-125: Fix Backup-Entschlüsselung:**
+- Bug: "Entschlüsselung fehlgeschlagen" auch mit korrektem Passwort
+- Ursache: expo-crypto Android-Bug (#47274) – `fromCombined()` akzeptiert nur ByteArray, nicht Base64-String
+- Fix: `base64ToUint8(envelope.data)` vor `fromCombined()` in cryptoService.ts
+- **❓ Noch nicht auf Gerät bestätigt** (braucht neuen Build vC14)
+
+**versionCode:** 13 → 14
 
 ### Bugfix-Session 7 (30.07.2026):
 
