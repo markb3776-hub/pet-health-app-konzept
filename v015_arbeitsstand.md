@@ -235,3 +235,10 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - QR-Code-Text: ✅
 - PDF-Export (HTML): ✅
 - Sitter-PDF: ✅ (hatte hint_text bereits)
+
+**✅ BESTÄTIGT auf Gerät (30.07.2026, APK versionCode 12):**
+- PDF-Crash Notfallpass: behoben ✅
+- PDF-Crash Sitter-Vollmacht: behoben ✅
+- Medikation mit Hinweistext: sichtbar ✅
+- Vorerkrankungen mit Datum ("am"): sichtbar ✅
+- ANR-Fix (5+ Min offen): ❓ noch ausstehend
