@@ -207,6 +207,7 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Ursache: tabPress-Listener setzt Stack auf HomeMain zurück BEVOR navigateToEmergencyPass() greift
 - Fix: Navigation-Lock-Mechanismus – 600ms Lock blockiert tabPress-Reset bei externer Navigation
 - Dateien: navigationRef.ts, AppNavigator.tsx
+- ✅ **BESTÄTIGT auf Gerät (30.07.2026)** – Notification-Tap navigiert korrekt zum Notfallpass
 
 **versionCode:** 10 → 11
 
