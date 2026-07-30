@@ -159,3 +159,46 @@
 | `simply_devapps_logo_v2.png` | Logo Original | 1920x1920 |
 | `simply_devapps_icon_512x512.jpg` | Entwicklersymbol (hochgeladen) | 512x512 |
 | `simply_devapps_banner_4096x2304.jpg` | Kopfzeilenbild (hochgeladen) | 4096x2304 |
+
+---
+
+## Promo-Codes für Tester (kostenpflichtige App im geschlossenen Test)
+
+> **Problem:** Bei kostenpflichtigen Apps müssen Tester im geschlossenen Test den vollen Preis zahlen.  
+> **Lösung:** Promo-Codes generieren – Tester lösen den Code ein und bekommen die App für 0 €.
+
+### Wo in der Play Console:
+
+1. Play Console → SimplyPet auswählen
+2. Linke Sidebar → **Monetarisierung** → **Promotions** (Werbeaktionen)
+3. "Promotion erstellen"
+4. Typ: **Einmal-Codes** (one-time use) – jeder Code funktioniert nur 1x
+5. Produkt: Die App selbst (paid app)
+6. Anzahl: 15 Codes (12 Tester + Puffer)
+7. Enddatum festlegen
+
+### Wie Tester einlösen:
+
+- Play Store App → Profil-Icon → Zahlungen & Abos → **Code einlösen**
+- Oder Deep-Link: `https://play.google.com/redeem?code=DEIN_CODE`
+
+### Limits & Regeln:
+
+| Eigenschaft | Wert |
+|:---|:---|
+| Max. Codes pro Quartal | 500 (für One-Time-Products/Apps) |
+| Code-Typ | Einmal-Code (automatisch generiert, einmalig einlösbar) |
+| Gültigkeit | Bis zum festgelegten Enddatum |
+| Nicht genutzte Codes | Verfallen am Quartalsende (kein Übertrag) |
+| Voraussetzung | Tester muss in der geschlossenen Test-Gruppe sein |
+
+### Wichtig:
+
+- **Interner Test** = App automatisch kostenlos, zählt aber NICHT für die 14-Tage-Anforderung
+- **Geschlossener Test** = Tester müssen zahlen, AUSSER sie haben einen Promo-Code
+- Promo-Codes funktionieren unabhängig vom Track (geschlossen, offen, Produktion)
+
+### Quelle:
+
+- [Create promotions (Play Console Help)](https://support.google.com/googleplay/android-developer/answer/6321495)
+- [Promo codes (Android Developer Docs)](https://developer.android.com/google/play/billing/promo)
