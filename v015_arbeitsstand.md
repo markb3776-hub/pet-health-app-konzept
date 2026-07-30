@@ -1,9 +1,9 @@
 # v0.1.8 Arbeitsstand (26.07.2026)
 
-## STATUS: 🚧 IN ARBEIT – Fehlende Features werden implementiert
+## STATUS: ✅ LIVE IM PLAY STORE (veröffentlicht 29.07.2026)
 
 ## AKTUELLE SITUATION (29.07.2026):
-- App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 11)
+- App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 13)
 - GitHub Actions AAB-Build **ERFOLGREICH** abgeschlossen (28m 57s)
 - **AAB verfügbar als GitHub Artifact (90 Tage):**
   - `simplyPet_v0.1.8_AAB` (signiert mit Upload-Keystore, Play Store ready)
@@ -23,8 +23,8 @@
 - **Entwicklersymbol:** Simply DevApps Logo (CRT-Monitor, Patina) – hochgeladen
 - **Kopfzeilenbild:** Banner (3 CRT-Monitore, Werkbank) – hochgeladen
 - **Werbetext:** "Simple apps for everyone. Keep your data and information on your device and decide what you're willing to share."
-- **Identitätsbestätigung:** Eingereicht, wartet auf Google-Prüfung (2-7 Tage)
-- **Kontakttelefonnummer:** Noch nicht bestätigt (erst nach Identitätsprüfung möglich)
+- **Identitätsbestätigung:** ✅ Bestätigt 27.07.2026
+- **App-Status:** ✅ LIVE im Play Store (veröffentlicht 29.07.2026)
 - **App-Kategorie:** Lifestyle (E-106)
 - **Logo-Dateien im Repo:**
   - `simply_devapps_logo_v2.png` (1920x1920, Original)
@@ -44,17 +44,21 @@
 | Vollständige Anforderungen-Checkliste | ✅ | `PLAY_STORE_ANFORDERUNGEN_KOMPLETT.md` |
 | Feature Graphic (1024x500) | ✅ Erstellt | `feature_graphic_1024x500.png` |
 
-## PLAY STORE – NOCH OFFEN (nach Identitätsprüfung):
-| Aufgabe | Wer | Hinweis |
-|:---|:---|:---|
-| Datenschutzerklärung hosten | Mark | GitHub Pages aktivieren oder simplypet.de |
-| App in Play Console anlegen | Mark | AAB hochladen |
-| Data Safety Formular ausfüllen | Mark | Alles "Nein" (offline App) |
-| Content Rating Fragebogen | Mark | USK 0 / PEGI 0 |
-| Feature Graphic (1024x500) | ✅ Erledigt | `feature_graphic_1024x500.png` im Repo |
-| Screenshots (min. 2) | ✅ Erledigt | 13 Screenshots im Ordner `screenshots/` |
-| 12 Tester finden | Mark | Gmail-Adressen (seit Dez 2024 nur noch 12 nötig) |
-| Kontakttelefon bestätigen | Mark | Nach Identitätsprüfung |
+## PLAY STORE – ERLEDIGT:
+
+> **✅ APP IST LIVE im Google Play Store seit 29.07.2026**  
+> **✅ Identitätsprüfung bestätigt: 27.07.2026**
+
+| Aufgabe | Status |
+|:---|:---|
+| Datenschutzerklärung hosten | ✅ |
+| App in Play Console anlegen | ✅ |
+| Data Safety Formular | ✅ |
+| Content Rating | ✅ |
+| Feature Graphic | ✅ |
+| Screenshots | ✅ |
+| AAB hochladen | ✅ |
+| App veröffentlicht | ✅ (29.07.2026) |
 
 ## OFFENE BUGS / VERBESSERUNGEN:
 | ID | Beschreibung | Status |
@@ -63,7 +67,7 @@
 | E-111 | Befund-Import via Share-Intent (PDF aus Mail teilen → App parst → Eintrag vorausfüllen) + Foto-OCR für Papier-Rechnungen | ⏳ Geplant für v1.1.0 |
 | E-112 | NFC-Tag am Halsband als digitaler Notfallpass (Finder scannt → Kontaktdaten + Allergien) | 🔮 Zukunftsmusik |
 | E-113 | Notification-Vorlauf wählbar (1 Tag / 3 Tage / 1 Woche vorher) | ⏳ Geplant für v1.1.0 |
-| E-114 | Notification-Uhrzeit wählbar (statt fest 09:00) | ⏳ Geplant für v1.1.0 |
+| E-114 | Notification-Uhrzeit wählbar (statt fest 09:00) | ✅ Implementiert (30.07.2026) |
 | E-115 | Mehrfach-Erinnerung (z.B. morgens + abends bei 2x täglich Medikament) | ⏳ Geplant für v1.1.0 |
 
 ## GERADE ERLEDIGT (28.07.2026):
@@ -105,10 +109,10 @@
 1. ~~**Push-Notifications implementieren**~~ ✅ ERLEDIGT (28.07.2026)
 2. ~~**Sitter-Modus implementieren**~~ ✅ ERLEDIGT (28.07.2026)
 3. ~~**Backup-Verschlüsselung implementieren**~~ ✅ ERLEDIGT (28.07.2026)
-4. Version auf 1.0.0 bumpen + neuen AAB-Build erstellen
-5. Neue App in Play Console anlegen (Paketname `de.simplypet.app`)
-6. Store-Listing (unverändert) + AAB hochladen
-7. 12 Tester einladen, 14 Tage warten, Produktion beantragen
+4. ~~Version auf 1.0.0 bumpen + neuen AAB-Build erstellen~~ ✅
+5. ~~Neue App in Play Console anlegen~~ ✅
+6. ~~Store-Listing + AAB hochladen~~ ✅
+7. ~~Produktion beantragen~~ ✅ **APP IST LIVE (29.07.2026)**
 
 Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 

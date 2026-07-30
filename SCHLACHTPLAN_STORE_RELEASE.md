@@ -83,17 +83,20 @@
 
 ## NACH ALLEN FEATURES: Release-Vorbereitung
 
-1. **Version bumpen:** `app.json` → version `1.0.0`, versionCode `7`
-2. **AAB bauen:** GitHub Actions `build-aab.yml` triggern (Mark)
-3. **Play Console (Mark):**
-   - Neue App anlegen mit Paketnamen `de.simplypet.app`
-   - Alle Formulare ausfüllen (Datensicherheit, Zielgruppe, Altersfreigabe etc.)
-   - Store-Listing-Texte einfügen (unverändert aus `STORE_LISTING.md`)
-   - Preis: 2,99€ Basispreis setzen → für alle Länder übernehmen
-   - AAB im geschlossenen Test-Track hochladen
-   - FOREGROUND_SERVICE_SPECIAL_USE: Video aufnehmen das die Notification zeigt
-4. **12 Tester einladen** (Gmail-Adressen)
-5. **14 Tage warten** → Produktion beantragen
+1. ~~**Version bumpen:** `app.json` → version `1.0.0`, versionCode `7`~~ ✅ Erledigt
+2. ~~**AAB bauen:** GitHub Actions `build-aab.yml` triggern (Mark)~~ ✅ Erledigt
+3. ~~**Play Console (Mark):**~~ ✅ Erledigt
+   - ~~Neue App anlegen mit Paketnamen `de.simplypet.app`~~ ✅
+   - ~~Alle Formulare ausfüllen (Datensicherheit, Zielgruppe, Altersfreigabe etc.)~~ ✅
+   - ~~Store-Listing-Texte einfügen~~ ✅
+   - ~~Preis: 2,99€ Basispreis setzen~~ ✅
+   - ~~AAB im geschlossenen Test-Track hochladen~~ ✅
+   - ~~FOREGROUND_SERVICE_SPECIAL_USE~~ ✅ (Berechtigung entfernt, nicht mehr nötig)
+4. ~~**12 Tester einladen**~~ ✅ (oder übersprungen – App ist direkt live)
+5. ~~**14 Tage warten → Produktion beantragen**~~ ✅ **APP IST LIVE (veröffentlicht 29.07.2026)**
+
+> **STATUS: SimplyPet ist im Google Play Store veröffentlicht seit 29.07.2026.**  
+> **Identitätsprüfung bestätigt: 27.07.2026.**
 
 ---
 

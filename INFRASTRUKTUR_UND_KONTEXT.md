@@ -26,7 +26,7 @@
 | Datenbank | SQLite (expo-sqlite) – lokal, kein Server |
 | Navigation | React Navigation (Native Stack) |
 | Package-Name | `de.simplypet.app` |
-| Aktuelle Version | 0.1.8 (versionCode 6) |
+| Aktuelle Version | 1.0.0 (versionCode 13) |
 | Min SDK | 29 (Android 10) |
 | Target/Compile SDK | 36 |
 
@@ -149,7 +149,8 @@
 | Kontotyp | Privates Konto (Einzelperson) |
 | Servicegebühr | 15 % (bis 1 Mio USD/Jahr) |
 | Preismodell App | Einmalkauf 2,99 € |
-| Identitätsprüfung | Eingereicht 25.07.2026, wartet auf Bestätigung |
+| Identitätsprüfung | ✅ Bestätigt 27.07.2026 |
+| App-Status | ✅ LIVE im Play Store (veröffentlicht 29.07.2026) |
 | Werbetext | Simple apps for everyone. Keep your data and information on your device and decide what you're willing to share. |
 
 ### Play Store Assets:
