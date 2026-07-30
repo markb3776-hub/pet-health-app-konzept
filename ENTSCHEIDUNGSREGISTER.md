@@ -351,3 +351,29 @@ Diese Punkte sind NICHT verhandelbar:
 - `VaccinationEntryScreen.tsx` – bleibt bei einmaligem Date-Trigger
 
 **versionCode:** 12 (bereits gesetzt, noch kein neuer Build)
+
+### E-124 – App-Hintergrund: Grüner Gradient + Blasen (30.07.2026)
+
+**Kontext:** User wünscht sich das simplyPet-Grün als App-Hintergrund auf ALLEN Screens. Bisher war der Hintergrund ein warmes Beige (#F7F5F0). Das simplyPet-Banner im Repo ist das DevApps-Account-Banner (Retro-Monitore), nicht das simplyPet-Branding.
+
+**Entscheidung E-124:** App-Hintergrund wird programmatisch generiert (Python/PIL) als vertikaler Gradient mit semi-transparenten Blasen. Das Bild wird als PNG in `app/assets/app-background.png` gespeichert und über eine `ScreenBackground`-Komponente auf allen Screens als fixierter Hintergrund angezeigt.
+
+**Design-Spezifikation:**
+- Gradient: oben #1F7A64 (primaryDark) → unten #5ECFB0 (helles Mint)
+- Richtung: vertikal (top-to-bottom)
+- Blasen: Semi-transparente Kreise (weiß, hellgrün, dunkelgrün) mit Alpha 8-35
+- Hintergrund ist FIXIERT (scrollt nicht mit dem Content)
+- Weiße Content-Cards/Bubbles behalten ihre weiße Hintergrundfarbe
+
+**Technische Umsetzung:**
+- `create_bg.py` – Python-Script generiert 1080x2340 PNG
+- `ScreenBackground.tsx` – Wiederverwendbare Komponente mit `ImageBackground` + `StyleSheet.absoluteFill`
+- Alle 18 Screens gewrapped (ScrollView, KeyboardAvoidingView, statische Views)
+- Container-Styles: `backgroundColor` von `colors.background` auf `'transparent'` geändert
+- `colors.background` in `theme.ts` bleibt als Fallback erhalten (#F7F5F0)
+
+**Betroffene Dateien:**
+- `app/assets/app-background.png` – generiertes Hintergrundbild
+- `app/src/components/ScreenBackground.tsx` – neue Komponente
+- Alle 18 Screen-Dateien (Import + Wrapping + backgroundColor transparent)
+- `create_bg.py` – Generierungs-Script (reproduzierbar)

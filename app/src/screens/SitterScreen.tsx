@@ -34,6 +34,7 @@ import { getOwnerName, getOwnerPhone } from '../profile/profileStore';
 import { todayKey } from '../time/timeModule';
 import { buildSitterInfoHtml, type SitterPetData, type SitterContext } from '../sitter/sitterPdf';
 import { buildVollmachtHtml, buildVollmachtQrPayload, type VollmachtData } from '../sitter/vollmachtPdf';
+import ScreenBackground from '../components/ScreenBackground';
 
 const SIG_KEY = 'simplypet.owner_signature';
 
@@ -270,6 +271,7 @@ export default function SitterScreen() {
   const canGenerate = sitterName.trim().length > 0 && periodFrom && periodTo && !generating;
 
   return (
+    <ScreenBackground>
     <View style={[styles.flex, { paddingTop: insets.top }]}>
       <ScrollView style={styles.container} contentContainerStyle={styles.scroll}>
         <Text style={styles.headline}>Sitter-Modus: {pet.name}</Text>
@@ -402,11 +404,12 @@ export default function SitterScreen() {
         </View>
       </Modal>
     </View>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.background },
+  flex: { flex: 1, backgroundColor: 'transparent' },
   container: { flex: 1 },
   scroll: { padding: spacing.m, paddingBottom: 96 },
   headline: {

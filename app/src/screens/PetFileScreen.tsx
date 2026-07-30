@@ -33,6 +33,7 @@ import { formatDate, isBackdated, compareDateKeysDesc, todayKey, nowUtcIso } fro
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 import EditEntryModal from '../components/EditEntryModal';
 import type { EditableField } from '../components/EditEntryModal';
+import ScreenBackground from '../components/ScreenBackground';
 
 interface PetRow {
   id: string;
@@ -661,6 +662,7 @@ export default function PetFileScreen() {
   );
 
   return (
+    <ScreenBackground>
     <View style={styles.container}>
     <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]}>
       {isLandscape ? (
@@ -718,6 +720,7 @@ export default function PetFileScreen() {
         onCancel={() => setEditModalVisible(false)}
       />
     </View>
+    </ScreenBackground>
   );
 }
 
@@ -731,10 +734,10 @@ function PassRow({ label, value }: { label: string; value: string }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   containerCentered: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
   },

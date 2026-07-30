@@ -34,6 +34,7 @@ import { colors, typography, spacing, minTouchTarget } from '../../theme/theme';
 import { PetPicker, FieldLabel, Hint, SaveButton, ChoiceChips } from '../../components/FormParts';
 import { usePets, useEntryForm } from '../../forms/useEntryForm';
 import { nowUtcIso } from '../../time/timeModule';
+import ScreenBackground from '../../components/ScreenBackground';
 
 const DOC_TYPES = ['Impfpass', 'Befund', 'Rechnung', 'Amtlich', 'Sonstiges'];
 
@@ -142,6 +143,7 @@ export default function DocumentCaptureScreen() {
   }
 
   return (
+    <ScreenBackground>
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]} keyboardShouldPersistTaps="handled">
         <View style={isLandscape ? styles.landscapeColumns : undefined}>
@@ -212,12 +214,13 @@ export default function DocumentCaptureScreen() {
         <SaveButton onPress={save} disabled={!canSave} saving={saving} label="In der Akte ablegen" />
       </ScrollView>
     </KeyboardAvoidingView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   scroll: { padding: spacing.m, paddingBottom: spacing.xl },
   landscapeColumns: { flexDirection: 'row', gap: spacing.xl },
   landscapeColumn: { flex: 1 },
@@ -253,6 +256,6 @@ const styles = StyleSheet.create({
   photo: { width: '100%', height: 280, borderRadius: 12, backgroundColor: colors.border },
   photoRemove: { marginTop: spacing.s, minHeight: minTouchTarget - 8, justifyContent: 'center' },
   photoRemoveText: { fontSize: typography.bodySmall, color: colors.signalRed },
-  emptyWrap: { flex: 1, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center', padding: spacing.l },
+  emptyWrap: { flex: 1, backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center', padding: spacing.l },
   emptyText: { fontSize: typography.body, color: colors.textSecondary, textAlign: 'center', lineHeight: 26 },
 });

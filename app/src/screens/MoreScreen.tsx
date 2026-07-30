@@ -44,6 +44,7 @@ import {
   setPersistentNotificationEnabled,
 } from '../services/persistentNotification';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
+import ScreenBackground from '../components/ScreenBackground';
 
 export default function MoreScreen() {
   const insets = useSafeAreaInsets();
@@ -147,6 +148,7 @@ export default function MoreScreen() {
   }
 
   return (
+    <ScreenBackground>
     <View style={[styles.flex, { paddingTop: insets.top }]}>
       <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]}>
         <Text style={styles.headline}>Mehr</Text>
@@ -384,11 +386,12 @@ export default function MoreScreen() {
         </View>
       </Modal>
     </View>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.background },
+  flex: { flex: 1, backgroundColor: 'transparent' },
   container: { flex: 1 },
   scroll: { padding: spacing.m, paddingBottom: 96 },
   headline: {

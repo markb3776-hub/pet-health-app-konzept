@@ -20,6 +20,7 @@ import { getDb } from '../db/database';
 import { getSpeciesConfig } from '../config/species';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 import { nowUtcIso } from '../time/timeModule';
+import ScreenBackground from '../components/ScreenBackground';
 
 interface PetRow {
   id: string;
@@ -143,6 +144,7 @@ export default function ManagePetsScreen() {
   }
 
   return (
+    <ScreenBackground>
     <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]}>
       <Text style={styles.sectionTitle}>Deine Tiere</Text>
       {loaded && active.length === 0 ? (
@@ -175,11 +177,12 @@ export default function ManagePetsScreen() {
         verloren gehen.
       </Text>
     </ScrollView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   scroll: { padding: spacing.m, paddingBottom: spacing.xl },
   sectionTitle: {
     fontSize: typography.title,

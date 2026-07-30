@@ -265,3 +265,21 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 **TypeScript:** 0 Fehler ✅
 **versionCode:** 12 (bereits gesetzt)
 **❓ Noch nicht auf Gerät bestätigt** (erst mit nächstem Build)
+
+## E-124 – App-Hintergrund: Grüner Gradient + Blasen (30.07.2026)
+
+**Status:** ✅ Implementiert
+
+**Umsetzung:**
+- Hintergrundbild programmatisch generiert (Python/PIL): vertikaler Gradient #1F7A64 → #5ECFB0 mit semi-transparenten Blasen
+- `ScreenBackground.tsx` Komponente erstellt (ImageBackground + absoluteFill)
+- Alle 18 Screens gewrapped – funktioniert mit ScrollView, KeyboardAvoidingView und statischen Views
+- Container-backgroundColor auf 'transparent' gesetzt
+- TypeScript-Check: 0 Fehler
+- versionCode: 13 (bereits gesetzt)
+
+**Dateien:**
+- `app/assets/app-background.png` (44 KB, 1080x2340)
+- `app/src/components/ScreenBackground.tsx`
+- 18 Screen-Dateien modifiziert
+- `create_bg.py` (Generierungs-Script)

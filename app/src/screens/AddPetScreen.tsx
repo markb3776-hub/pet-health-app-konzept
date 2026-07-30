@@ -41,6 +41,7 @@ import { SPECIES_LIST, getSpeciesConfig } from '../config/species';
 import { colors, typography, spacing, minTouchTarget, petColorPalette } from '../theme/theme';
 import DateField from '../components/DateField';
 import { nowUtcIso } from '../time/timeModule';
+import ScreenBackground from '../components/ScreenBackground';
 import {
   loadDraft,
   clearDraft,
@@ -190,6 +191,7 @@ export default function AddPetScreen() {
   }
 
   return (
+    <ScreenBackground>
     <KeyboardAvoidingView
       style={styles.flex}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -363,12 +365,13 @@ export default function AddPetScreen() {
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   scroll: { padding: spacing.m, paddingBottom: spacing.xl },
   introText: {
     fontSize: typography.body,

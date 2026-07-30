@@ -32,6 +32,7 @@ import { getSpeciesConfig } from '../config/species';
 import { getOwnerName } from '../profile/profileStore';
 import { useTodayKey } from '../time/timeModule';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
+import ScreenBackground from '../components/ScreenBackground';
 
 // LayoutAnimation fuer Android aktivieren
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -211,6 +212,7 @@ export default function HomeScreen() {
   }
 
   return (
+    <ScreenBackground>
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScrollView
         contentContainerStyle={styles.scroll}
@@ -334,13 +336,13 @@ export default function HomeScreen() {
             </Pressable>
           </>
         )}
-      </ScrollView>
+            </ScrollView>
     </View>
+    </ScreenBackground>
   );
 }
-
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   scroll: { padding: spacing.m, paddingBottom: 96 },
   greeting: {
     fontSize: typography.headline,

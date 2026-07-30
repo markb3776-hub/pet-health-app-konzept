@@ -35,6 +35,7 @@ import { colors, typography, spacing, minTouchTarget, petColorPalette } from '..
 import DateField from '../components/DateField';
 import { FieldLabel, Hint, SaveButton, ChoiceChips } from '../components/FormParts';
 import { nowUtcIso } from '../time/timeModule';
+import ScreenBackground from '../components/ScreenBackground';
 import {
   loadDraft,
   clearDraft,
@@ -441,6 +442,7 @@ export default function EditPetScreen() {
   const showCastration = !isHabitat && (form.castration === 'Kastriert' || form.castration === 'Sterilisiert');
 
   return (
+    <ScreenBackground>
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]} keyboardShouldPersistTaps="handled">
         <Text style={styles.speciesNote}>
@@ -939,12 +941,13 @@ export default function EditPetScreen() {
         ) : null}
       </ScrollView>
     </KeyboardAvoidingView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   scroll: { padding: spacing.m, paddingBottom: spacing.xl },
   landscapeColumns: { flexDirection: 'row', gap: spacing.xl },
   landscapeColumn: { flex: 1 },
@@ -1015,6 +1018,6 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     marginBottom: spacing.m,
   },
-  emptyWrap: { flex: 1, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center', padding: spacing.l },
+  emptyWrap: { flex: 1, backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center', padding: spacing.l },
   emptyText: { fontSize: typography.body, color: colors.textSecondary, textAlign: 'center', lineHeight: 26 },
 });

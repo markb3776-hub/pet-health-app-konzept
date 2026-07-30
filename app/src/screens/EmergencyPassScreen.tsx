@@ -48,6 +48,7 @@ import {
 import { formatDate } from '../time/timeModule';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
 import { EquinePassBlocks } from '../emergency/EquinePassBlocks';
+import ScreenBackground from '../components/ScreenBackground';
 
 /* ─── Hilfe-Texte fuer die (?)-Tooltips (E-77) ─── */
 const HELP_TEXTS: Record<string, string> = {
@@ -418,6 +419,7 @@ export default function EmergencyPassScreen() {
   );
 
   return (
+    <ScreenBackground>
     <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]}>
       {/* Mehrtier-Haushalt: Pass pro Tier umschaltbar (eindeutige Zuordnung). */}
       {allPets.length > 1 ? (
@@ -511,6 +513,7 @@ export default function EmergencyPassScreen() {
         </Pressable>
       </Modal>
     </ScrollView>
+    </ScreenBackground>
   );
 }
 
@@ -558,10 +561,10 @@ function Section({
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   containerCentered: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.l,
@@ -599,7 +602,7 @@ const styles = StyleSheet.create({
   petPhotoPlaceholder: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: 'transparent',
     borderWidth: 1,
     borderStyle: 'dashed',
     borderColor: colors.border,
@@ -625,7 +628,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.background,
+    backgroundColor: 'transparent',
     borderRadius: 10,
     padding: spacing.s,
     minHeight: minTouchTarget,

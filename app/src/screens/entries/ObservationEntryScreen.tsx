@@ -35,6 +35,7 @@ import DateField from '../../components/DateField';
 import { PetPicker, FieldLabel, Hint, SaveButton, ChoiceChips } from '../../components/FormParts';
 import { usePets, useEntryForm } from '../../forms/useEntryForm';
 import { todayKey, nowUtcIso } from '../../time/timeModule';
+import ScreenBackground from '../../components/ScreenBackground';
 
 interface ObservationDraft {
   petId: string | null;
@@ -159,6 +160,7 @@ export default function ObservationEntryScreen() {
   }
 
   return (
+    <ScreenBackground>
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView style={styles.container} contentContainerStyle={[styles.scroll, { paddingBottom: 40 + insets.bottom }]} keyboardShouldPersistTaps="handled">
         <PetPicker pets={pets} selectedId={effectivePetId} onSelect={(id) => update('petId', id)} />
@@ -250,12 +252,13 @@ export default function ObservationEntryScreen() {
         <SaveButton onPress={save} disabled={!canSave} saving={saving} />
       </ScrollView>
     </KeyboardAvoidingView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   scroll: { padding: spacing.m, paddingBottom: spacing.xl },
   landscapeColumns: { flexDirection: 'row', gap: spacing.xl },
   landscapeColumn: { flex: 1 },
@@ -284,6 +287,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   photoButtonText: { fontSize: typography.bodySmall, color: colors.textPrimary },
-  emptyWrap: { flex: 1, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center', padding: spacing.l },
+  emptyWrap: { flex: 1, backgroundColor: 'transparent', alignItems: 'center', justifyContent: 'center', padding: spacing.l },
   emptyText: { fontSize: typography.body, color: colors.textSecondary, textAlign: 'center', lineHeight: 26 },
 });

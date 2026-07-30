@@ -27,6 +27,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { setOwnerName, markOnboardingDone } from '../profile/profileStore';
 import { loadDraft, saveDraft, clearDraft, useDraftAutosave } from '../drafts/draftStore';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
+import ScreenBackground from '../components/ScreenBackground';
 
 const DRAFT_KEY = 'onboarding_owner';
 
@@ -111,6 +112,7 @@ export default function OnboardingScreen({ onDone }: OnboardingScreenProps) {
   }
 
   return (
+    <ScreenBackground>
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={styles.flex}
@@ -152,11 +154,12 @@ export default function OnboardingScreen({ onDone }: OnboardingScreenProps) {
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
+    </ScreenBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.background },
+  container: { flex: 1, backgroundColor: 'transparent' },
   flex: { flex: 1 },
   center: {
     flexGrow: 1,

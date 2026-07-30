@@ -39,6 +39,7 @@ import {
   dateKeyWithOffset,
 } from '../time/timeModule';
 import { colors, typography, spacing, minTouchTarget } from '../theme/theme';
+import ScreenBackground from '../components/ScreenBackground';
 
 interface ReminderRow {
   id: string;
@@ -275,6 +276,7 @@ export default function AppointmentsScreen() {
   const planned = open.filter((r) => r.due_date.slice(0, 10) > soonCutoff);
 
   return (
+    <ScreenBackground>
     <View style={[styles.flex, { paddingTop: insets.top }]}>
       <ScrollView style={styles.container} contentContainerStyle={styles.scroll}>
         <Text style={styles.headline}>Termine</Text>
@@ -333,6 +335,7 @@ export default function AppointmentsScreen() {
 
       </ScrollView>
     </View>
+    </ScreenBackground>
   );
 }
 
@@ -416,7 +419,7 @@ function ReminderGroup({
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: colors.background },
+  flex: { flex: 1, backgroundColor: 'transparent' },
   container: { flex: 1 },
   scroll: { padding: spacing.m, paddingBottom: 96 },
   headline: {
