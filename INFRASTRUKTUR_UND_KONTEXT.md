@@ -198,7 +198,26 @@
 - **Geschlossener Test** = Tester müssen zahlen, AUSSER sie haben einen Promo-Code
 - Promo-Codes funktionieren unabhängig vom Track (geschlossen, offen, Produktion)
 
+### Troubleshooting: "Dieser Code hat nicht funktioniert"
+
+**Häufigste Ursache: Zeitzone!**
+
+- Die Play Console verwendet **UTC (GMT+0)** für Start-/Endzeit der Promotion
+- Deutschland = UTC+2 → Wenn du 20:00 als Start eingibst, meint Google 20:00 UTC = 22:00 MESZ
+- Solange die UTC-Startzeit nicht erreicht ist, zeigt die Promotion Status **"Scheduled"** (geplant) statt **"Live"**
+- Codes funktionieren NUR wenn Status = **"Live"**
+
+**Prüfung:** Play Console → Monetarisierung → Promotions → Status-Spalte muss "Live" zeigen.
+
+**Billing Library NICHT erforderlich:**
+
+- Die Warnung "Achte darauf, dass du deine App mit der Google Play Billing Library integriert hast" erscheint IMMER beim Erstellen von Promo-Codes
+- Für **kostenpflichtige Apps** (paid app download) ist die Billing Library NICHT nötig
+- Die Billing Library wird nur für In-App-Purchases und Subscriptions benötigt
+- Quelle: B4X Forum Thread (2020) – bestätigt dass Codes für paid apps ohne Billing Library funktionieren, das Problem war die Zeitzone
+
 ### Quelle:
 
 - [Create promotions (Play Console Help)](https://support.google.com/googleplay/android-developer/answer/6321495)
 - [Promo codes (Android Developer Docs)](https://developer.android.com/google/play/billing/promo)
+- [B4X Forum: Promo Code - Require Billing Lib?](https://www.b4x.com/android/forum/threads/promo-code-require-billing-lib.123833/) – Bestätigung dass Zeitzone das Problem ist, nicht Billing Library
