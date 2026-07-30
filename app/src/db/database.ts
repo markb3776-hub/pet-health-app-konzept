@@ -196,6 +196,11 @@ async function migrate(database: SQLite.SQLiteDatabase): Promise<void> {
   await addColumnIfMissing(database, 'reminders', 'notification_id', 'TEXT');
   await addColumnIfMissing(database, 'reminders', 'reminder_offset_days', 'INTEGER NOT NULL DEFAULT 1');
 
+  // Migration 010 (E-114): Erinnerungs-Uhrzeit pro Termin (Standard 09:00)
+  // Nutzer kann wählen wann die Notification feuern soll.
+  await addColumnIfMissing(database, 'reminders', 'reminder_hour', 'INTEGER NOT NULL DEFAULT 9');
+  await addColumnIfMissing(database, 'reminders', 'reminder_minute', 'INTEGER NOT NULL DEFAULT 0');
+
   // Migration 009 (Sitter-Modus E-105): Freitextfelder fuer Sitter-Infos pro Tier
   // Werden in den Stammdaten gepflegt und vom Sitter-Modus als PDF exportiert.
   await addColumnIfMissing(database, 'pets', 'sitter_feeding', 'TEXT');       // Fütterung

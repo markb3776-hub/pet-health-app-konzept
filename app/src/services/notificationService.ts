@@ -4,8 +4,13 @@
  * Verantwortlich für:
  * - Notification-Channel anlegen (Android)
  * - Lokale Notifications für Termine/Erinnerungen planen (Scheduling)
+ * - Tägliche Erinnerungen: DailyTrigger (feuert jeden Tag zur gewählten Uhrzeit)
+ * - Einmalige Termine: DateTrigger (feuert einmal zum berechneten Zeitpunkt)
  * - Geplante Notifications stornieren
- * - Alle Notifications eines Termins neu planen (bei Änderung)
+ *
+ * E-114: Nutzer kann Erinnerungs-Uhrzeit pro Termin wählen (Standard 09:00).
+ * E-123: Tägliche Erinnerungen nutzen DailyTrigger statt Date-Trigger,
+ *         damit sie jeden Tag automatisch feuern ohne Reschedule.
  *
  * Nutzt expo-notifications (bereits als Dependency vorhanden).
  * Alle Notifications sind LOKAL – kein Server, kein Push-Token nötig.
@@ -45,13 +50,53 @@ export async function initReminderChannel(): Promise<void> {
 }
 
 /**
- * Lokale Notification für einen Termin planen.
+ * Tägliche Notification planen (DailyTrigger).
+ * Feuert JEDEN TAG zur angegebenen Uhrzeit – ohne manuelles Reschedule.
  *
- * @param reminderId - ID des Reminder-Eintrags in der DB (wird als Notification-Identifier genutzt)
- * @param title - Titel der Notification (z.B. "Impfung auffrischen: Tollwut")
- * @param body - Body-Text (z.B. "Für Hanna – in 3 Tagen fällig")
+ * @param reminderId - ID des Reminder-Eintrags in der DB
+ * @param title - Titel der Notification
+ * @param body - Body-Text
+ * @param hour - Stunde (0-23)
+ * @param minute - Minute (0-59)
+ */
+export async function scheduleDailyNotification(
+  reminderId: string,
+  title: string,
+  body: string,
+  hour: number = 9,
+  minute: number = 0
+): Promise<string> {
+  // Bestehende Notification mit gleicher ID stornieren (falls vorhanden)
+  await cancelReminderNotification(reminderId);
+
+  await Notifications.scheduleNotificationAsync({
+    identifier: reminderId,
+    content: {
+      title,
+      body,
+      data: { reminderId, action: 'open_appointments' },
+      sound: 'default',
+      priority: Notifications.AndroidNotificationPriority.HIGH,
+      ...(Platform.OS === 'android' ? { channelId: CHANNEL_ID } : {}),
+    },
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DAILY,
+      hour,
+      minute,
+    },
+  });
+
+  return reminderId;
+}
+
+/**
+ * Einmalige Notification für einen Termin planen (DateTrigger).
+ * Für nicht-tägliche Termine (Impfungen, einmalige Erinnerungen).
+ *
+ * @param reminderId - ID des Reminder-Eintrags in der DB
+ * @param title - Titel der Notification
+ * @param body - Body-Text
  * @param triggerDate - Datum/Uhrzeit wann die Notification erscheinen soll
- * @returns Die Notification-ID (identisch mit reminderId für einfache Stornierung)
  */
 export async function scheduleReminderNotification(
   reminderId: string,
@@ -62,7 +107,6 @@ export async function scheduleReminderNotification(
   // Nicht in der Vergangenheit planen
   const now = new Date();
   if (triggerDate <= now) {
-    // Termin liegt bereits in der Vergangenheit – keine Notification planen
     return reminderId;
   }
 
@@ -107,21 +151,23 @@ export async function cancelAllReminderNotifications(): Promise<void> {
 }
 
 /**
- * Berechnet das Trigger-Datum für eine Erinnerung.
+ * Berechnet das Trigger-Datum für eine einmalige Erinnerung.
  *
  * @param dueDate - Fälligkeitsdatum des Termins (YYYY-MM-DD)
  * @param offsetDays - Wie viele Tage VOR dem Termin erinnert werden soll
  * @param hour - Uhrzeit der Erinnerung (Standard: 9 Uhr morgens)
+ * @param minute - Minute der Erinnerung (Standard: 0)
  * @returns Date-Objekt für den Trigger
  */
 export function calculateTriggerDate(
   dueDate: string,
   offsetDays: ReminderOffset = 1,
-  hour: number = 9
+  hour: number = 9,
+  minute: number = 0
 ): Date {
   const date = new Date(dueDate + 'T00:00:00');
   date.setDate(date.getDate() - offsetDays);
-  date.setHours(hour, 0, 0, 0);
+  date.setHours(hour, minute, 0, 0);
   return date;
 }
 

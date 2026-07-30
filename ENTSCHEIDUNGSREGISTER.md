@@ -326,3 +326,28 @@ Diese Punkte sind NICHT verhandelbar:
 | Nur 1 Notification statt N bei mehreren täglichen Erinnerungen | Notification wird nur einmalig beim Erstellen geplant. Nach dem Feuern ist sie weg. Nur Abhaken plant die nächste. Nicht-abgehakte Erinnerungen verlieren ihre Notification dauerhaft. | Beim `reload()` im AppointmentsScreen werden ALLE aktiven täglichen Erinnerungen auf morgen 09:00 neu gescheduled. Gleiche ID → kein Duplikat, nur Sicherstellung. | AppointmentsScreen.tsx |
 
 **Entscheidung E-123:** Tägliche Erinnerungen müssen bei jedem App-Start ihre Notification erneuern. Das Scheduling ist idempotent (gleiche ID überschreibt vorherige Planung).
+
+### E-114 – Notification-Uhrzeit wählbar + DailyTrigger (30.07.2026)
+**Kontext:** E-123 (Reschedule) war ein Workaround. Die saubere Lösung ist `DailyTriggerInput` – feuert automatisch jeden Tag zur gewählten Uhrzeit, ohne dass die App laufen muss.
+
+**Änderungen:**
+
+| Bereich | Vorher | Nachher |
+|:---|:---|:---|
+| Trigger-Typ (tägliche) | Einmaliger Date-Trigger auf morgen 09:00 | `DailyTriggerInput` (persistent, feuert jeden Tag) |
+| Uhrzeit | Fest 09:00 (hardcoded) | Wählbar beim Erstellen (Standard 09:00) |
+| DB-Schema | Keine Uhrzeit-Spalten | `reminder_hour` + `reminder_minute` (Migration 010) |
+| Reschedule bei App-Start | Manuell alle auf morgen 09:00 planen | DailyTrigger sicherstellen (idempotent) |
+| Impfungen | Einmaliger Date-Trigger | Bleibt einmaliger Date-Trigger (kein täglicher Bedarf) |
+| Toggle AN | Date-Trigger auf morgen | DailyTrigger mit gespeicherter Uhrzeit |
+| Toggle AUS | Cancel | Cancel (unverändert) |
+| Abhaken täglicher Erinnerung | Reschedule auf morgen 09:00 | Nicht nötig (DailyTrigger ist persistent) |
+
+**Betroffene Dateien:**
+- `notificationService.ts` – neue `scheduleDailyNotification()` Funktion
+- `database.ts` – Migration 010 (reminder_hour, reminder_minute)
+- `MedicationEntryScreen.tsx` – Uhrzeit-Picker UI + DailyTrigger beim Speichern
+- `AppointmentsScreen.tsx` – Reschedule, Toggle, Undo nutzen DailyTrigger
+- `VaccinationEntryScreen.tsx` – bleibt bei einmaligem Date-Trigger
+
+**versionCode:** 12 (bereits gesetzt, noch kein neuer Build)

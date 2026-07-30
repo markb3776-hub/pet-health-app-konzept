@@ -26,6 +26,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { getDb, uuid } from '../db/database';
 import {
   scheduleReminderNotification,
+  scheduleDailyNotification,
   cancelReminderNotification,
   calculateTriggerDate,
   buildReminderBody,
@@ -57,6 +58,8 @@ interface ReminderRow {
   pet_color: string | null;
   reminder_active: number;
   reminder_offset_days: number;
+  reminder_hour: number | null;
+  reminder_minute: number | null;
   notification_id: string | null;
 }
 
@@ -97,21 +100,20 @@ export default function AppointmentsScreen() {
          AND substr(due_date, 1, 10) < ?`,
       [todayKey, todayKey]
     );
-    // RESCHEDULE: Alle aktiven täglichen Erinnerungen brauchen eine Notification für morgen 09:00.
-    // Ohne diesen Schritt verlieren Erinnerungen ihre Notification nach dem ersten Feuern,
-    // wenn sie nicht abgehakt werden (nur Abhaken plant die nächste Notification).
-    const dailyActive = await db.getAllAsync<{ id: string; title: string; pet_name: string; due_date: string }>(
-      `SELECT r.id, r.title, p.name AS pet_name, r.due_date
+    // RESCHEDULE (E-123): Alle aktiven täglichen Erinnerungen als DailyTrigger planen.
+    // DailyTrigger feuert automatisch jeden Tag zur gewählten Uhrzeit – kein manuelles Reschedule nötig.
+    // Wir stellen hier nur sicher, dass jede aktive Erinnerung einen DailyTrigger hat.
+    const dailyActive = await db.getAllAsync<{ id: string; title: string; pet_name: string; due_date: string; reminder_hour: number | null; reminder_minute: number | null }>(
+      `SELECT r.id, r.title, p.name AS pet_name, r.due_date, r.reminder_hour, r.reminder_minute
        FROM reminders r JOIN pets p ON p.id = r.pet_id
        WHERE r.repeat_rule = 'taeglich' AND r.status = 'Offen' AND r.deleted_at IS NULL
          AND r.reminder_active = 1 AND p.deleted_at IS NULL AND p.archived = 0`
     );
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(9, 0, 0, 0);
     for (const d of dailyActive) {
-      await scheduleReminderNotification(
-        d.id, d.title, buildReminderBody(d.pet_name, d.due_date, 0), tomorrow
+      const hour = d.reminder_hour ?? 9;
+      const minute = d.reminder_minute ?? 0;
+      await scheduleDailyNotification(
+        d.id, d.title, buildReminderBody(d.pet_name, d.due_date, 0), hour, minute
       );
     }
     const openRows = await db.getAllAsync<ReminderRow>(
@@ -167,13 +169,8 @@ export default function AppointmentsScreen() {
             `UPDATE reminders SET due_date = ?, updated_at = ?, is_synced = 0 WHERE id = ?`,
             [nextDue, ts, r.id]
           );
-          // Tägliche Erinnerung: Notification auf morgen neu planen
-          if (r.reminder_active) {
-            const trigger = calculateTriggerDate(nextDue, 0, 9);
-            await scheduleReminderNotification(
-              r.id, r.title, buildReminderBody(r.pet_name, nextDue, 0), trigger
-            );
-          }
+          // Tägliche Erinnerung: DailyTrigger ist persistent, kein Reschedule nötig.
+          // (DailyTrigger feuert automatisch jeden Tag zur gespeicherten Uhrzeit)
         } else {
           await db.runAsync(
             `UPDATE reminders SET status = 'Erledigt', done_at = ?, updated_at = ?, is_synced = 0 WHERE id = ?`,
@@ -205,11 +202,19 @@ export default function AppointmentsScreen() {
       );
       // Notification wieder planen wenn Erinnerung aktiv
       if (r.reminder_active && r.due_date) {
-        const offset = (r.reminder_offset_days ?? 1) as ReminderOffset;
-        const trigger = calculateTriggerDate(r.due_date, offset, 9);
-        await scheduleReminderNotification(
-          r.id, r.title, buildReminderBody(r.pet_name, r.due_date, offset), trigger
-        );
+        if (r.repeat_rule === 'taeglich') {
+          const hour = r.reminder_hour ?? 9;
+          const minute = r.reminder_minute ?? 0;
+          await scheduleDailyNotification(
+            r.id, r.title, buildReminderBody(r.pet_name, r.due_date, 0), hour, minute
+          );
+        } else {
+          const offset = (r.reminder_offset_days ?? 1) as ReminderOffset;
+          const trigger = calculateTriggerDate(r.due_date, offset, 9);
+          await scheduleReminderNotification(
+            r.id, r.title, buildReminderBody(r.pet_name, r.due_date, offset), trigger
+          );
+        }
       }
       // E-93: Auto-Backup nach jeder Datenaenderung
       try { const { autoBackup } = require('../backup/backupService'); autoBackup(); } catch {}
@@ -233,12 +238,20 @@ export default function AppointmentsScreen() {
         [newActive, nowUtcIso(), r.id]
       );
       if (newActive) {
-        // Notification planen
-        const offset = (r.reminder_offset_days ?? 1) as ReminderOffset;
-        const trigger = calculateTriggerDate(r.due_date, offset, 9);
-        await scheduleReminderNotification(
-          r.id, r.title, buildReminderBody(r.pet_name, r.due_date, offset), trigger
-        );
+        // Notification planen: DailyTrigger für tägliche, Date-Trigger für einmalige
+        if (r.repeat_rule === 'taeglich') {
+          const hour = r.reminder_hour ?? 9;
+          const minute = r.reminder_minute ?? 0;
+          await scheduleDailyNotification(
+            r.id, r.title, buildReminderBody(r.pet_name, r.due_date, 0), hour, minute
+          );
+        } else {
+          const offset = (r.reminder_offset_days ?? 1) as ReminderOffset;
+          const trigger = calculateTriggerDate(r.due_date, offset, 9);
+          await scheduleReminderNotification(
+            r.id, r.title, buildReminderBody(r.pet_name, r.due_date, offset), trigger
+          );
+        }
       } else {
         // Notification stornieren
         await cancelReminderNotification(r.id);

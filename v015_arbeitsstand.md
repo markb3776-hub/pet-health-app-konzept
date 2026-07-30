@@ -250,3 +250,18 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Fix: Beim Laden des AppointmentsScreen (`reload()`) werden jetzt ALLE aktiven täglichen Erinnerungen automatisch auf morgen 09:00 neu gescheduled. Da `scheduleReminderNotification()` die gleiche ID nutzt, wird keine Duplikat-Notification erzeugt – es wird nur sichergestellt dass immer eine ansteht.
 - Datei: AppointmentsScreen.tsx
 - **❓ Noch nicht auf Gerät bestätigt** (erst mit nächstem Build)
+### E-114 – DailyTrigger + Uhrzeit wählbar (30.07.2026):
+**Problem:** E-123 (Reschedule bei App-Start) war ein Workaround – funktioniert nur wenn die App geöffnet wird.
+**Lösung:** `DailyTriggerInput` von expo-notifications – feuert automatisch jeden Tag zur gewählten Uhrzeit, ohne dass die App laufen muss.
+
+**Änderungen:**
+- `notificationService.ts`: Neue `scheduleDailyNotification()` Funktion mit `SchedulableTriggerInputTypes.DAILY`
+- `database.ts`: Migration 010 – `reminder_hour` + `reminder_minute` Spalten (DEFAULT 9/0)
+- `MedicationEntryScreen.tsx`: Uhrzeit-Picker (DateTimePicker, Standard 09:00), DailyTrigger beim Speichern
+- `AppointmentsScreen.tsx`: Reschedule nutzt DailyTrigger mit gespeicherter Uhrzeit; Toggle/Undo differenziert zwischen täglichen (DailyTrigger) und einmaligen (Date-Trigger)
+- `VaccinationEntryScreen.tsx`: Bleibt bei einmaligem Date-Trigger (Impfungen sind keine täglichen Erinnerungen)
+
+**Abhängigkeit:** `@react-native-community/datetimepicker` (bereits in package.json: v9.1.0)
+**TypeScript:** 0 Fehler ✅
+**versionCode:** 12 (bereits gesetzt)
+**❓ Noch nicht auf Gerät bestätigt** (erst mit nächstem Build)

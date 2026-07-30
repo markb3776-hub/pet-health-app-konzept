@@ -9,7 +9,7 @@
  *   optionales Saisonfenster (z. B. April-September) + Hinweistext ("Bei Sonnenschein").
  * - Taegliche Erinnerung optional: entsteht atomar in derselben Transaktion.
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -26,11 +26,12 @@ import { useRoute } from '@react-navigation/native';
 import { getDb, uuid } from '../../db/database';
 import { colors, typography, spacing, minTouchTarget } from '../../theme/theme';
 import DateField from '../../components/DateField';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { PetPicker, FieldLabel, Hint, SaveButton, ChoiceChips } from '../../components/FormParts';
 import { usePets, useEntryForm } from '../../forms/useEntryForm';
 import { todayKey, nowUtcIso } from '../../time/timeModule';
 import {
-  scheduleReminderNotification,
+  scheduleDailyNotification,
   buildReminderBody,
 } from '../../services/notificationService';
 
@@ -73,6 +74,8 @@ interface MedicationDraft {
   activeSince: string | null;
   hintText: string;
   createDailyReminder: boolean;
+  reminderHour: number;
+  reminderMinute: number;
   seasonStart: number | null; // Monat 1-12
   seasonEnd: number | null;
 }
@@ -85,6 +88,7 @@ export default function MedicationEntryScreen() {
   const { width, height } = useWindowDimensions();
   const isLandscape = width > height;
   const { pets, loaded } = usePets();
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const emptyForm = useMemo<MedicationDraft>(
     () => ({
@@ -98,6 +102,8 @@ export default function MedicationEntryScreen() {
       activeSince: todayKey(),
       hintText: '',
       createDailyReminder: false,
+      reminderHour: 9,
+      reminderMinute: 0,
       seasonStart: null,
       seasonEnd: null,
     }),
@@ -171,14 +177,14 @@ export default function MedicationEntryScreen() {
               ts,
             ]
           );
-          // Optionale taegliche Erinnerung – atomar mitgespeichert.
+          // Optionale taegliche Erinnerung – atomar mitgespeichert (E-114: mit waehlbarer Uhrzeit).
           if (form.createDailyReminder && !isCondition) {
             const reminderId = uuid();
             const reminderTitle = `${form.name.trim()}${form.dosage.trim() ? ` (${form.dosage.trim()})` : ''}`;
             const dueDate = todayKey();
             await db.runAsync(
-              `INSERT INTO reminders (id, pet_id, title, due_date, status, source_type, source_id, repeat_rule, season_start, season_end, hint_text, reminder_active, reminder_offset_days, created_at, updated_at, is_synced)
-               VALUES (?, ?, ?, ?, 'Offen', 'medikament', ?, 'taeglich', ?, ?, ?, 1, 0, ?, ?, 0)`,
+              `INSERT INTO reminders (id, pet_id, title, due_date, status, source_type, source_id, repeat_rule, season_start, season_end, hint_text, reminder_active, reminder_offset_days, reminder_hour, reminder_minute, created_at, updated_at, is_synced)
+               VALUES (?, ?, ?, ?, 'Offen', 'medikament', ?, 'taeglich', ?, ?, ?, 1, 0, ?, ?, ?, ?, 0)`,
               [
                 reminderId,
                 effectivePetId,
@@ -188,19 +194,19 @@ export default function MedicationEntryScreen() {
                 form.seasonStart,
                 form.seasonEnd,
                 form.hintText.trim() || null,
+                form.reminderHour,
+                form.reminderMinute,
                 ts,
                 ts,
               ]
             );
-            // Push-Notification fuer morgen planen (taeglich = Erinnerung am Morgen)
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            tomorrow.setHours(9, 0, 0, 0);
-            await scheduleReminderNotification(
+            // DailyTrigger: feuert jeden Tag zur gewaehlten Uhrzeit (E-123)
+            await scheduleDailyNotification(
               reminderId,
               reminderTitle,
               buildReminderBody(pet?.name ?? 'Dein Tier', dueDate, 0),
-              tomorrow
+              form.reminderHour,
+              form.reminderMinute
             );
           }
         });
@@ -363,6 +369,32 @@ export default function MedicationEntryScreen() {
 
                 {form.createDailyReminder ? (
                   <>
+                    <FieldLabel>Uhrzeit der Erinnerung</FieldLabel>
+                    <Pressable
+                      style={styles.timePickerButton}
+                      onPress={() => setShowTimePicker(true)}
+                      accessibilityLabel="Erinnerungszeit w\u00e4hlen"
+                    >
+                      <Text style={styles.timePickerText}>
+                        {String(form.reminderHour).padStart(2, '0')}:{String(form.reminderMinute).padStart(2, '0')} Uhr
+                      </Text>
+                      <Text style={styles.timePickerHint}>Tippe zum \u00c4ndern</Text>
+                    </Pressable>
+                    {showTimePicker ? (
+                      <DateTimePicker
+                        value={(() => { const d = new Date(); d.setHours(form.reminderHour, form.reminderMinute, 0, 0); return d; })()}
+                        mode="time"
+                        is24Hour={true}
+                        display="spinner"
+                        onChange={(_e: any, selected?: Date) => {
+                          setShowTimePicker(false);
+                          if (selected) {
+                            setForm((prev) => ({ ...prev, reminderHour: selected.getHours(), reminderMinute: selected.getMinutes() }));
+                          }
+                        }}
+                      />
+                    ) : null}
+
                     <FieldLabel>Nur in bestimmten Monaten? (optional)</FieldLabel>
                     <Hint>
                       Beispiel: Sonnenschutz nur April–September. Tippe Start- und End-Monat an; ohne
@@ -473,6 +505,19 @@ const styles = StyleSheet.create({
   hintSmall: { fontSize: typography.bodySmall, color: colors.textSecondary, marginTop: spacing.xs },
   clearSeason: { marginTop: spacing.s, minHeight: minTouchTarget - 12, justifyContent: 'center' },
   clearSeasonText: { fontSize: typography.bodySmall, color: colors.signalRed },
+  timePickerButton: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: 12,
+    padding: spacing.m,
+    minHeight: minTouchTarget,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  timePickerText: { fontSize: typography.body, color: colors.textPrimary, fontWeight: '600' },
+  timePickerHint: { fontSize: typography.bodySmall, color: colors.textSecondary },
   emptyWrap: { flex: 1, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center', padding: spacing.l },
   emptyText: { fontSize: typography.body, color: colors.textSecondary, textAlign: 'center', lineHeight: 26 },
 });
