@@ -317,3 +317,12 @@ Diese Punkte sind NICHT verhandelbar:
 | Eingabe beim Markieren | Datum + optionale Notiz |
 
 **Zeitplan:** v1.1.0 (nach Store-Release und 14-Tage-Testphase)
+
+### BUGFIX-SESSION-7 (30.07.2026)
+**Kontext:** Nur 1 von N täglichen Medikamenten-Erinnerungen zeigt eine Notification
+
+| Bug | Ursache | Fix | Datei(en) |
+|:---|:---|:---|:---|
+| Nur 1 Notification statt N bei mehreren täglichen Erinnerungen | Notification wird nur einmalig beim Erstellen geplant. Nach dem Feuern ist sie weg. Nur Abhaken plant die nächste. Nicht-abgehakte Erinnerungen verlieren ihre Notification dauerhaft. | Beim `reload()` im AppointmentsScreen werden ALLE aktiven täglichen Erinnerungen auf morgen 09:00 neu gescheduled. Gleiche ID → kein Duplikat, nur Sicherstellung. | AppointmentsScreen.tsx |
+
+**Entscheidung E-123:** Tägliche Erinnerungen müssen bei jedem App-Start ihre Notification erneuern. Das Scheduling ist idempotent (gleiche ID überschreibt vorherige Planung).

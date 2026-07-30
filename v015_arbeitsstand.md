@@ -242,3 +242,11 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Medikation mit Hinweistext: sichtbar ✅
 - Vorerkrankungen mit Datum ("am"): sichtbar ✅
 - ANR-Fix (5+ Min offen): ❓ noch ausstehend
+
+### Bugfix-Session 7 (30.07.2026):
+
+**Tägliche Erinnerungen: Nur 1 von N Notifications wird angezeigt:**
+- Ursache: Beim Erstellen einer Medikamenten-Erinnerung wird die Notification einmalig auf morgen 09:00 geplant. Nach dem Feuern ist sie weg. Nur das Abhaken plant die nächste Notification. Erinnerungen die NICHT abgehakt werden (weil z.B. die App nicht geöffnet wird oder der User sie ignoriert) verlieren ihre Notification dauerhaft.
+- Fix: Beim Laden des AppointmentsScreen (`reload()`) werden jetzt ALLE aktiven täglichen Erinnerungen automatisch auf morgen 09:00 neu gescheduled. Da `scheduleReminderNotification()` die gleiche ID nutzt, wird keine Duplikat-Notification erzeugt – es wird nur sichergestellt dass immer eine ansteht.
+- Datei: AppointmentsScreen.tsx
+- **❓ Noch nicht auf Gerät bestätigt** (erst mit nächstem Build)
