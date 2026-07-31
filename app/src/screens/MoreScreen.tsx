@@ -25,6 +25,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -339,7 +341,10 @@ export default function MoreScreen() {
 
       {/* Passwort-Dialog Modal */}
       <Modal visible={pwPrompt.visible} transparent animationType="fade">
-        <View style={styles.pwOverlay}>
+        <KeyboardAvoidingView
+          style={styles.pwOverlay}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
           <View style={styles.pwCard}>
             <Text style={styles.pwTitle}>{pwPrompt.title}</Text>
             <Text style={styles.pwMessage}>{pwPrompt.message}</Text>
@@ -383,7 +388,7 @@ export default function MoreScreen() {
               </Pressable>
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
     </View>
     </ScreenBackground>
