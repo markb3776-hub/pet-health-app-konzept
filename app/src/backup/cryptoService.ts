@@ -120,10 +120,15 @@ export async function decryptBackup(envelopeJson: string, password: string): Pro
   const key = await deriveKey(password, salt);
 
   // SealedData aus Combined-Base64 rekonstruieren
-  // Fix: Android-Bug in expo-crypto (Issue #47274) – fromCombined akzeptiert
-  // auf Android nur ByteArray, nicht Base64-String. Daher manuell dekodieren.
+  // Fix E-126: Android-Bug in expo-crypto 57.0.1 (Issue #47274)
+  // fromCombined() ist auf Android kaputt (native Kotlin-Bridge übergibt ByteArray falsch).
+  // Workaround: Combined-Bytes manuell in IV/Ciphertext/Tag aufteilen und fromParts() nutzen.
   const combinedBytes = base64ToUint8(envelope.data);
-  const sealed = AESSealedData.fromCombined(combinedBytes);
+  // AES-256-GCM Combined-Format: IV (12 Bytes) + Ciphertext + AuthTag (16 Bytes)
+  const iv = combinedBytes.slice(0, 12);
+  const ciphertext = combinedBytes.slice(12, combinedBytes.length - 16);
+  const tag = combinedBytes.slice(combinedBytes.length - 16);
+  const sealed = AESSealedData.fromParts(iv, ciphertext, tag);
 
   // Entschlüsseln
   try {

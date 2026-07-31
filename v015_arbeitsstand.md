@@ -3,7 +3,7 @@
 ## STATUS: ✅ LIVE IM PLAY STORE (veröffentlicht 29.07.2026)
 
 ## AKTUELLE SITUATION (29.07.2026):
-- App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 14)
+- App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 15)
 - GitHub Actions AAB-Build **ERFOLGREICH** abgeschlossen (28m 57s)
 - **AAB verfügbar als GitHub Artifact (90 Tage):**
   - `simplyPet_v0.1.8_AAB` (signiert mit Upload-Keystore, Play Store ready)
@@ -196,7 +196,7 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Detailbericht: `SimplyPet_Markenrecherche_Bericht.md`
 
 ### Version:
-- app.json: version "1.0.0", versionCode 14
+- app.json: version "1.0.0", versionCode 15
 - APK-Name: simplyPet_v1.0.0.apk / simplyPet_v1.0.0_DEV.apk
 - AAB-Name: simplyPet_v1.0.0.aab
 
@@ -303,3 +303,27 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - `app/src/components/ScreenBackground.tsx`
 - 18 Screen-Dateien modifiziert
 - `create_bg.py` (Generierungs-Script)
+
+## E-126 – Backup-Import-Fix: fromCombined → fromParts (31.07.2026)
+
+**Status:** ✅ Implementiert, Push ausstehend
+
+**Problem:** E-125 (base64ToUint8 vor fromCombined) war nicht ausreichend. Der Bug in expo-crypto 57.0.1 (Issue #47274) liegt tiefer – die native Kotlin-Bridge übergibt das ByteArray nicht korrekt an die native `fromCombined()`-Funktion, unabhängig vom Input-Format.
+
+**Analyse:**
+- Backup-Export funktioniert einwandfrei (verifiziert durch lokale Entschlüsselung mit Python-Script `decrypt_backup.py`)
+- Alle Daten vollständig im Backup: 1 Tier (Hanna), 1 Impfung, 1 Medikament, 1 Gesundheitseintrag, 1 Erinnerung
+- Combined-Format korrekt: IV (12 Bytes) + Ciphertext + AuthTag (16 Bytes), Base64-kodiert
+
+**Fix:** `fromCombined()` komplett umgangen. Combined-Bytes manuell aufgeteilt:
+```typescript
+const iv = combinedBytes.slice(0, 12);
+const ciphertext = combinedBytes.slice(12, combinedBytes.length - 16);
+const tag = combinedBytes.slice(combinedBytes.length - 16);
+const sealed = AESSealedData.fromParts(iv, ciphertext, tag);
+```
+
+**Dateien:** `src/backup/cryptoService.ts` (Zeilen 122-131)
+**TypeScript:** 0 Fehler ✅
+**versionCode:** 14 → 15
+**❓ Noch nicht auf Gerät bestätigt** (erst mit nächstem Build)

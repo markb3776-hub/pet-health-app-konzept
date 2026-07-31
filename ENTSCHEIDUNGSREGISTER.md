@@ -385,3 +385,16 @@ Diese Punkte sind NICHT verhandelbar:
 - **Fix:** Base64-String vor `fromCombined()` manuell in `Uint8Array` konvertieren (`base64ToUint8(envelope.data)`).
 - **Datei:** `src/backup/cryptoService.ts`, Zeile 125
 - **Status:** Implementiert, TypeScript 0 Fehler. Braucht neuen Build zum Testen.
+
+## E-126: Fix Backup-Import – fromCombined komplett umgangen (31.07.2026)
+- **Datum:** 31.07.2026
+- **Problem:** E-125 (base64ToUint8 vor fromCombined) war nicht ausreichend. Der Bug in expo-crypto 57.0.1 (Issue #47274) liegt tiefer: Die native Kotlin-Bridge übergibt das ByteArray nicht korrekt an die native `fromCombined()`-Funktion, unabhängig davon ob Base64 oder Uint8Array übergeben wird.
+- **Analyse:** Backup-Export funktioniert einwandfrei (verifiziert durch lokale Entschlüsselung mit Python-Script). Alle Daten (1 Tier, 1 Impfung, 1 Medikament, 1 Gesundheitseintrag, 1 Erinnerung) sind vollständig im Backup enthalten.
+- **Fix:** `fromCombined()` komplett umgangen. Stattdessen Combined-Bytes manuell in die drei AES-256-GCM-Komponenten aufgeteilt:
+  - IV: Bytes 0-11 (12 Bytes)
+  - Ciphertext: Bytes 12 bis (Ende-16)
+  - AuthTag: Letzte 16 Bytes
+  - Dann `AESSealedData.fromParts(iv, ciphertext, tag)` aufgerufen – diese native Funktion funktioniert nachweislich korrekt.
+- **Datei:** `src/backup/cryptoService.ts`, Zeilen 122-131
+- **versionCode:** 15 (hochgesetzt von 14)
+- **Status:** Implementiert, TypeScript 0 Fehler. APK-Build wird automatisch bei Push getriggert. AAB muss manuell in GitHub Actions getriggert werden.
