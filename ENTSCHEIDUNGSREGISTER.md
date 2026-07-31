@@ -398,3 +398,10 @@ Diese Punkte sind NICHT verhandelbar:
 - **Datei:** `src/backup/cryptoService.ts`, Zeilen 122-131
 - **versionCode:** 15 (hochgesetzt von 14)
 - **Status:** Implementiert, TypeScript 0 Fehler. APK-Build wird automatisch bei Push getriggert. AAB muss manuell in GitHub Actions getriggert werden.
+
+## E-127: UX-Fix Passwort-Modal – Tastatur verdeckt Buttons (31.07.2026)
+- **Datum:** 31.07.2026
+- **Problem:** Beim Passwort-Bestätigungs-Dialog (Backup-Export/Import) war der "OK"-Button hinter der Tastatur versteckt. User musste erst die Tastatur ausblenden, um das Passwort zu überprüfen (Auge-Icon) oder zu bestätigen.
+- **Fix:** `pwOverlay` (View) durch `KeyboardAvoidingView` ersetzt (behavior: 'height' auf Android). Das gesamte Modal rutscht jetzt bei geöffneter Tastatur nach oben – Eingabefeld, Auge-Icon und Buttons bleiben sichtbar.
+- **Datei:** `src/screens/MoreScreen.tsx` (Zeilen 344-391)
+- **Status:** Implementiert, committed, gepusht. TypeScript 0 Fehler.

@@ -327,3 +327,14 @@ const sealed = AESSealedData.fromParts(iv, ciphertext, tag);
 **TypeScript:** 0 Fehler ✅
 **versionCode:** 14 → 15
 **❓ Noch nicht auf Gerät bestätigt** (erst mit nächstem Build)
+
+## E-127 – UX-Fix: Passwort-Modal bei geöffneter Tastatur (31.07.2026)
+
+**Status:** ✅ Implementiert, gepusht
+
+**Problem:** Beim Backup-Passwort-Dialog war der "OK"-Button hinter der Tastatur versteckt. User musste erst die Tastatur wegklicken um das Passwort zu prüfen oder zu bestätigen.
+
+**Fix:** `pwOverlay` (View) durch `KeyboardAvoidingView` ersetzt. Modal rutscht bei geöffneter Tastatur automatisch nach oben – alles bleibt sichtbar und bedienbar.
+
+**Datei:** `src/screens/MoreScreen.tsx`
+**TypeScript:** 0 Fehler ✅
