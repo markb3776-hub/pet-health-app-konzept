@@ -63,12 +63,11 @@
 ---
 
 ## Phase 5: Build (APK oder AAB)
-
 19. **Builds werden über GitHub Actions gebaut** – NICHT in der Sandbox
 20. **APK (für direkte Tester):** Push auf `main` triggert automatisch `.github/workflows/build-apk.yml`
-21. **AAB (für Play Store):** Manuell triggern: `gh workflow run build-aab.yml -f build_type=tester` (oder `release`)
+21. **AAB (für Play Store):** Manuell triggern – **NUR durch den Nutzer möglich!** Der Manus-Token hat KEINE Berechtigung für `workflow_dispatch`. Nutzer muss in GitHub Actions → "Build AAB" → "Run workflow" klicken.
 22. Artifacts liegen im GitHub Actions Run (APK: 30 Tage, AAB: 90 Tage)
-23. Alternativ: `gh workflow run build-apk.yml` für manuellen APK-Trigger
+23. Alternativ: `gh workflow run build-apk.yml` für manuellen APK-Trigger (funktioniert mit Manus-Token)
 
 ### NIEMALS in der Sandbox bauen:
 - Die Sandbox hat nicht genug RAM für Gradle (~2 GB vs. benötigte ~4 GB)
