@@ -989,13 +989,13 @@ const styles = StyleSheet.create({
   colorDotActive: { borderWidth: 4, borderColor: colors.textPrimary },
   footnote: {
     fontSize: typography.bodySmall,
-    color: colors.textSecondary,
+    color: '#000000',
     textAlign: 'center',
     marginTop: spacing.m,
   },
   vetTipText: {
     fontSize: typography.bodySmall,
-    color: colors.primary,
+    color: '#000000',
     marginTop: spacing.s,
     lineHeight: 22,
     fontStyle: 'italic',

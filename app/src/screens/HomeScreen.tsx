@@ -476,5 +476,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: spacing.s,
   },
-  addTileText: { fontSize: typography.body, color: colors.textSecondary },
+  addTileText: { fontSize: typography.body, color: '#000000' },
 });

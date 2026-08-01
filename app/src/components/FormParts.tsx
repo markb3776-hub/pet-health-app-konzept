@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   },
   hint: {
     fontSize: typography.bodySmall,
-    color: colors.textSecondary,
+    color: '#000000',
     marginTop: spacing.xs,
     lineHeight: 22,
   },

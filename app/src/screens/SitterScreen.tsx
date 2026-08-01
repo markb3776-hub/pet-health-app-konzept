@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     marginBottom: spacing.s,
   },
-  loading: { fontSize: typography.body, color: colors.textSecondary, textAlign: 'center', marginTop: 40 },
+  loading: { fontSize: typography.body, color: '#000000', textAlign: 'center', marginTop: 40 },
   section: { marginTop: spacing.l },
   sectionTitle: {
     fontSize: typography.title,
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: { fontSize: typography.body, color: colors.primary, fontWeight: '600' },
   buttonDisabled: { opacity: 0.4 },
-  sigStatus: { fontSize: typography.body, color: colors.primary, fontWeight: '600', marginBottom: spacing.s },
+  sigStatus: { fontSize: typography.body, color: '#000000', fontWeight: '600', marginBottom: spacing.s },
   sigButton: {
     backgroundColor: colors.surface,
     borderWidth: 1,
@@ -484,5 +484,5 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: spacing.m,
   },
-  hintBoxText: { fontSize: typography.bodySmall, color: colors.textSecondary, lineHeight: 22 },
+  hintBoxText: { fontSize: typography.bodySmall, color: '#000000', lineHeight: 22 },
 });

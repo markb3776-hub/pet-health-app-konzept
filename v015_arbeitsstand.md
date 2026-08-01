@@ -338,3 +338,11 @@ const sealed = AESSealedData.fromParts(iv, ciphertext, tag);
 
 **Datei:** `src/screens/MoreScreen.tsx`
 **TypeScript:** 0 Fehler ✅
+
+## E-128 – Lesbarkeits-Fix: Texte auf grünem Hintergrund (01.08.2026)
+**Status:** ✅ Implementiert, gepusht
+**Problem:** Texte mit textSecondary (#6B6B6B) und primary (#2E9E83) direkt auf dem grünen Hintergrund waren nicht lesbar (WCAG-Kontrast unter 2:1).
+**Analyse:** WCAG-Kontrastberechnung gegen app-background.png: textSecondary 1.82:1 (FAIL), primary 1.13:1 (FAIL), schwarz 7.17:1 (PASS).
+**Fix:** Alle betroffenen Texte auf #000000 (schwarz) gesetzt. Betrifft: FormParts.tsx (Hint), EditPetScreen (footnote, vetTipText), SitterScreen (sigStatus, loading, hintBoxText), ManagePetsScreen (addButtonText, archiveHint, emptyText, footnote), EmergencyPassScreen (footnote), MoreScreen (footnote), HomeScreen (addTileText).
+**Nicht geändert:** Disabled-Buttons (opacity 0.4) – bewusstes UI-Pattern.
+**TypeScript:** 0 Fehler ✅

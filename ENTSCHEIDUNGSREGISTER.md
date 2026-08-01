@@ -405,3 +405,17 @@ Diese Punkte sind NICHT verhandelbar:
 - **Fix:** `pwOverlay` (View) durch `KeyboardAvoidingView` ersetzt (behavior: 'height' auf Android). Das gesamte Modal rutscht jetzt bei geöffneter Tastatur nach oben – Eingabefeld, Auge-Icon und Buttons bleiben sichtbar.
 - **Datei:** `src/screens/MoreScreen.tsx` (Zeilen 344-391)
 - **Status:** Implementiert, committed, gepusht. TypeScript 0 Fehler.
+
+## E-128: Lesbarkeits-Fix – Texte auf grünem Hintergrund (01.08.2026)
+- **Datum:** 01.08.2026
+- **Problem:** Mehrere Texte die direkt auf dem grünen App-Hintergrund (app-background.png) liegen, waren schlecht lesbar. WCAG-Kontrastanalyse ergab: textSecondary (#6B6B6B) = 1.82:1 (FAIL), primary (#2E9E83) = 1.13:1 (FAIL). Mindestanforderung AA: 4.5:1.
+- **Fix:** Alle betroffenen Texte auf `#000000` (schwarz, Kontrast 7.17:1 = PASS) gesetzt:
+  - `FormParts.tsx`: Hint-Komponente (wirkt auf alle Screens mit Hinweistexten)
+  - `EditPetScreen.tsx`: footnote, vetTipText
+  - `SitterScreen.tsx`: sigStatus, loading, hintBoxText
+  - `ManagePetsScreen.tsx`: addButtonText, archiveHint, emptyText, footnote
+  - `EmergencyPassScreen.tsx`: footnote
+  - `MoreScreen.tsx`: footnote
+  - `HomeScreen.tsx`: addTileText
+- **Nicht geändert:** Disabled-Buttons (opacity 0.4) – bewusstes UI-Pattern, Button wird aktiv sobald User etwas ändert.
+- **Status:** Implementiert, TypeScript 0 Fehler.

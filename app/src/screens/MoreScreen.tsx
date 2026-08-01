@@ -539,7 +539,7 @@ const styles = StyleSheet.create({
   },
   footnote: {
     fontSize: typography.bodySmall,
-    color: colors.textSecondary,
+    color: '#000000',
     marginTop: spacing.m,
     lineHeight: 22,
     textAlign: 'center',

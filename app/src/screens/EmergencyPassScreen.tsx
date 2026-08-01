@@ -721,7 +721,7 @@ const styles = StyleSheet.create({
   },
   footnote: {
     fontSize: typography.bodySmall,
-    color: colors.textSecondary,
+    color: '#000000',
     lineHeight: 22,
     marginBottom: spacing.l,
   },
