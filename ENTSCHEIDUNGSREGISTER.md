@@ -418,4 +418,5 @@ Diese Punkte sind NICHT verhandelbar:
   - `MoreScreen.tsx`: footnote
   - `HomeScreen.tsx`: addTileText
 - **Nicht geändert:** Disabled-Buttons (opacity 0.4) – bewusstes UI-Pattern, Button wird aktiv sobald User etwas ändert.
-- **Status:** Implementiert, TypeScript 0 Fehler.
+- **versionCode:** 15 → 16
+- **Status:** Implementiert, TypeScript 0 Fehler, committed, gepusht.

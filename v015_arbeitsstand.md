@@ -3,7 +3,7 @@
 ## STATUS: ✅ LIVE IM PLAY STORE (veröffentlicht 29.07.2026)
 
 ## AKTUELLE SITUATION (29.07.2026):
-- App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 15)
+- App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 16)
 - GitHub Actions AAB-Build **ERFOLGREICH** abgeschlossen (28m 57s)
 - **AAB verfügbar als GitHub Artifact (90 Tage):**
   - `simplyPet_v0.1.8_AAB` (signiert mit Upload-Keystore, Play Store ready)
@@ -345,4 +345,5 @@ const sealed = AESSealedData.fromParts(iv, ciphertext, tag);
 **Analyse:** WCAG-Kontrastberechnung gegen app-background.png: textSecondary 1.82:1 (FAIL), primary 1.13:1 (FAIL), schwarz 7.17:1 (PASS).
 **Fix:** Alle betroffenen Texte auf #000000 (schwarz) gesetzt. Betrifft: FormParts.tsx (Hint), EditPetScreen (footnote, vetTipText), SitterScreen (sigStatus, loading, hintBoxText), ManagePetsScreen (addButtonText, archiveHint, emptyText, footnote), EmergencyPassScreen (footnote), MoreScreen (footnote), HomeScreen (addTileText).
 **Nicht geändert:** Disabled-Buttons (opacity 0.4) – bewusstes UI-Pattern.
+**versionCode:** 15 → 16
 **TypeScript:** 0 Fehler ✅
