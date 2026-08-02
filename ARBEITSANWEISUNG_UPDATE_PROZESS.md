@@ -67,7 +67,7 @@
 20. **APK (für direkte Tester):** Push auf `main` triggert automatisch `.github/workflows/build-apk.yml`
 21. **AAB (für Play Store):** Manuell triggern – **NUR durch den Nutzer möglich!** Der Manus-Token hat KEINE Berechtigung für `workflow_dispatch`. Nutzer muss in GitHub Actions → "Build AAB" → "Run workflow" klicken.
 22. Artifacts liegen im GitHub Actions Run (APK: 30 Tage, AAB: 90 Tage)
-23. Alternativ: `gh workflow run build-apk.yml` für manuellen APK-Trigger (funktioniert mit Manus-Token)
+23. **APK NICHT manuell triggern!** Der Push auf `main` baut automatisch nur die TESTER-Variante. Ein manueller `gh workflow run build-apk.yml` ohne Parameter nutzt Default `both` und erzeugt unnötige Doppel-Artifacts (TESTER + DEV). Manueller Trigger ist überflüssig.
 
 ### NIEMALS in der Sandbox bauen:
 - Die Sandbox hat nicht genug RAM für Gradle (~2 GB vs. benötigte ~4 GB)
