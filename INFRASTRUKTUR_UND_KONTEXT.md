@@ -26,7 +26,7 @@
 | Datenbank | SQLite (expo-sqlite) – lokal, kein Server |
 | Navigation | React Navigation (Native Stack) |
 | Package-Name | `de.simplypet.app` |
-| Aktuelle Version | 1.0.0 (versionCode 16) |
+| Aktuelle Version | 1.0.0 (versionCode 17) |
 | Min SDK | 29 (Android 10) |
 | Target/Compile SDK | 36 |
 

@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "android": {
       "package": "de.simplypet.app",
-      "versionCode": 16,
+      "versionCode": 17,
       "adaptiveIcon": {
         "backgroundColor": "#F7F5F0",
         "foregroundImage": "./assets/android-icon-foreground.png",
