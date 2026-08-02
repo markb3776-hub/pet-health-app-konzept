@@ -162,17 +162,18 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 
 ### GitHub Actions Build-System:
 - **APK-Workflow:** `.github/workflows/build-apk.yml`
-  - Trigger: Push in `app/`-Ordner ODER manuell
-  - Zwei Jobs: `build-tester` (mit Timer) + `build-dev` (ohne Timer)
+  - Trigger: Push in `app/`-Ordner (automatisch, baut nur TESTER)
+  - Zwei Jobs vorhanden: `build-tester` (mit Timer) + `build-dev` (ohne Timer)
+  - **REGEL:** NICHT manuell triggern! Default `both` erzeugt unnötige Doppel-Artifacts.
   - Artifacts: 30 Tage Aufbewahrung
 - **AAB-Workflow:** `.github/workflows/build-aab.yml`
-  - Trigger: Nur manuell (workflow_dispatch)
+  - Trigger: Nur manuell (workflow_dispatch) – **NUR durch Nutzer möglich!**
   - Ein Job: `build-aab` (ohne Timer, signiert mit Upload-Keystore)
   - Signing: Upload-Keystore aus GitHub Secret (Base64-dekodiert)
   - Signing-Config wird per Python-Script in build.gradle injiziert
   - Artifacts: 90 Tage Aufbewahrung
 - Build-Dauer: ca. 29 Min
-- **WICHTIG:** Manus kann Workflow-Dateien NICHT pushen und Workflows NICHT triggern (fehlende `workflows`-Permission der GitHub App)
+- **WICHTIG:** Manus kann Workflow-Dateien NICHT pushen (fehlende `workflows`-Permission). AAB-Workflow kann Manus NICHT triggern (fehlende `workflow_dispatch`-Berechtigung).
 
 ### Upload-Keystore:
 - Alias: `simplypet-upload`
@@ -196,9 +197,14 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Detailbericht: `SimplyPet_Markenrecherche_Bericht.md`
 
 ### Version:
-- app.json: version "1.0.0", versionCode 15
-- APK-Name: simplyPet_v1.0.0.apk / simplyPet_v1.0.0_DEV.apk
+- app.json: version "1.0.0", versionCode 16
+- APK-Name: simplyPet_v1.0.0.apk (TESTER, mit Timer) / simplyPet_v1.0.0_DEV.apk (ohne Timer)
 - AAB-Name: simplyPet_v1.0.0.aab
+
+### Build-Regeln:
+- **APK:** Push auf `main` reicht. Baut automatisch nur TESTER. NICHT manuell triggern!
+- **AAB:** NUR durch Nutzer triggerbar (Manus-Token hat keine Berechtigung).
+- **Sandbox:** NIEMALS Builds in der Sandbox.
 
 ### Bugfix-Session 5 (29.07.2026):
 **ANR-Fix (KRITISCH):**

@@ -26,7 +26,7 @@
 | Datenbank | SQLite (expo-sqlite) – lokal, kein Server |
 | Navigation | React Navigation (Native Stack) |
 | Package-Name | `de.simplypet.app` |
-| Aktuelle Version | 1.0.0 (versionCode 13) |
+| Aktuelle Version | 1.0.0 (versionCode 16) |
 | Min SDK | 29 (Android 10) |
 | Target/Compile SDK | 36 |
 
@@ -55,20 +55,25 @@
 
 | Eigenschaft | Wert |
 |:---|:---|
-| **APK-Build** | **GitHub Actions** (bevorzugt, ~30 Min erster Lauf, danach schneller) |
+| **APK-Build** | **GitHub Actions** – Push auf `main` triggert automatisch (nur TESTER-Variante). NICHT manuell triggern! |
+| **AAB-Build** | **GitHub Actions** – NUR durch Nutzer triggerbar (Manus-Token hat keine `workflow_dispatch`-Berechtigung) |
 | APK-Dateiname | `simplyPet_v{version}.apk` (Plugin: `withApkName.js`) |
 | **Cloud Computer** | `Mark B.s Cloud-Computer` – 1 GB RAM, nur für Git-Ops geeignet, NICHT für Builds |
-| **GitHub Actions** | Workflow existiert (`.github/workflows/build-apk.yml`). Manus kann Workflow-Dateien NICHT pushen (fehlende `workflows`-Permission). App-Code-Pushes triggern den Build automatisch. |
-| **Sandbox** | Fallback für lokale Builds mit Swap (3.8 GB RAM + 6 GB Swap, ~20-30 Min) |
+| **GitHub Actions** | Workflows existieren. Manus kann Workflow-Dateien NICHT pushen (fehlende `workflows`-Permission). |
+| **Sandbox** | NICHT für Builds geeignet (zu wenig RAM). Nur für Code-Änderungen und TypeScript-Check. |
 
-### Build-Ablauf (Sandbox mit Swap):
-1. `bash setup_build_env.sh` (JDK + Android SDK)
-2. `sudo fallocate -l 6G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile`
-3. `cd app/android && ./gradlew app:assembleRelease --no-daemon --max-workers=1`
-4. Falls Lint-Fehler: `lint { checkReleaseBuilds false; abortOnError false }` in `app/build.gradle` unter `android {}`
-5. APK liegt unter: `app/android/app/build/outputs/apk/release/simplyPet_v0.1.5.apk`
+### Build-Regeln (PFLICHT):
+- **APK:** Push auf `main` reicht. Baut automatisch nur TESTER (mit 90-Tage-Timer). NICHT manuell triggern (Default `both` = unnötige Doppel-Artifacts).
+- **AAB:** Nur Nutzer kann triggern: GitHub Actions → "Build AAB" → "Run workflow". Manus-Token hat KEINE Berechtigung.
+- **Sandbox:** NIEMALS Builds in der Sandbox. Nicht genug RAM.
 
-### Build-Scripts im Repo:
+### APK-Varianten:
+| Variante | Timer | Zweck |
+|:---|:---|:---|
+| TESTER | 90 Tage Ablauf | Für externe Tester (läuft ab) |
+| DEV | Deaktiviert (9999 Tage) | Für Nutzer selbst (läuft nie ab) |
+
+### Build-Scripts im Repo (historisch, werden nicht mehr genutzt):
 - `setup_build_env.sh` – Richtet JDK + Android SDK ein
 - `build_apk.sh` – Baut APK (braucht Swap oder >4 GB RAM)
 
@@ -130,11 +135,13 @@
 
 | Problem | Lösung |
 |:---|:---|
-| Sandbox hat nur ~3.8 GB RAM | APK mit 6 GB Swap bauen (funktioniert, dauert ~20-30 Min) |
+| Sandbox hat nur ~3.8 GB RAM | NICHT für Builds verwenden. Nur Code + TypeScript-Check. |
 | Sandbox wird nach Inaktivität resettet | Alles liegt auf GitHub, einfach neu klonen |
 | Kontext geht zwischen Sessions verloren | DIESE DATEI zu Beginn lesen |
 | GitHub Actions Workflow kann nicht gepusht werden | Manus-Connector hat keine `workflows`-Permission. Nutzer muss Workflow-Änderungen manuell auf GitHub committen. |
-| Cloud Computer hat nur 1 GB RAM | Nur für Git-Ops und leichte Tasks. Builds in GitHub Actions oder Sandbox. |
+| AAB-Build kann nicht getriggert werden | Manus-Token hat keine `workflow_dispatch`-Berechtigung. Nutzer muss manuell triggern. |
+| APK manuell triggern erzeugt Doppel-Artifacts | NICHT manuell triggern. Push auf main reicht (baut nur TESTER). |
+| Cloud Computer hat nur 1 GB RAM | Nur für Git-Ops und leichte Tasks. Builds nur in GitHub Actions. |
 | APK-Pfad nach Expo-Build nicht vorhersagbar | Workflow verwendet `find` statt hardcoded Pfad (✅ gefixt 25.07.2026) |
 
 ---
