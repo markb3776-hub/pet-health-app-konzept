@@ -1,8 +1,8 @@
 # Arbeitsanweisung: App-Bau / Update-Prozess
 
 > **PFLICHT** – Diese Anweisung gilt für JEDE Session. Keine Ausnahmen.  
-> Erstellt: 11.07.2026 | Überarbeitet: 25.07.2026  
-> Grund der Überarbeitung: Code-Review/Konsistenz-Check als Pflicht-Schritt eingeführt (BUG-5 Prävention).
+> Erstellt: 11.07.2026 | Überarbeitet: 03.08.2026  
+> Grund der Überarbeitung: Pflicht-Bestätigung (Honeypot + Validierung) eingeführt – Agent muss Lektüre nachweisen.
 
 ---
 
@@ -17,11 +17,25 @@
 5. **ENTSCHEIDUNGSREGISTER.md lesen** – alle bisherigen Entscheidungen
 6. **v015_arbeitsstand.md lesen** – aktueller Stand, was offen ist
 
+### PFLICHT-BESTÄTIGUNG NACH DEM LESEN:
+Nach Abschluss von Phase 0 MUSS die **ERSTE Nachricht** an den Nutzer exakt dieses Format haben:
+
+```
+Kartoffel. Arbeitsanweisung gelesen.
+- Stand: [Datum der letzten Änderung dieser Datei]
+- versionCode: [aktueller versionCode aus app.json]
+- Offene Punkte: [Anzahl offener Punkte aus v015_arbeitsstand.md]
+- Nächster Schritt laut Schlachtplan: [kurze Beschreibung]
+```
+
+**Fehlt "Kartoffel" oder stimmen die Werte nicht → Agent hat nicht gelesen → Session sofort abbrechen.**
+
 ### VERBOTEN in Phase 0:
 - Code anfassen
 - Etwas vorschlagen was bereits existiert
 - Etwas bauen was schon eingerichtet ist
 - Irgendwas tun bevor alle oben genannten Dateien gelesen wurden
+- Auf den Nutzer reagieren BEVOR die Pflicht-Bestätigung gesendet wurde
 
 ---
 
