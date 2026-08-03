@@ -18,17 +18,21 @@
 6. **v015_arbeitsstand.md lesen** – aktueller Stand, was offen ist
 
 ### PFLICHT-BESTÄTIGUNG NACH DEM LESEN:
-Nach Abschluss von Phase 0 MUSS die **ERSTE Nachricht** an den Nutzer exakt dieses Format haben:
+Nach Abschluss von Phase 0 MUSS die **ERSTE Nachricht** an den Nutzer exakt dieses Format haben.
+Die Werte werden direkt aus den Quelldateien gelesen – NICHT aus der Doku übernommen:
 
 ```
 Kartoffel. Arbeitsanweisung gelesen.
-- Stand: [Datum der letzten Änderung dieser Datei]
-- versionCode: [aktueller versionCode aus app.json]
-- Offene Punkte: [Anzahl offener Punkte aus v015_arbeitsstand.md]
+- Stand Arbeitsanweisung: [Datum aus Zeile 4 dieser Datei]
+- versionCode (aus app/app.json): [grep versionCode app/app.json]
+- Letzter Commit: [git log --oneline -1]
 - Nächster Schritt laut Schlachtplan: [kurze Beschreibung]
 ```
 
-**Fehlt "Kartoffel" oder stimmen die Werte nicht → Agent hat nicht gelesen → Session sofort abbrechen.**
+**Prüfung durch den Nutzer:**
+- Fehlt "Kartoffel" → nicht gelesen → Session abbrechen
+- versionCode stimmt nicht mit dem was du erwartest → nachfragen ob Agent A die Doku nicht aktualisiert hat
+- Letzter Commit unbekannt/falsch → Repo nicht gepullt → Session abbrechen
 
 ### VERBOTEN in Phase 0:
 - Code anfassen
