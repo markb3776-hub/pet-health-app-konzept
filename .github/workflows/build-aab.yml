@@ -27,10 +27,6 @@ jobs:
         working-directory: app
         run: npm ci
 
-      - name: Disable Timer
-        working-directory: app
-        run: sed -i 's/const EXPIRY_DAYS = 90/const EXPIRY_DAYS = 9999/' App.tsx
-
       - name: Expo prebuild
         working-directory: app
         run: npx expo prebuild --clean
