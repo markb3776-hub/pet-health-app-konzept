@@ -432,3 +432,15 @@ Diese Punkte sind NICHT verhandelbar:
   - Dokumentation: ARBEITSANWEISUNG, INFRASTRUKTUR, ARBEITSSTAND aktualisiert.
 - **versionCode:** 16 → 17
 - **Status:** Implementiert, TypeScript 0 Fehler, committed, gepusht (`6c2fb42`).
+
+## E-130: Workflow-Dispatch-Test – Manus-GitHub-Verbindung verifiziert (04.08.2026)
+
+- **Datum:** 04.08.2026
+- **Entscheidung:** Zwei Testläufe wurden bewusst per `gh workflow run` ausgelöst und sofort abgebrochen, um zu verifizieren, dass die Manus-GitHub-App-Verbindung `workflow_dispatch`-Rechte hat.
+- **Ergebnis:**
+  - Build APK (Run #36): Erfolgreich gestartet, sofort gecancelt.
+  - Build AAB (Run 30929181706): Erfolgreich gestartet, lief bis Gradle-Daemon-Start, dann gecancelt.
+- **Kein Artefakt erzeugt, kein versionCode-Verbrauch.**
+- **Kein Einfluss auf die nächste reguläre Version.**
+- **Erkenntnis:** Beide Workflows sind per Manus triggerbar. Der "Disable Timer"-Step in build-aab.yml war ein toter Step (EXPIRY_DAYS existiert nicht mehr) – wurde im Anschluss entfernt (Commit `2311dc1`).
+- **Status:** Abgeschlossen, keine Aktion nötig.
