@@ -55,23 +55,19 @@
 
 | Eigenschaft | Wert |
 |:---|:---|
-| **APK-Build** | **GitHub Actions** – Push auf `main` triggert automatisch (nur TESTER-Variante). NICHT manuell triggern! |
-| **AAB-Build** | **GitHub Actions** – NUR durch Nutzer triggerbar (Manus-Token hat keine `workflow_dispatch`-Berechtigung) |
-| APK-Dateiname | `simplyPet_v{version}.apk` (Plugin: `withApkName.js`) |
+| **APK-Build** | **GitHub Actions** – Nur manuell triggerbar: "Build APK" → "Run workflow". Ein Job, ein Artifact. |
+| **AAB-Build** | **GitHub Actions** – Nur manuell triggerbar: "Build AAB" → "Run workflow". |
+| APK-Dateiname | `simplyPet_v{version}.apk` |
+| **Beide Builds** | **NUR durch den Nutzer triggerbar!** Manus-Token hat KEINE `workflow_dispatch`-Berechtigung. |
 | **Cloud Computer** | `Mark B.s Cloud-Computer` – 1 GB RAM, nur für Git-Ops geeignet, NICHT für Builds |
 | **GitHub Actions** | Workflows existieren. Manus kann Workflow-Dateien NICHT pushen (fehlende `workflows`-Permission). |
 | **Sandbox** | NICHT für Builds geeignet (zu wenig RAM). Nur für Code-Änderungen und TypeScript-Check. |
 
 ### Build-Regeln (PFLICHT):
-- **APK:** Push auf `main` reicht. Baut automatisch nur TESTER (mit 90-Tage-Timer). NICHT manuell triggern (Default `both` = unnötige Doppel-Artifacts).
-- **AAB:** Nur Nutzer kann triggern: GitHub Actions → "Build AAB" → "Run workflow". Manus-Token hat KEINE Berechtigung.
+- **APK:** Nur manuell durch Nutzer triggerbar. Kein Auto-Trigger bei Push. Ein Job, ein Artifact.
+- **AAB:** Nur manuell durch Nutzer triggerbar. GitHub Actions → "Build AAB" → "Run workflow".
+- **Kein Timer mehr!** Die Timer-Logik (EXPIRY_DAYS, TESTER/DEV-Unterscheidung) wurde am 04.08.2026 komplett entfernt.
 - **Sandbox:** NIEMALS Builds in der Sandbox. Nicht genug RAM.
-
-### APK-Varianten:
-| Variante | Timer | Zweck |
-|:---|:---|:---|
-| TESTER | 90 Tage Ablauf | Für externe Tester (läuft ab) |
-| DEV | Deaktiviert (9999 Tage) | Für Nutzer selbst (läuft nie ab) |
 
 ### Build-Scripts im Repo (historisch, werden nicht mehr genutzt):
 - `setup_build_env.sh` – Richtet JDK + Android SDK ein

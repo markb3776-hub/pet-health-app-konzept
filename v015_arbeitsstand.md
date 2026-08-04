@@ -7,9 +7,8 @@
 - GitHub Actions AAB-Build **ERFOLGREICH** abgeschlossen (28m 57s)
 - **AAB verfügbar als GitHub Artifact (90 Tage):**
   - `simplyPet_v0.1.8_AAB` (signiert mit Upload-Keystore, Play Store ready)
-- **APKs weiterhin verfügbar (30 Tage):**
-  - `simplyPet_v0.1.8_TESTER` (51.8 MB, mit 90-Tage-Timer)
-  - `simplyPet_v0.1.8_DEV` (51.8 MB, ohne Timer)
+- **APK verfügbar (30 Tage):**
+  - `simplyPet_v1.0.0` (ein Artifact, ohne Timer)
 - ✅ Sitter-Modus (E-105) spezifiziert und tierarten-spezifische Informationen in `SITTER_MODUS_SPEZIFIKATION.md` dokumentiert
 - ✅ E-105 Implementierung geplant als Update NACH Play Store Closed Test
 
@@ -123,7 +122,7 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Altersfreigabe-Fragebogen
 - Data Safety Formular
 - Store Listing (Screenshots, Beschreibung)
-- Timer entfernen für Release-Version ✅ (AAB-Workflow baut ohne Timer)
+- ~~Timer entfernen für Release-Version~~ ✅ Timer komplett entfernt (04.08.2026)
 - Version auf 1.0.0 hochsetzen
 
 ## IMPLEMENTIERT (v0.1.7 → v0.1.8):
@@ -147,33 +146,28 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 
 ## MITGENOMMEN AUS v0.1.6:
 - ✅ E-93: Backup-System vollständig
-- ✅ 90-Tage-Ablauf-Timer für Tester
+- ~~90-Tage-Ablauf-Timer für Tester~~ (entfernt 04.08.2026)
 - ✅ Feedback-PDF mit Geräte-Info-Feldern
 
 ## TECHNISCHE DETAILS:
 
-### 90-Tage-Timer (App.tsx):
-- BUILD_DATE = new Date('2026-07-20')
-- EXPIRY_DAYS = 90
-- checkExpiry() prüft beim App-Start
-- Alert mit "Testversion abgelaufen" + BackHandler.exitApp()
-- Ablauf: ca. 18. Oktober 2026
-- **HINWEIS:** AAB-Workflow deaktiviert Timer automatisch (EXPIRY_DAYS = 9999)
+### ~~90-Tage-Timer (App.tsx)~~ – ENTFERNT (04.08.2026):
+- Timer-Logik (BUILD_DATE, EXPIRY_DAYS, checkExpiry, Alert, BackHandler.exitApp) komplett entfernt.
+- Kein Ablaufdatum mehr. Keine TESTER/DEV-Unterscheidung.
 
-### GitHub Actions Build-System:
+### GitHub Actions Build-System (aktualisiert 04.08.2026):
 - **APK-Workflow:** `.github/workflows/build-apk.yml`
-  - Trigger: Push in `app/`-Ordner (automatisch, baut nur TESTER)
-  - Zwei Jobs vorhanden: `build-tester` (mit Timer) + `build-dev` (ohne Timer)
-  - **REGEL:** NICHT manuell triggern! Default `both` erzeugt unnötige Doppel-Artifacts.
+  - Trigger: Nur manuell (workflow_dispatch) – **NUR durch Nutzer möglich!**
+  - Ein Job, ein Artifact. Kein Timer, keine TESTER/DEV-Unterscheidung.
   - Artifacts: 30 Tage Aufbewahrung
 - **AAB-Workflow:** `.github/workflows/build-aab.yml`
   - Trigger: Nur manuell (workflow_dispatch) – **NUR durch Nutzer möglich!**
-  - Ein Job: `build-aab` (ohne Timer, signiert mit Upload-Keystore)
+  - Ein Job: `build-aab` (signiert mit Upload-Keystore)
   - Signing: Upload-Keystore aus GitHub Secret (Base64-dekodiert)
   - Signing-Config wird per Python-Script in build.gradle injiziert
   - Artifacts: 90 Tage Aufbewahrung
 - Build-Dauer: ca. 29 Min
-- **WICHTIG:** Manus kann Workflow-Dateien NICHT pushen (fehlende `workflows`-Permission). AAB-Workflow kann Manus NICHT triggern (fehlende `workflow_dispatch`-Berechtigung).
+- **WICHTIG:** Manus kann Workflow-Dateien NICHT pushen (fehlende `workflows`-Permission). Manus-Token hat KEINE `workflow_dispatch`-Berechtigung – BEIDE Builds nur durch Nutzer triggerbar!
 
 ### Upload-Keystore:
 - Alias: `simplypet-upload`
@@ -198,12 +192,13 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 
 ### Version:
 - app.json: version "1.0.0", versionCode 17
-- APK-Name: simplyPet_v1.0.0.apk (TESTER, mit Timer) / simplyPet_v1.0.0_DEV.apk (ohne Timer)
+- APK-Name: simplyPet_v1.0.0.apk (ein Artifact, ohne Timer)
 - AAB-Name: simplyPet_v1.0.0.aab
 
-### Build-Regeln:
-- **APK:** Push auf `main` reicht. Baut automatisch nur TESTER. NICHT manuell triggern!
-- **AAB:** NUR durch Nutzer triggerbar (Manus-Token hat keine Berechtigung).
+### Build-Regeln (aktualisiert 04.08.2026):
+- **APK:** Nur manuell durch Nutzer triggerbar. Kein Auto-Trigger bei Push.
+- **AAB:** Nur manuell durch Nutzer triggerbar.
+- **Beide Builds:** Manus-Token hat KEINE `workflow_dispatch`-Berechtigung!
 - **Sandbox:** NIEMALS Builds in der Sandbox.
 
 ### Bugfix-Session 5 (29.07.2026):

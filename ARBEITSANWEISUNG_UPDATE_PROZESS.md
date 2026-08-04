@@ -82,10 +82,11 @@ Kartoffel. Arbeitsanweisung gelesen.
 
 ## Phase 5: Build (APK oder AAB)
 19. **Builds werden über GitHub Actions gebaut** – NICHT in der Sandbox
-20. **APK (für direkte Tester):** Push auf `main` triggert automatisch `.github/workflows/build-apk.yml`
-21. **AAB (für Play Store):** Manuell triggern – **NUR durch den Nutzer möglich!** Der Manus-Token hat KEINE Berechtigung für `workflow_dispatch`. Nutzer muss in GitHub Actions → "Build AAB" → "Run workflow" klicken.
-22. Artifacts liegen im GitHub Actions Run (APK: 30 Tage, AAB: 90 Tage)
-23. **APK NICHT manuell triggern!** Der Push auf `main` baut automatisch nur die TESTER-Variante. Ein manueller `gh workflow run build-apk.yml` ohne Parameter nutzt Default `both` und erzeugt unnötige Doppel-Artifacts (TESTER + DEV). Manueller Trigger ist überflüssig.
+20. **APK:** Nur manuell triggerbar – GitHub Actions → "Build APK" → "Run workflow". Kein Auto-Trigger bei Push. Ein Job, ein Artifact.
+21. **AAB (für Play Store):** Nur manuell triggerbar – GitHub Actions → "Build AAB" → "Run workflow".
+22. **Beide Builds NUR durch den Nutzer triggerbar!** Der Manus-Token hat KEINE Berechtigung für `workflow_dispatch`.
+23. Artifacts liegen im GitHub Actions Run (APK: 30 Tage, AAB: 90 Tage)
+24. **Kein Timer mehr!** Die Timer-Logik (EXPIRY_DAYS) wurde am 04.08.2026 komplett entfernt. Es gibt keine TESTER/DEV-Unterscheidung mehr.
 
 ### NIEMALS in der Sandbox bauen:
 - Die Sandbox hat nicht genug RAM für Gradle (~2 GB vs. benötigte ~4 GB)
