@@ -20,9 +20,15 @@
 - v015_arbeitsstand.md: Alle Timer-Referenzen entfernt/aktualisiert
 - ENTSCHEIDUNGSREGISTER.md: E-129 dokumentiert
 
+### withRemovePermissions Plugin hinzugefügt
+- Neues Expo Config Plugin: `plugins/withRemovePermissions.js`
+- Entfernt transitiv eingeschleuste Permissions aus dem Android-Manifest bei `expo prebuild`
+- Aktuell entfernt: `android.permission.DUMP`
+- app.json: Plugin-Eintrag `["./plugins/withRemovePermissions", ["android.permission.DUMP"]]` ergänzt
+
 ### Version
 - app.json: version "1.0.0", versionCode 17
-- Commit: `6c2fb42`
+- Commits: `6c2fb42`, `af2348f`
 
 ---
 

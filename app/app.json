@@ -74,7 +74,13 @@
       "./plugins/withForegroundServiceBridge",
       "./plugins/withRegisterServicePackage",
       "./plugins/withShowOnLockScreen",
-      "./plugins/withApkName"
+      "./plugins/withApkName",
+      [
+        "./plugins/withRemovePermissions",
+        [
+          "android.permission.DUMP"
+        ]
+      ]
     ],
     "ios": {
       "bundleIdentifier": "de.simplypet.app"
