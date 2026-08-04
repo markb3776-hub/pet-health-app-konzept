@@ -420,3 +420,15 @@ Diese Punkte sind NICHT verhandelbar:
 - **Nicht geändert:** Disabled-Buttons (opacity 0.4) – bewusstes UI-Pattern, Button wird aktiv sobald User etwas ändert.
 - **versionCode:** 15 → 16
 - **Status:** Implementiert, TypeScript 0 Fehler, committed, gepusht.
+
+## E-129: Timer-Logik komplett entfernt + APK-Workflow vereinfacht (04.08.2026)
+
+- **Datum:** 04.08.2026
+- **Entscheidung:** Die 90-Tage-Timer-Logik (BUILD_DATE, EXPIRY_DAYS, checkExpiry, Alert, BackHandler.exitApp) wird komplett aus App.tsx entfernt. Es gibt keine TESTER/DEV-Unterscheidung mehr. Der APK-Workflow wird auf einen einzigen manuellen Job vereinfacht.
+- **Begründung:** Die App ist seit 29.07.2026 im Play Store live. Tester erhalten die App über den geschlossenen Test-Track mit Promo-Codes. Ein Ablauf-Timer ist nicht mehr nötig – er war nur für die APK-Verteilung außerhalb des Stores relevant. Die TESTER/DEV-Unterscheidung und der Auto-Trigger bei Push erzeugten unnötige Komplexität und Doppel-Artifacts.
+- **Änderungen:**
+  - `app/App.tsx`: BUILD_DATE, EXPIRY_DAYS, checkExpiry() entfernt. Alert + BackHandler aus Import entfernt (werden in App.tsx nicht mehr verwendet).
+  - `.github/workflows/build-apk.yml`: Komplett ersetzt. Nur noch `workflow_dispatch`, ein Job (`build-apk`), ein Artifact (`simplyPet_v{version}.apk`). Kein Auto-Trigger bei Push.
+  - Dokumentation: ARBEITSANWEISUNG, INFRASTRUKTUR, v015_arbeitsstand aktualisiert.
+- **versionCode:** 16 → 17
+- **Status:** Implementiert, TypeScript 0 Fehler, committed, gepusht (`6c2fb42`).

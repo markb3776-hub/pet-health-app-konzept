@@ -1,3 +1,68 @@
+# v1.0.0 Änderungen
+
+## versionCode 17 (04.08.2026)
+
+### E-129: Timer-Logik komplett entfernt
+- 90-Tage-Timer (BUILD_DATE, EXPIRY_DAYS, checkExpiry, Alert + BackHandler.exitApp) aus App.tsx entfernt
+- Keine TESTER/DEV-Unterscheidung mehr
+- Ungenutzte Imports (`Alert`, `BackHandler`) aus App.tsx entfernt
+- TypeScript: 0 Fehler
+
+### APK-Workflow vereinfacht
+- `.github/workflows/build-apk.yml` komplett ersetzt
+- Nur noch `workflow_dispatch` (kein Auto-Trigger bei Push)
+- Ein Job (`build-apk`), ein Artifact (`simplyPet_v{version}.apk`)
+- Retention: 30 Tage
+
+### Dokumentation aktualisiert
+- ARBEITSANWEISUNG_UPDATE_PROZESS.md: Phase 5 (Build-Regeln) aktualisiert
+- INFRASTRUKTUR_UND_KONTEXT.md: Build-System komplett überarbeitet
+- v015_arbeitsstand.md: Alle Timer-Referenzen entfernt/aktualisiert
+- ENTSCHEIDUNGSREGISTER.md: E-129 dokumentiert
+
+### Version
+- app.json: version "1.0.0", versionCode 17
+- Commit: `6c2fb42`
+
+---
+
+## versionCode 16 (01.08.2026)
+
+### E-128: Lesbarkeits-Fix – Texte auf grünem Hintergrund
+- Alle Texte mit schlechtem Kontrast auf app-background.png auf #000000 (schwarz) gesetzt
+- WCAG-Kontrastanalyse: textSecondary 1.82:1 (FAIL) → schwarz 7.17:1 (PASS)
+- Betroffene Dateien: FormParts, EditPetScreen, SitterScreen, ManagePetsScreen, EmergencyPassScreen, MoreScreen, HomeScreen
+
+---
+
+## versionCode 15 (31.07.2026)
+
+### E-126: Backup-Import-Fix (fromCombined → fromParts)
+- expo-crypto Bug #47274: `fromCombined()` komplett umgangen
+- Combined-Bytes manuell aufgeteilt: IV (12B) + Ciphertext + AuthTag (16B)
+- `AESSealedData.fromParts(iv, ciphertext, tag)` statt `fromCombined()`
+
+### E-127: UX-Fix Passwort-Modal
+- `KeyboardAvoidingView` statt `View` für Passwort-Overlay
+- Buttons bleiben bei geöffneter Tastatur sichtbar
+
+---
+
+## versionCode 14 (30.07.2026)
+
+### E-124: App-Hintergrund (grüner Gradient + Blasen)
+- Programmatisch generiertes Hintergrundbild (1080x2340)
+- ScreenBackground-Komponente auf allen 18 Screens
+
+### E-125: Fix Backup-Entschlüsselung (erster Versuch)
+- base64ToUint8 vor fromCombined (später durch E-126 ersetzt)
+
+### E-114: DailyTrigger + Uhrzeit wählbar
+- Notifications feuern täglich zur gewählten Uhrzeit (DailyTriggerInput)
+- Migration 010: reminder_hour + reminder_minute Spalten
+
+---
+
 # v0.1.8 Änderungen (25.07.2026)
 
 ## Neue Features / Fixes (v0.1.7 → v0.1.8)
