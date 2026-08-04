@@ -429,6 +429,6 @@ Diese Punkte sind NICHT verhandelbar:
 - **Änderungen:**
   - `app/App.tsx`: BUILD_DATE, EXPIRY_DAYS, checkExpiry() entfernt. Alert + BackHandler aus Import entfernt (werden in App.tsx nicht mehr verwendet).
   - `.github/workflows/build-apk.yml`: Komplett ersetzt. Nur noch `workflow_dispatch`, ein Job (`build-apk`), ein Artifact (`simplyPet_v{version}.apk`). Kein Auto-Trigger bei Push.
-  - Dokumentation: ARBEITSANWEISUNG, INFRASTRUKTUR, v015_arbeitsstand aktualisiert.
+  - Dokumentation: ARBEITSANWEISUNG, INFRASTRUKTUR, ARBEITSSTAND aktualisiert.
 - **versionCode:** 16 → 17
 - **Status:** Implementiert, TypeScript 0 Fehler, committed, gepusht (`6c2fb42`).

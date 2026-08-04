@@ -42,7 +42,7 @@
 3. SCHLACHTPLAN_STORE_RELEASE.md lesen
 4. INFRASTRUKTUR_UND_KONTEXT.md lesen
 5. ENTSCHEIDUNGSREGISTER.md lesen
-6. v015_arbeitsstand.md lesen
+6. ARBEITSSTAND.md lesen
 
 ## Verbote:
 - NIEMALS APK/AAB in Sandbox bauen

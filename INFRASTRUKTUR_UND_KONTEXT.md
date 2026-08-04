@@ -104,9 +104,8 @@
 | `ARBEITSANWEISUNG_UPDATE_PROZESS.md` | Pflicht-Ablauf jeder Session |
 | `INFRASTRUKTUR_UND_KONTEXT.md` | **Diese Datei** – was existiert |
 | `ENTSCHEIDUNGSREGISTER.md` | Alle Entscheidungen mit Begründung |
-| `PROGRESS_v012.md` | Fortschritt nach Phasen |
-| `v015_arbeitsstand.md` | Aktueller Arbeitsstand |
-| `v015_aenderungen.md` | Änderungen der aktuellen Version |
+| `ARBEITSSTAND.md` | Aktueller Arbeitsstand |
+| `AENDERUNGEN.md` | Änderungen aller Versionen (laufende Datei, neueste oben) |
 | `E-93_Backup_Analyse.md` | Analyse des Backup-Systems |
 | `TESTGERAETE_MATRIX.md` | Geräte und OS-Versionen |
 

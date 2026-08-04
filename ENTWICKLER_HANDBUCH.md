@@ -19,7 +19,7 @@ Dann PFLICHT-LEKTÜRE in dieser Reihenfolge:
 1. `ARBEITSANWEISUNG_UPDATE_PROZESS.md`
 2. `INFRASTRUKTUR_UND_KONTEXT.md`
 3. `ENTSCHEIDUNGSREGISTER.md`
-4. `v015_arbeitsstand.md`
+4. `ARBEITSSTAND.md`
 
 ---
 
@@ -187,14 +187,13 @@ Versionsnummer wird NUR in `app/app.json` geändert (eine einzige Stelle). Alle 
 | `ARBEITSANWEISUNG_UPDATE_PROZESS.md` | Pflicht-Ablauf jeder Session |
 | `INFRASTRUKTUR_UND_KONTEXT.md` | Was existiert, was ist eingerichtet |
 | `ENTSCHEIDUNGSREGISTER.md` | Alle Entscheidungen mit Begründung |
-| `v015_arbeitsstand.md` | Aktueller Stand + offene Punkte |
+| `ARBEITSSTAND.md` | Aktueller Stand + offene Punkte |
 
 **Nachschlagen bei Bedarf:**
 
 | Datei | Zweck |
 |:---|:---|
-| `v015_aenderungen.md` | Änderungen pro Version |
-| `PROGRESS_v012.md` | Fortschritt nach Phasen |
+| `AENDERUNGEN.md` | Änderungen pro Version (laufende Datei, neueste oben) |
 | `IMPLEMENTIERUNG_E94_E100.md` | Details zu E-94 bis E-100 |
 | `TESTGERAETE_MATRIX.md` | Geräte und OS-Versionen |
 | `SimplyPet_Markenrecherche_Bericht.md` | Markenrechtliche Analyse |
@@ -230,7 +229,7 @@ Versionsnummer wird NUR in `app/app.json` geändert (eine einzige Stelle). Alle 
 ARBEITSANWEISUNG_UPDATE_PROZESS.md  → Wie starten wir? (Pflicht-Ablauf)
 INFRASTRUKTUR_UND_KONTEXT.md        → Was existiert? (Infrastruktur)
 ENTSCHEIDUNGSREGISTER.md            → Was ist entschieden? (Quelle der Wahrheit)
-v015_arbeitsstand.md                → Wo stehen wir? (Aktueller Stand)
-v015_aenderungen.md                 → Was hat sich geändert? (Changelog)
+ARBEITSSTAND.md                     → Wo stehen wir? (Aktueller Stand)
+AENDERUNGEN.md                      → Was hat sich geändert? (Changelog)
 ENTWICKLER_HANDBUCH.md              → Wie arbeiten wir? (Konventionen) ← DIESE DATEI
 ```

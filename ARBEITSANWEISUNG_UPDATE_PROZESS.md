@@ -1,122 +1,105 @@
 # Arbeitsanweisung: App-Bau / Update-Prozess
 
-> **PFLICHT** – Diese Anweisung gilt für JEDE Session. Keine Ausnahmen.  
-> Erstellt: 11.07.2026 | Überarbeitet: 03.08.2026  
-> Grund der Überarbeitung: Pflicht-Bestätigung (Honeypot + Validierung) eingeführt – Agent muss Lektüre nachweisen.
+> **PFLICHT – gilt für JEDE Session, keine Ausnahmen.**
+> Erstellt: 11.07.2026 | Überarbeitet: 04.08.2026
+> Grund der Überarbeitung: Timer/EXPIRY_DAYS entfernt, Agent darf
+> Builds jetzt selbst triggern (vorher: nur Nutzer) – dafür
+> Pflicht-Rückfrage vor jedem Build-Trigger eingeführt.
+> AGENTS.md-Idee verworfen (Manus lädt eigene Projektanweisung
+> automatisch, keine zusätzliche Datei nötig). Kurzfassung der
+> Kernregeln liegt direkt in der Manus-Projektanweisung.
+> Versionierte Dateinamen (v015_arbeitsstand.md, vXX_aenderungen.md,
+> PROGRESS_v012.md) abgeschafft – Ursache für veraltete/vergessene
+> Dokumente. Ab jetzt: ARBEITSSTAND.md und AENDERUNGEN.md als
+> laufend aktualisierte Einzeldateien ohne Versionsnummer im Namen.
 
 ---
 
-## PHASE 0: SESSION-START (VOR ALLEM ANDEREN)
+## Phase 0: Session-Start
 
-> **DIESE PHASE IST NICHT OPTIONAL. SIE WIRD IMMER ZUERST AUSGEFÜHRT.**
+**Bevor du irgendetwas anderes tust – auch bevor du auf die Nutzernachricht reagierst –**
+lies in dieser Reihenfolge:
 
-1. **Repository klonen:** `gh repo clone markb3776-hub/pet-health-app-konzept simplypet_workspace`
-2. **Diese Datei lesen** (ARBEITSANWEISUNG_UPDATE_PROZESS.md)
-3. **SCHLACHTPLAN_STORE_RELEASE.md lesen** – enthält die exakten nächsten Schritte für den Store-Release (Prio 1)
-4. **INFRASTRUKTUR_UND_KONTEXT.md lesen** – enthält alles was bereits existiert, eingerichtet ist, funktioniert
-5. **ENTSCHEIDUNGSREGISTER.md lesen** – alle bisherigen Entscheidungen
-6. **v015_arbeitsstand.md lesen** – aktueller Stand, was offen ist
+1. `SCHLACHTPLAN_STORE_RELEASE.md` – nächste Schritte, Priorität 1
+2. `INFRASTRUKTUR_UND_KONTEXT.md` – was existiert bereits
+3. `ENTSCHEIDUNGSREGISTER.md` – bisherige Entscheidungen
+4. `ARBEITSSTAND.md` – aktueller offener Stand
 
-### PFLICHT-BESTÄTIGUNG NACH DEM LESEN:
-Nach Abschluss von Phase 0 MUSS die **ERSTE Nachricht** an den Nutzer exakt dieses Format haben.
-Die Werte werden direkt aus den Quelldateien gelesen – NICHT aus der Doku übernommen:
+**Deine allererste Ausgabe** (vor jedem Tool-Call, vor jeder inhaltlichen Reaktion):
 
 ```
 Kartoffel. Arbeitsanweisung gelesen.
 - Stand Arbeitsanweisung: [Datum aus Zeile 4 dieser Datei]
 - versionCode (aus app/app.json): [grep versionCode app/app.json]
 - Letzter Commit: [git log --oneline -1]
-- Nächster Schritt laut Schlachtplan: [kurze Beschreibung]
+- Nächster Schritt laut Schlachtplan: [1 Satz]
 ```
 
-**Prüfung durch den Nutzer:**
-- Fehlt "Kartoffel" → nicht gelesen → Session abbrechen
-- versionCode stimmt nicht mit dem was du erwartest → nachfragen ob Agent A die Doku nicht aktualisiert hat
-- Letzter Commit unbekannt/falsch → Repo nicht gepullt → Session abbrechen
+**Prüfung durch den Nutzer:** Kein "Kartoffel" → Session abbrechen. versionCode oder Commit falsch/unbekannt → nachfragen, ob wirklich gepullt/aktualisiert wurde.
 
-### VERBOTEN in Phase 0:
-- Code anfassen
-- Etwas vorschlagen was bereits existiert
-- Etwas bauen was schon eingerichtet ist
-- Irgendwas tun bevor alle oben genannten Dateien gelesen wurden
-- Auf den Nutzer reagieren BEVOR die Pflicht-Bestätigung gesendet wurde
+**In Phase 0 verboten:** Code anfassen, etwas vorschlagen oder bauen, das schon existiert, auf den Nutzer reagieren bevor die Pflicht-Bestätigung gesendet wurde.
 
 ---
 
 ## Phase 1: Rückmeldung & Besprechung
 
-7. Nutzer gibt Feedback (Tester-Rückmeldung, eigene Beobachtungen, neue Wünsche)
-8. Gemeinsame Besprechung: Was wird umgesetzt? Was wird verworfen?
-9. **Kein Code ohne GO vom Nutzer.**
+Nutzer gibt Feedback → gemeinsam besprechen, was umgesetzt/verworfen wird. **Kein Code ohne GO.**
 
 ---
 
 ## Phase 2: Dokumentation aktualisieren
 
-10. Entscheidungsregister aktualisieren (neuer Eintrag mit Begründung + Datum)
-11. Änderungsdokument erstellen/aktualisieren (vXX_aenderungen.md)
-12. Auf GitHub speichern (Dokumentation VOR Code)
+Entscheidungsregister-Eintrag (Begründung + Datum) → neuer Eintrag in `AENDERUNGEN.md` (eine laufende Datei, chronologisch, neueste Einträge oben – KEINE neue Datei pro Version) → auf GitHub pushen. **Dokumentation vor Code.**
 
 ---
 
 ## Phase 3: Code aktualisieren
 
-13. Code-Änderungen durchführen
-14. TypeScript-Check (`cd app && npx tsc --noEmit` – muss 0 Fehler haben)
-15. **Code-Review & Konsistenz-Check** (PFLICHT vor jedem Push):
-    - Alle geänderten Funktionen durchlesen: Stimmt Input/Output?
-    - Werden Daten an mehreren Stellen angezeigt (z.B. Notfall-Pass UI, QR-Code, PDF)? → Prüfen ob ALLE Stellen die gleichen Felder abfragen
-    - SQL-Queries prüfen: Werden alle benötigten Spalten gelesen?
-    - Navigation: Sind alle neuen Routen registriert und erreichbar?
-    - Wenn ein Feature Daten aus der DB liest: Stimmt die Spaltenanzahl im SELECT mit den Parametern überein?
-16. **Sofort auf GitHub pushen** (Sicherung)
+1. Code-Änderungen durchführen
+2. TypeScript-Check: `cd app && npx tsc --noEmit` – muss 0 Fehler haben
+3. Konsistenz-Check vor jedem Push:
+   - Werden Daten an mehreren Stellen angezeigt (Notfallpass-UI, QR-Code, PDF)? Alle Stellen gleiche Felder?
+   - SQL-Queries: alle benötigten Spalten gelesen? SELECT-Spaltenanzahl passt zu Parametern?
+   - Neue Routen registriert und erreichbar?
+4. Sofort auf GitHub pushen (Sicherung)
+
+**Wichtig:** Ein gepushter Commit ist noch KEIN Build-Auftrag. Phase 3 endet mit dem Push, nicht mit einem Build.
 
 ---
 
-## Phase 4: GO abwarten
+## Phase 4: GO abwarten – zweistufig
 
-17. **GO vom Nutzer abwarten** – NICHT eigenständig mit dem Build beginnen
-18. Nutzer bestätigt explizit dass gebaut werden soll
-
----
-
-## Phase 5: Build (APK oder AAB)
-19. **Builds werden über GitHub Actions gebaut** – NICHT in der Sandbox
-20. **APK:** Nur manuell triggerbar – GitHub Actions → "Build APK" → "Run workflow". Kein Auto-Trigger bei Push. Ein Job, ein Artifact.
-21. **AAB (für Play Store):** Nur manuell triggerbar – GitHub Actions → "Build AAB" → "Run workflow".
-22. **Beide Builds NUR durch den Nutzer triggerbar!** Der Manus-Token hat KEINE Berechtigung für `workflow_dispatch`.
-23. Artifacts liegen im GitHub Actions Run (APK: 30 Tage, AAB: 90 Tage)
-24. **Kein Timer mehr!** Die Timer-Logik (EXPIRY_DAYS) wurde am 04.08.2026 komplett entfernt. Es gibt keine TESTER/DEV-Unterscheidung mehr.
-
-### NIEMALS in der Sandbox bauen:
-- Die Sandbox hat nicht genug RAM für Gradle (~2 GB vs. benötigte ~4 GB)
-- GitHub Actions hat 7 GB RAM – dort funktioniert es immer
-- Jeder Sandbox-Build-Versuch ist reine Credits-Verschwendung
+15. Nutzer bestätigt allgemein, dass es weitergehen/gebaut werden soll (GO für den Code/das Feature).
+16. **Das ist noch nicht das GO zum Bauen.** Bevor der Agent einen Build tatsächlich triggert, MUSS er separat und explizit fragen:
+    > "Soll ich jetzt [APK/AAB] bauen? Bitte bestätige."
+17. Erst nach einer eindeutigen Ja-Antwort auf genau diese Frage (z. B. "Ja, bau die AAB") darf Phase 5 beginnen.
+18. Ein "Ja, das klingt gut", "passt so", "mach weiter" im Kontext einer Code-Besprechung zählt NICHT als Build-Bestätigung.
 
 ---
 
-## Verbote
+## Phase 5: Build
 
-- **NIEMALS** APK in der Sandbox bauen (GitHub Actions existiert dafür)
-- **NIEMALS** APK bauen bevor Code auf GitHub liegt
-- **NIEMALS** APK bauen ohne explizites GO vom Nutzer
-- **NIEMALS** Code ändern ohne vorherige Besprechung/GO
-- **NIEMALS** etwas vorschlagen was laut INFRASTRUKTUR_UND_KONTEXT.md bereits existiert
-- **NIEMALS** von Null anfangen wenn 80% schon existieren
-- **NIEMALS** Phase 0 überspringen
+19. Builds laufen **ausschließlich über GitHub Actions**, niemals in der Sandbox (Sandbox hat ~2 GB RAM, Gradle braucht ~4 GB; GitHub Actions hat 7 GB und funktioniert zuverlässig – jeder Sandbox-Build-Versuch verbrennt nur Credits).
+20. `setup_build_env.sh` und `build_apk.sh` (egal ob im Repo-Root oder unter `scripts/`) sind **außer Betrieb** – nicht ausführen, auch nicht testweise.
+21. **APK:** `gh workflow run build-apk.yml` – nach Bestätigung aus Phase 4.
+22. **AAB (Play Store):** `gh workflow run build-aab.yml` – nach Bestätigung aus Phase 4.
+23. Beide Workflows können vom Agenten getriggert werden (Stand 04.08.2026 – vorher war das technisch nur dem Nutzer möglich, weil `build-apk.yml` über einen automatischen Push-Trigger lief statt über `workflow_dispatch`; das ist jetzt vereinheitlicht). Die Kontrolle läuft seither ausschließlich über die Rückfrage-Pflicht in Phase 4, nicht mehr über eine technische Sperre.
+24. Artifacts: APK 30 Tage, AAB 90 Tage.
+25. Kein Timer/EXPIRY_DAYS mehr (entfernt 04.08.2026) – keine TESTER/DEV-Unterscheidung mehr nötig.
 
 ---
 
 ## Reihenfolge in einem Satz
 
-> **Kontext lesen → Besprechen → Dokumentieren → Ändern → Pushen → GO abwarten → GitHub Actions baut.**
+> Kontext lesen → Kartoffel-Bestätigung → Besprechen → Dokumentieren → Ändern → Pushen → GO abwarten → Build-Rückfrage stellen → nach Bestätigung: GitHub Actions triggern.
 
 ---
 
-## Hinweise für die Sandbox
+## Sandbox-Hinweise (nach Reset)
 
-- Nach Sandbox-Reset: `gh repo clone markb3776-hub/pet-health-app-konzept simplypet_workspace`
-- `node_modules`: `cd app && npm install`
-- TypeScript-Check: `cd app && ./node_modules/.bin/tsc --noEmit`
-- APK-Build: **GitHub Actions** (nicht lokal!)
-- Android SDK: nur für `expo prebuild` nötig, NICHT für den eigentlichen Build
+```
+gh repo clone markb3776-hub/pet-health-app-konzept simplypet_workspace
+cd app && npm install
+cd app && ./node_modules/.bin/tsc --noEmit
+```
+Android SDK nur für lokale Diagnosezwecke relevant, NICHT für den eigentlichen Build – der läuft immer über GitHub Actions (Phase 5).
