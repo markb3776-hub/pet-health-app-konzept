@@ -68,6 +68,7 @@
 | E-113 | Notification-Vorlauf wählbar (1 Tag / 3 Tage / 1 Woche vorher) | ⏳ Geplant für v1.1.0 |
 | E-114 | Notification-Uhrzeit wählbar (statt fest 09:00) | ✅ Implementiert (30.07.2026) |
 | E-115 | Mehrfach-Erinnerung (z.B. morgens + abends bei 2x täglich Medikament) | ⏳ Geplant für v1.1.0 |
+| E-131 | R8/ProGuard aktivieren (App-Größe + Memory-Effizienz für Android 17). In app.json `expo-build-properties` ergänzen: `enableProguardInReleaseBuilds: true`, `enableShrinkResourcesInReleaseBuilds: true`. Vorher: Test-APK bauen, gründlich durchklicken (Notifications, Foreground-Service-Start/Stop, App-Shortcuts, Lock-Screen-Anzeige). Erst nach erfolgreichem Test für AAB/Play-Store-Release übernehmen. Vorsicht: mögliche Reflection-Konflikte mit eigenen Config-Plugins (withForegroundServiceBridge, withRegisterServicePackage). | ⏳ Geplant für v1.1.0 (vorbereitet 05.08.2026) |
 
 ## GERADE ERLEDIGT (28.07.2026):
 | ID | Beschreibung | Fix |
