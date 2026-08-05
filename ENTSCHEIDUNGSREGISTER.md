@@ -460,6 +460,14 @@ Diese Punkte sind NICHT verhandelbar:
 | onTrimMemory | Bereits implementiert | registerLowMemoryHandler in App.tsx vorhanden |
 | ApplicationExitInfo | Nicht implementiert | Könnte künftig genutzt werden, um Memory-bedingte Kills im Feld zu erkennen (Debugging-Zweck, keine Priorität) |
 
+**Detailprüfung der 5 Google-Strategien gegen den echten Code (verifiziert, nicht nur behauptet):**
+
+1. **R8:** Nicht aktiv (siehe oben) – geplant v1.1.0
+2. **Image Loading:** expo-image-picker + Komprimierung vorhanden, aber kein Downsampling/Disk-Caching/Hardware-Bitmaps nach Google-Empfehlung. Geringe Priorität, da Bildmengen in der App klein sind (Tierfotos, Notfallpass).
+3. **LeakCanary/Memory-Profiler:** Verifiziert NICHT im Einsatz (keine Treffer im Code/Dependencies)
+4. **onTrimMemory:** Verifiziert vorhanden in `src/utils/lowMemoryHandler.ts` (registerLowMemoryHandler, E-52), reagiert auf React Natives generisches `memoryWarning`-Event und leert den Bilder-Cache. WICHTIG: Unterscheidet NICHT zwischen TRIM_MEMORY_UI_HIDDEN und TRIM_MEMORY_BACKGROUND wie von Google empfohlen – React Native bündelt beide nativen Android-Signale zu einem einzigen JS-Event. Granularere Behandlung wäre nur über einen eigenen nativen Modul-Layer möglich, aktuell nicht vorgesehen.
+5. **ProfilingManager (TRIGGER_TYPE_OOM/ANOMALY):** Nicht implementiert, Android-17-spezifisch, erst relevant bei targetSdk-37-Umstellung
+
 - **Entscheidung:** Kein akuter Handlungsbedarf für den aktuellen Release. R8-Aktivierung ist ein sinnvoller, aber NICHT dringender Schritt für v1.1.0 – erfordert vorheriges Testen in einer separaten Test-APK wegen möglicher Reflection-Konflikte mit den eigenen Config-Plugins (withForegroundServiceBridge, withRegisterServicePackage), bevor es in den AAB-Workflow für den Play Store übernommen wird.
 - **Korrektur-Hinweis:** Eine erste Prüfung kam fälschlich zum Schluss, R8 sei bereits aktiv – das wurde durch direkten Blick ins generierte build.gradle widerlegt und korrigiert, bevor es dokumentiert wurde.
 - **Status:** Zur Kenntnis genommen, keine sofortige Aktion. R8-Aktivierung als Aufgabe für v1.1.0 vorgemerkt.
