@@ -444,3 +444,22 @@ Diese Punkte sind NICHT verhandelbar:
 - **Kein Einfluss auf die nächste reguläre Version.**
 - **Erkenntnis:** Beide Workflows sind per Manus triggerbar. Der "Disable Timer"-Step in build-aab.yml war ein toter Step (EXPIRY_DAYS existiert nicht mehr) – wurde im Anschluss entfernt (Commit `2311dc1`).
 - **Status:** Abgeschlossen, keine Aktion nötig.
+
+## E-131: Android 17 Memory-Limits – Relevanzprüfung für simplyPet (05.08.2026)
+
+- **Datum:** 05.08.2026
+- **Anlass:** Google-Blogpost "Prioritizing Memory Efficiency: Essential Steps for Android 17" geprüft und gegen den echten Codebestand verifiziert (nicht nur gegen app.json, sondern gegen das per `npx expo prebuild --clean` tatsächlich generierte `android/app/build.gradle`).
+
+**Ergebnisse:**
+
+| Thema | Betrifft uns? | Status |
+|:---|:---|:---|
+| Memory Limits (Prozess-Kill ab Android 17) | Mittel | Foreground Service (Notfallpass-Notification) hält Prozess aktiv – Risiko bei Leaks, da Android 17 auch "privilegierte" Prozesse killt, wenn sie RAM-Limits überschreiten |
+| R8 / Shrinking | NICHT AKTIV | enableMinifyInReleaseBuilds und enableShrinkResourcesInReleaseBuilds sind weder in app.json (expo-build-properties) noch in gradle.properties gesetzt. Defaults sind false. Verifiziert direkt im generierten build.gradle, Zeile 69 und 112–122. |
+| Image Loading | Relevant, geringes Risiko | expo-image-picker + Komprimierung im Einsatz, kein dediziertes Caching-Framework (Glide/Coil), aber React Native handhabt das intern anders als natives Android |
+| onTrimMemory | Bereits implementiert | registerLowMemoryHandler in App.tsx vorhanden |
+| ApplicationExitInfo | Nicht implementiert | Könnte künftig genutzt werden, um Memory-bedingte Kills im Feld zu erkennen (Debugging-Zweck, keine Priorität) |
+
+- **Entscheidung:** Kein akuter Handlungsbedarf für den aktuellen Release. R8-Aktivierung ist ein sinnvoller, aber NICHT dringender Schritt für v1.1.0 – erfordert vorheriges Testen in einer separaten Test-APK wegen möglicher Reflection-Konflikte mit den eigenen Config-Plugins (withForegroundServiceBridge, withRegisterServicePackage), bevor es in den AAB-Workflow für den Play Store übernommen wird.
+- **Korrektur-Hinweis:** Eine erste Prüfung kam fälschlich zum Schluss, R8 sei bereits aktiv – das wurde durch direkten Blick ins generierte build.gradle widerlegt und korrigiert, bevor es dokumentiert wurde.
+- **Status:** Zur Kenntnis genommen, keine sofortige Aktion. R8-Aktivierung als Aufgabe für v1.1.0 vorgemerkt.
