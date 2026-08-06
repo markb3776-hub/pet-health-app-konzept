@@ -1,5 +1,11 @@
 # v1.0.0 Änderungen
 
+## versionCode 18 (06.08.2026)
+
+### versionCode-Bump für Play Store
+- versionCode 17 → 18 (vC 17 bereits im geschlossenen Test-Track seit 03.08.2026)
+- Keine Code-Änderungen, nur Versions-Bump für nächsten AAB-Upload
+
 ## versionCode 17 (04.08.2026)
 
 ### E-129: Timer-Logik komplett entfernt
