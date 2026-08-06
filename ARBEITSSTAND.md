@@ -247,7 +247,7 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - PDF-Crash Sitter-Vollmacht: behoben ✅
 - Medikation mit Hinweistext: sichtbar ✅
 - Vorerkrankungen mit Datum ("am"): sichtbar ✅
-- ANR-Fix (5+ Min offen): ❓ noch ausstehend
+- ANR-Fix (5+ Min offen): ❓ Test ausstehend (mit vC18-Build, 06.08.2026)
 
 ### Session 30.07.2026 (E-124, E-125):
 
@@ -261,7 +261,7 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Bug: "Entschlüsselung fehlgeschlagen" auch mit korrektem Passwort
 - Ursache: expo-crypto Android-Bug (#47274) – `fromCombined()` akzeptiert nur ByteArray, nicht Base64-String
 - Fix: `base64ToUint8(envelope.data)` vor `fromCombined()` in cryptoService.ts
-- **❓ Noch nicht auf Gerät bestätigt** (braucht neuen Build vC14)
+- **❓ Test ausstehend** (mit vC18-Build, 06.08.2026)
 
 **versionCode:** 13 → 14
 
@@ -271,7 +271,7 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 - Ursache: Beim Erstellen einer Medikamenten-Erinnerung wird die Notification einmalig auf morgen 09:00 geplant. Nach dem Feuern ist sie weg. Nur das Abhaken plant die nächste Notification. Erinnerungen die NICHT abgehakt werden (weil z.B. die App nicht geöffnet wird oder der User sie ignoriert) verlieren ihre Notification dauerhaft.
 - Fix: Beim Laden des AppointmentsScreen (`reload()`) werden jetzt ALLE aktiven täglichen Erinnerungen automatisch auf morgen 09:00 neu gescheduled. Da `scheduleReminderNotification()` die gleiche ID nutzt, wird keine Duplikat-Notification erzeugt – es wird nur sichergestellt dass immer eine ansteht.
 - Datei: AppointmentsScreen.tsx
-- **❓ Noch nicht auf Gerät bestätigt** (erst mit nächstem Build)
+- **❓ Test ausstehend** (mit vC18-Build, 06.08.2026)
 ### E-114 – DailyTrigger + Uhrzeit wählbar (30.07.2026):
 **Problem:** E-123 (Reschedule bei App-Start) war ein Workaround – funktioniert nur wenn die App geöffnet wird.
 **Lösung:** `DailyTriggerInput` von expo-notifications – feuert automatisch jeden Tag zur gewählten Uhrzeit, ohne dass die App laufen muss.
@@ -286,11 +286,11 @@ Details: siehe `SCHLACHTPLAN_STORE_RELEASE.md`
 **Abhängigkeit:** `@react-native-community/datetimepicker` (bereits in package.json: v9.1.0)
 **TypeScript:** 0 Fehler ✅
 **versionCode:** 12 (bereits gesetzt)
-**❓ Noch nicht auf Gerät bestätigt** (erst mit nächstem Build)
+**❓ Test ausstehend** (mit vC18-Build, 06.08.2026)
 
 ## E-124 – App-Hintergrund: Grüner Gradient + Blasen (30.07.2026)
 
-**Status:** ✅ Implementiert
+**Status:** ✅ Implementiert, **✅ BESTÄTIGT auf Gerät (06.08.2026, vC17 Alpha-Track)**
 
 **Umsetzung:**
 - Hintergrundbild programmatisch generiert (Python/PIL): vertikaler Gradient #1F7A64 → #5ECFB0 mit semi-transparenten Blasen
@@ -328,7 +328,7 @@ const sealed = AESSealedData.fromParts(iv, ciphertext, tag);
 **Dateien:** `src/backup/cryptoService.ts` (Zeilen 122-131)
 **TypeScript:** 0 Fehler ✅
 **versionCode:** 14 → 15
-**❓ Noch nicht auf Gerät bestätigt** (erst mit nächstem Build)
+**❓ Test ausstehend** (mit vC18-Build, 06.08.2026)
 
 ## E-127 – UX-Fix: Passwort-Modal bei geöffneter Tastatur (31.07.2026)
 
