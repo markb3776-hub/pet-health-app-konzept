@@ -471,3 +471,13 @@ Diese Punkte sind NICHT verhandelbar:
 - **Entscheidung:** Kein akuter Handlungsbedarf für den aktuellen Release. R8-Aktivierung ist ein sinnvoller, aber NICHT dringender Schritt für v1.1.0 – erfordert vorheriges Testen in einer separaten Test-APK wegen möglicher Reflection-Konflikte mit den eigenen Config-Plugins (withForegroundServiceBridge, withRegisterServicePackage), bevor es in den AAB-Workflow für den Play Store übernommen wird.
 - **Korrektur-Hinweis:** Eine erste Prüfung kam fälschlich zum Schluss, R8 sei bereits aktiv – das wurde durch direkten Blick ins generierte build.gradle widerlegt und korrigiert, bevor es dokumentiert wurde.
 - **Status:** Zur Kenntnis genommen, keine sofortige Aktion. R8-Aktivierung als Aufgabe für v1.1.0 vorgemerkt.
+
+## E-132: AAB-Build vC18 getriggert (06.08.2026)
+
+- **Datum:** 06.08.2026
+- **Entscheidung:** AAB-Build für versionCode 18 per `gh workflow run build-aab.yml` ausgelöst. vC 17 war bereits im Play Store Alpha-Track (seit 03.08.2026), daher Bump auf 18 erforderlich.
+- **Run:** [#31088265597](https://github.com/markb3776-hub/pet-health-app-konzept/actions/runs/31088265597)
+- **Commit:** `39aea39` (main)
+- **Inhalt:** Identischer Code wie vC 17, plus: Timer-Step aus build-aab.yml entfernt, withRemovePermissions-Plugin hinzugefügt, versionCode-Bump.
+- **Zweck:** Neues AAB für Play Store Upload (geschlossener Test → Produktion). Gleichzeitig Geräte-Test der 5 offenen Punkte (ANR-Fix, Backup-Entschlüsselung, Reschedule, DailyTrigger, App-Hintergrund).
+- **Status:** Build läuft (~29 Min erwartet).

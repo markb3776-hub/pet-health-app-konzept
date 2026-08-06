@@ -4,9 +4,9 @@
 
 ## AKTUELLE SITUATION (29.07.2026):
 - App-Code ist auf v1.0.0 (app.json: version "1.0.0", versionCode 18)
-- GitHub Actions AAB-Build **ERFOLGREICH** abgeschlossen (28m 57s)
+- GitHub Actions AAB-Build **vC18 gestartet** (06.08.2026, Run #31088265597, ~29 Min)
 - **AAB verfügbar als GitHub Artifact (90 Tage):**
-  - `simplyPet_v0.1.8_AAB` (signiert mit Upload-Keystore, Play Store ready)
+  - `simplyPet_v1.0.0_AAB` (vC18, signiert mit Upload-Keystore, Play Store ready)
 - **APK verfügbar (30 Tage):**
   - `simplyPet_v1.0.0` (ein Artifact, ohne Timer)
 - ✅ Sitter-Modus (E-105) spezifiziert und tierarten-spezifische Informationen in `SITTER_MODUS_SPEZIFIKATION.md` dokumentiert

@@ -4,7 +4,8 @@
 
 ### versionCode-Bump für Play Store
 - versionCode 17 → 18 (vC 17 bereits im geschlossenen Test-Track seit 03.08.2026)
-- Keine Code-Änderungen, nur Versions-Bump für nächsten AAB-Upload
+- Keine Code-Änderungen außer Versions-Bump
+- AAB-Build getriggert: Run #31088265597 (06.08.2026)
 
 ## versionCode 17 (04.08.2026)
 
