@@ -33,7 +33,8 @@
 ## MARKETING / TESTER-AKQUISE:
 | Datei | Beschreibung | Version |
 |:---|:---|:---|
-| `tester_gesucht_v2.png` | Tester-Aufruf-Grafik (1440x2560, 9:16). Text: "digitalen Gesundheitspass", "Offline · Ohne Anmeldung". Kein "Kostenlos" (App kostet 2,99€). | v2 (06.08.2026) |
+| `tester_gesucht_v3.png` | Tester-Aufruf-Grafik (1440x2560, 9:16). Text: "digitalen Gesundheitspass", "Offline · Ohne Anmeldung", Kontakt: simplypet.app@gmail.com. **Aktuelle Version.** | v3 (06.08.2026) |
+| `tester_gesucht_v2.png` | Wie v3, aber ohne Kontakt-E-Mail | v2 (06.08.2026) |
 | Original: `1000173158.png` (Upload) | Erste Version mit "Tiergesundheits-App" + "Kostenlos" – veraltet, nicht mehr verwenden | v1 |
 
 **Design-Elemente:** Grüner Gradient (#1F7A64 → #5ECFB0), semi-transparente Blasen, weißes Pfotenlogo mit Kreuz, Schrift schwarz + Teal-Akzent. Format 9:16 (Instagram Story / WhatsApp Status).

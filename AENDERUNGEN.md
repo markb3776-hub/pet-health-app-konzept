@@ -4,8 +4,15 @@
 
 ### versionCode-Bump für Play Store
 - versionCode 17 → 18 (vC 17 bereits im geschlossenen Test-Track seit 03.08.2026)
-- Keine Code-Änderungen außer Versions-Bump
 - AAB-Build getriggert: Run #31088265597 (06.08.2026)
+
+### Sitter-PDF: Page-Break vor Checkliste
+- `page-break-before: always;` vor `<h2>Checkliste für den Sitter</h2>` eingefügt
+- Checkliste beginnt immer auf neuer A4-Seite, unabhängig von Länge der vorherigen Abschnitte
+- Datei: `src/sitter/sitterPdf.ts` (Zeile 166)
+
+### Marketing: Tester-Grafik v3
+- `tester_gesucht_v3.png` erstellt (mit Kontakt-E-Mail simplypet.app@gmail.com)
 
 ## versionCode 17 (04.08.2026)
 

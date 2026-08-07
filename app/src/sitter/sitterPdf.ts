@@ -163,6 +163,7 @@ ${pet.allergies || pet.preConditions ? `
   ${pet.practiceName ? `<div><span class="label">Stammpraxis:</span> ${esc(pet.practiceName)} – ${esc(pet.practicePhone)}</div>` : ''}
 </div>
 
+<div style="page-break-before: always;"></div>
 <h2>Checkliste für den Sitter</h2>
 <p style="font-size:11px;color:#555;">Zum Abhaken – bitte vor Abreise gemeinsam durchgehen:</p>
 ${checklistHtml}
