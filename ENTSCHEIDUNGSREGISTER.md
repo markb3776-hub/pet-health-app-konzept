@@ -481,3 +481,12 @@ Diese Punkte sind NICHT verhandelbar:
 - **Inhalt:** Identischer Code wie vC 17, plus: Timer-Step aus build-aab.yml entfernt, withRemovePermissions-Plugin hinzugefügt, versionCode-Bump.
 - **Zweck:** Neues AAB für Play Store Upload (geschlossener Test → Produktion). Gleichzeitig Geräte-Test der 5 offenen Punkte (ANR-Fix, Backup-Entschlüsselung, Reschedule, DailyTrigger, App-Hintergrund).
 - **Status:** Build läuft (~29 Min erwartet).
+
+## E-133: Sitter-PDF – Page-Break vor Checkliste (06.08.2026)
+
+- **Datum:** 06.08.2026
+- **Entscheidung:** CSS `page-break-before: always;` vor dem Checkliste-Abschnitt in `src/sitter/sitterPdf.ts` eingefügt. Die Checkliste beginnt damit immer auf einer neuen A4-Seite, unabhängig von der Länge der vorherigen Abschnitte (Medikamente, Notfallkontakte).
+- **Umsetzung:** `<div style="page-break-before: always;"></div>` direkt vor `<h2>Checkliste für den Sitter</h2>` (Zeile 166).
+- **Hinweis:** `page-break-before` wird von expo-print (WebView-basiert) unterstützt. Falls bei Tests Probleme auftreten, Alternative: `break-before: page;` (neuere CSS-Syntax).
+- **TypeScript:** 0 Fehler
+- **Status:** Implementiert, gepusht (`2ea1433`). Geräte-Test ausstehend (mit vC18-Build).
