@@ -30,6 +30,14 @@
   - `simply_devapps_icon_512x512.jpg` (512x512, für Play Store)
   - `simply_devapps_banner_4096x2304.jpg` (4096x2304, Kopfzeilenbild)
 
+## MARKETING / TESTER-AKQUISE:
+| Datei | Beschreibung | Version |
+|:---|:---|:---|
+| `tester_gesucht_v2.png` | Tester-Aufruf-Grafik (1440x2560, 9:16). Text: "digitalen Gesundheitspass", "Offline · Ohne Anmeldung". Kein "Kostenlos" (App kostet 2,99€). | v2 (06.08.2026) |
+| Original: `1000173158.png` (Upload) | Erste Version mit "Tiergesundheits-App" + "Kostenlos" – veraltet, nicht mehr verwenden | v1 |
+
+**Design-Elemente:** Grüner Gradient (#1F7A64 → #5ECFB0), semi-transparente Blasen, weißes Pfotenlogo mit Kreuz, Schrift schwarz + Teal-Akzent. Format 9:16 (Instagram Story / WhatsApp Status).
+
 ## PLAY STORE VORBEREITUNG – ERLEDIGT:
 | Aufgabe | Status | Datei/Ort |
 |:---|:---|:---|
