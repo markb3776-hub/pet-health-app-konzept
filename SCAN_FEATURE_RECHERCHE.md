@@ -95,12 +95,13 @@ OCR liefert leicht abweichende Schreibweisen:
 
 **Stufe 3: Fuzzy-Matching**
 - Levenshtein-Distanz auf normalisierten Impfstoffnamen
-- Schwellenwert: ≤ 2 Edits bei Strings < 15 Zeichen, ≤ 3 bei längeren
+- Schwellenwert: ≤ 2 Edits bei Strings < 15 Zeichen, ≤ 3 bei längeren Strings (≥ 15 Zeichen)
 - ODER: Enthält-Check (einer ist Substring des anderen)
 
 ### Technische Umsetzung:
 ```typescript
-function isDuplicate(scanned: {name: string, date: string}, existing: VaccinationEntry[]): VaccinationEntry | null {
+/** Findet einen existierenden Eintrag der dem gescannten Wert entspricht, oder null. */
+function findDuplicate(scanned: {name: string, date: string}, existing: VaccinationEntry[]): VaccinationEntry | null {
   const normalizedName = normalize(scanned.name);
   const normalizedDate = parseDate(scanned.date);
   
@@ -108,9 +109,11 @@ function isDuplicate(scanned: {name: string, date: string}, existing: Vaccinatio
     const dateDiff = Math.abs(daysBetween(normalizedDate, entry.date));
     if (dateDiff > 1) return false; // Datum muss ±1 Tag passen
     
-    const nameDist = levenshtein(normalizedName, normalize(entry.vaccine_name));
-    return nameDist <= 2 || normalizedName.includes(normalize(entry.vaccine_name)) || normalize(entry.vaccine_name).includes(normalizedName);
-  });
+    const entryName = normalize(entry.vaccine_name);
+    const nameDist = levenshtein(normalizedName, entryName);
+    const maxDist = normalizedName.length < 15 ? 2 : 3;
+    return nameDist <= maxDist || normalizedName.includes(entryName) || entryName.includes(normalizedName);
+  }) ?? null;
 }
 ```
 
